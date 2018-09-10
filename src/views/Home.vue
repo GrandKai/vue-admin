@@ -17,7 +17,7 @@ export default {
   },
   created: function () {
 
-
+    console.log('home 页面')
     let param = {
       content: {
         username: 'GrandKai',

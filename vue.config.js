@@ -1,4 +1,9 @@
 let path = require('path');
+
+const resolve = dir => {
+  return path.join(__dirname, dir);
+};
+
 let proEnv = require('./config/pro.env');  // 生产环境
 let uatEnv = require('./config/uat.env');  // 测试环境
 let devEnv = require('./config/dev.env');  // 本地环境
@@ -28,12 +33,28 @@ devProxy.forEach((value, index) => {
   };
 });
 
-function resolve(dir) {
-  return path.join(__dirname, dir)
-}
-
 module.exports = {
   lintOnSave: false,
+  // 打包时不生成.map文件
+  // productionSourceMap: false,
+  configureWebpack: config => {
+    if (process.env.NODE_ENV === 'development') {
+      config.devtool = 'source-map'
+      // mutate config for production...
+    }
+  },
+  // tweak internal webpack configuration.
+  // see https://github.com/vuejs/vue-cli/blob/dev/docs/webpack.md
+  chainWebpack: (config) => {
+    config.resolve.alias
+      .set('@', resolve('src'))
+      .set('assets', resolve('src/assets'))
+      .set('styles', resolve('src/assets/styles'))
+      .set('images', resolve('src/assets/images'))
+      .set('components', resolve('src/components'))
+      .set('layout', resolve('src/layout'))
+  },
+  // 这里写你调用接口的基础路径，来解决跨域，如果设置了代理，那你本地开发环境的axios的baseUrl要写为 '' ，即空字符串
   devServer: {
     // open: process.platform === 'darwin',
     host: '0.0.0.0',
@@ -45,20 +66,5 @@ module.exports = {
     before: app => {
     }
   },
-  configureWebpack: config => {
-    if (process.env.NODE_ENV === 'development') {
-      config.devtool = 'source-map'
-      // mutate config for production...
-    }
-  },
-  chainWebpack: (config) => {
-    config.resolve.alias
-      .set('@', resolve('src'))
-      .set('assets', resolve('src/assets'))
-      .set('styles', resolve('src/assets/styles'))
-      .set('images', resolve('src/assets/images'))
-      .set('components', resolve('src/components'))
-      .set('layout', resolve('src/layout'))
-  }
 
 };

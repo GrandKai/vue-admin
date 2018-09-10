@@ -5,13 +5,13 @@
   "scripts": {
     "serve": "vue-cli-service serve --open",
     "build": "vue-cli-service build --mode=production",
-
     "dev": "vue-cli-service serve --open",
-    "prod":"vue-cli-service build --mode=production",
+    "prod": "vue-cli-service build --mode=production",
     "uat": "vue-cli-service build --mode=test"
   },
   "dependencies": {
     "axios": "^0.18.0",
+    "element-ui": "^2.4.6",
     "vue": "^2.5.17",
     "vue-router": "^3.0.1",
     "vuex": "^3.0.1"
