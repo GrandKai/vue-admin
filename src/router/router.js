@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import Home from '../views/Home.vue'
-import Main from '@/layout/Main.vue'
+import Welcome from '@/layout/Welcome.vue'
+import Index from '@/layout/Index.vue'
 
 Vue.use(Router);
 
@@ -13,13 +13,11 @@ export default new Router({
   routes: [
     {
       path: '/',
-      name: 'home',
-      component: Home
-    },
-    {
-      path: '/main',
-      name: 'main',
-      component: Main
+      name: 'Index',
+      component: Index,
+      children: [
+        { path: '', component: Welcome },
+      ]
     },
     {
       path: '/about',
