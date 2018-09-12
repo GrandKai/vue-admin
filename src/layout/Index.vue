@@ -53,6 +53,10 @@
 
     .main-content {
         padding: 20px;
+        /*box-sizing: border-box;*/
+        /*margin-top: -20px;*/
+        /*position: absolute;*/
+        /*height: 100%;*/
     }
 
 </style>
