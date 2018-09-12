@@ -8,7 +8,6 @@
 <script>
 // @ is an alias to /src
 import HelloWorld from '@/components/HelloWorld.vue'
-import axios from 'axios'
 
 export default {
   name: 'home',
@@ -17,15 +16,15 @@ export default {
   },
   created: function () {
 
-    console.log('home 页面')
     let param = {
       content: {
         username: 'GrandKai',
         password: '123456'
       }
     };
-    axios.post("/api/auth/login", param).then(resp => {
-      console.log('resp', resp);
+
+    this.$http.post("/auth/login", param).then(response => {
+      console.log('.................', response);
     })
   },
   methods: {
