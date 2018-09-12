@@ -1,8 +1,8 @@
 <template>
     <div>
         <el-container>
-            <el-aside class="elAside">
-                菜单部分
+            <el-aside class="elAside" :width="asideWidth">
+                <Menu/>
             </el-aside>
             <el-container>
                 <el-header>
@@ -10,7 +10,7 @@
                 </el-header>
 
                 <el-main>
-                    <div class="main-content">
+                    <div class="main-content" :style="{mainHeight}">
                         <router-view></router-view>
                     </div>
                 </el-main>
@@ -21,15 +21,38 @@
 </template>
 
 <script>
+  import Menu from './Menu'
+
   export default {
-    name: "LayoutIndex"
+    name: "LayoutIndex",
+    data() {
+      return {
+        mainHeight: '',
+        asideWidth: '200px'
+      }
+    },
+    created() {
+      this.getMainHeight();
+    },
+    mounted() {
+      window.onresize = this.getMainHeight;
+    },
+    methods: {
+      getMainHeight() {
+        console.error('获取Index页面高度');
+        this.minHeight = `${document.documentElement.clientHeight - 96}px`
+      }
+    },
+    components: {Menu},
   }
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
+    @import '~styles/variables';
 
     .elAside {
-        width: 200px !important;
+        /*transition: width .8s;*/
+        /*width: 200px !important;*/
     }
 
     .el-header {
@@ -53,10 +76,9 @@
 
     .main-content {
         padding: 20px;
-        /*box-sizing: border-box;*/
-        /*margin-top: -20px;*/
-        /*position: absolute;*/
-        /*height: 100%;*/
+    }
+    .main-header{
+        margin-left: 200px;
     }
 
 </style>

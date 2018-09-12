@@ -1,0 +1,876 @@
+@import './reset.scss';
+@import './variables.scss';
+
+/* 改变主题色变量 */
+$--color-default: $btn-bg-color;
+$--color-primary: $btn-bg-color;
+// $--color-success: #fff;
+// $--color-info: red;
+// $--color-warning: teal;
+// $--color-danger: teal;
+
+/* 改变 icon 字体路径变量，必需 */
+$--font-path: '../../../node_modules/element-ui/lib/theme-chalk/fonts';
+@import "../../../node_modules/element-ui/packages/theme-chalk/src/index";
+
+textarea {
+    font-family: Arial;
+}
+.el-button--default {
+    border-color: $btn-bg-color;
+    color: $btn-bg-color;
+}
+.el-tabs__active-bar {
+    height: 3px;
+}
+.el-tabs__nav-wrap::after {
+    height: 1px;
+}
+.el-select-dropdown__item {
+    height: 35px;
+    line-height: 35px;
+}
+.el-select-dropdown__item.hover, .el-select-dropdown__item:hover{
+    color: $btn-bg-color;
+}
+.el-select-dropdown .el-scrollbar__bar {
+    opacity: 1;
+}
+
+body .el-table th.gutter{
+    display: table-cell!important;
+}
+
+/** 菜单样式的修改 start **/
+.el-aside {
+    background-color: $color-bg-d;
+}
+.el-submenu__title {
+    background-color: $color-bg-d;
+}
+.el-menu--inline {
+    background-color: $color-bg-d;
+}
+.el-menu-item:hover, .el-menu-item:focus {
+    background-color: #1B2237;
+}
+.el-menu {
+    background-color: $color-bg-d;
+}
+.el-menu-item {
+    color:$color-white;
+}
+.el-submenu__title {
+    color:$color-white;
+}
+.el-menu-item.is-active {
+    color:$color-menu;
+}
+.el-submenu__title:hover, .el-submenu__title:focus {
+    background-color: #1B2237;
+}
+.el-button--text { // 操作中的按钮的间隔
+    margin: 0 10px;
+}
+/** 菜单样式的修改 end **/
+
+.query-area {
+    width: 100%;
+    ul {
+        li {
+            margin-right: 20px;
+            margin-bottom: 30px;
+            float: left;
+            // display: inline-block;
+            .block {
+                max-width: 200px;
+            }
+            // >.el-button,
+            // .el-select,
+            // .el-input {
+            //     float: left;
+            // }
+        }
+        .right-btn {
+            float: right;
+        }
+    }
+    // div {
+    //     .span_li {
+    //         margin-right: 20px;
+    //         margin-bottom: 30px;
+    //         float: left;
+    //         .block {
+    //             max-width: 200px;
+    //         }
+    //     }
+    // }
+}
+
+.button-area {
+    float: right;
+    ul {
+        li {
+            margin-right: 20px;
+            margin-bottom: 30px;
+            // float: right;
+            // display: inline-block;
+            .block {
+                max-width: 200px;
+            }
+            // >.el-button,
+            // .el-select,
+            // .el-input,
+            // .el-input__inner {
+            //     margin-right: 20px;
+            // }
+        }
+        .right-btn {
+            float: right;
+        }
+    }
+
+}
+// 树结构样式
+.tree-area {
+    border-right: 1px solid rgb(240, 240, 240);
+    margin-right:20px;
+    margin-top:20px;
+}
+
+// 展开收起的按钮样式
+.tree-button .el-button--default {
+    border: 1px solid #dcdfe6 !important;
+    border-color: #dcdfe6 !important;
+    color: #606266 !important;
+    margin-right:10px;
+}
+.tree-button .el-button--default:focus,
+.tree-button .el-button--default:hover {
+    color: $btn-bg-color !important;
+}
+
+// // 页面头部划过
+// .main-header li:hover {
+//     color: $btn-bg-color;
+// }
+
+// 一行中的按钮间距
+.item-buttons {
+    margin-right: 20px;
+}
+
+// 分页
+.pagination {
+    margin-top:30px !important;
+}
+
+// 表格行高
+.el-table td {
+    padding: 8px 0;
+}
+.el-table th {
+    padding: 12px 0;
+}
+
+// dialog中的样式
+.el-dialog {
+    border-radius: 8px;
+}
+
+.el-dialog__header {
+    border-top-left-radius:8px;
+    border-top-right-radius:8px;
+    background-color: #f9f9f9;
+    text-align: center;
+    padding: 18px;
+}
+.el-dialog__body {
+    .el-form {
+        margin-right:20px;
+    }
+    padding-bottom: 0px;
+}
+.el-dialog__footer {
+    padding: 30px;
+    text-align: center;
+}
+.el-dialog__headerbtn {
+    line-height: 20px;
+    font-size: 20px;
+}
+.dialog-footer {
+    button {
+        margin-left:10px;
+        margin-right:10px;
+        width:100px;
+    }
+    .el-button + .el-button {
+        margin-left:10px;
+    }
+}
+
+// message-box中的样式
+.el-message-box {
+    border-radius: 8px;
+    width: 360px;
+}
+
+.el-message-box__header {
+    border-top-left-radius:8px;
+    border-top-right-radius:8px;
+    // background-color: #f9f9f9;
+    text-align: center;
+}
+.el-message-box__content {
+    text-align: center;
+    font-size: 16px;
+    margin-top: 30px;
+}
+.el-message-box__btns {
+    padding: 30px;
+    text-align: center;
+}
+
+.el-message-box__btns button {
+    width:100px;
+    // letter-spacing:5px;
+}
+
+.el-message-box__status {
+    position: static;
+}
+
+.el-message-box__status + .el-message-box__message {
+    padding-left:12px;
+}
+.el-message-box__title span {
+    font-size: 20px;
+}
+
+.el-dialog__body .dialogTitle {
+    font-size: $font-size-n;
+    // font-weight: bold;
+    margin-bottom: 15px;
+}
+
+.el-dialog__body .dialogContent {
+    margin-left: 20px;
+    font-size: 16px;
+}
+
+// [class^="el-icon-"], [class*=" el-icon-"] {
+//     margin-right: 3px;
+// }
+
+.el-message-box__btns {
+    .el-button--primary  {
+        color:$color-white;
+    }
+}
+
+.el-message-box__btns button:first-child:not(.el-button--primary){
+    float: right;
+    margin-right: 35px;
+}
+
+// 设置分配部门
+.set-dept  {
+    .el-checkbox__label {
+        font-size: $font-size-s;
+    }
+}
+
+// 分配客户
+.set-custom {
+    .el-radio-group {
+        font-size: $font-size-s;
+    }
+
+    .dept-name {
+        margin-left:20px;
+        margin-bottom: 10px;
+        font-size: $font-size-s;
+        font-weight: bold;
+    }
+
+    .el-radio {
+        margin-left:40px;
+        margin-bottom: 10px;
+        width: 25%;
+    }
+
+    .deptb2 {
+        margin-bottom: 20px;
+    }
+    .el-radio__label {
+        font-size: $font-size-s;
+    }
+}
+
+.table-corner {
+    float:right; 
+    margin:10px 10px 0 0;
+    font-size: $font-size-s;
+}
+.el-badge__content {
+    line-height: 14px;
+}
+
+// 批量分配客户
+.set-customBatch {
+    .el-collapse-item__arrow {
+        float: left;
+        margin-right: 5px;
+    }
+    .el-collapse-item__wrap {
+        border-bottom:none;
+        margin-left:25px;
+    }
+    .el-form-item {
+        margin-bottom: 5px;
+    }
+    .el-collapse-item__content {
+        padding-bottom: 0px;
+    }
+    .el-collapse-item__header {
+        font-weight: bold;
+        border-bottom: none;
+        font-size: $font-size-s;
+    }
+    .el-collapse {
+        border-top:none;
+    }
+    // 数字框
+    .el-input-number__increase, .el-input-number__decrease {
+        width: 30px;
+    }
+    .el-input-number .el-input__inner {
+        padding-left: 15px;
+        padding-right: 40px;
+    }
+    .el-input-number {
+        width: 100%;
+    }
+    .el-form-item__content {
+        width: 110px;
+    }
+}
+
+// 批量分配客户2
+.set-customBatch2 {
+    // 数字框
+    .el-input-number__increase, .el-input-number__decrease {
+        width: 30px;
+    }
+    .el-input-number .el-input__inner {
+        padding-left: 15px;
+        padding-right: 40px;
+    }
+    .el-input-number {
+        width: 100%;
+    }
+    // 整体
+    .el-dialog__body {
+        padding: 30px 50px;
+    }
+}
+
+// 批量修改负责人
+.set-charge {
+    .el-radio-group{
+        margin-left:40px;
+    }
+    .el-radio {
+        width: 60px;
+        margin-left: 30px;
+    }
+    .el-radio__label {
+        font-size: $font-size-s;
+    }
+}
+
+// 点评客户
+.set-comment {
+    .el-form-item__content {
+        margin-left: 0px !important;
+    }
+    .el-dialog__body {
+        .el-form {
+            margin-left:20px;
+        }
+    }
+}
+
+// 设置关注级别
+.set-level {
+    .el-dialog__body {
+        text-align: center;
+    }
+}
+
+// 退款方式
+.set-refunds {
+    .unit {
+        margin-left: 10px;
+    }
+    
+    .el-dialog__body {
+        .el-form {
+            margin-right:65px;
+        }
+    }
+    .total {
+        color:red;
+    }
+}
+
+// 创建客户, 创建订单
+.creat-cust, .creat-trade .creat-trade-form {
+    .el-form-item__error {
+        z-index: 2;
+        position: absolute;
+        top: 75%;
+        left: 20px;
+    }
+    .el-form-item__label {
+        padding-top: 20px;
+        padding-bottom: 20px;
+    }
+    .el-form-item__content {
+        padding-top: 20px;
+        padding-left: 20px;
+        padding-right: 20px;
+        background-color: #f2f2f2;
+    }
+    .el-textarea {
+        margin-bottom: 20px;
+    }
+}
+// 客户详情
+.cust-detail {
+    .maxlength-col {
+        padding-left:12px;
+    }
+    .rowContent {
+        .el-form-item__label {
+            background-color: #f9f9f9;
+        }
+        .el-form-item__content {
+            background-color: #fefefe;
+        }
+    }
+    .el-collapse {
+        border-top:none;
+        margin-bottom: 20px;
+    }
+    // 手风琴样式修改
+    .el-collapse-item__header {
+        background-color: #f5fafe;
+        height: 35px;
+        line-height: 35px;
+        border: 1px solid #ebecee;
+        font-weight: bold;
+        padding-left: 15px;
+        font-size: 14px;
+    }
+    .el-collapse-item__arrow {
+        line-height: 35px;
+        margin-right: 15px;
+    }
+    .el-collapse-item__wrap {
+        overflow: visible !important;
+        border-bottom:none;
+    }
+    .el-collapse-item.is-active .el-collapse-item__header {
+        border-bottom:1px solid #ebecee;
+    }
+    .el-collapse-item__content{
+        padding-bottom: 0px;
+        .rowDiv {
+            margin-bottom: 0px;
+        }
+    }
+}
+.set-log {
+    .table-area {
+        max-height: 600px;
+        overflow-y:auto;
+    }
+    .comment {
+        .el-form-item__label {
+            color: $btn-bg-color;
+        }
+    }
+    .log-item {
+        .log-item-content {
+            .el-form-item__label {
+                line-height: 25px;
+            }
+            .el-form-item__content {
+                line-height: 25px;
+            }
+        }
+    }
+}
+
+// 创建订单
+.creat-trade {
+    .el-input-number {
+        width: 60%;
+        min-width: 170px;
+    }
+    .unit {
+        margin-left: 10px;
+    }
+    .el-date-editor {
+        width: 100%;
+    }
+    .set-invoice {
+        .el-radio-group:first-child {
+            margin-left: 12px;
+        }
+        .el-radio-group:nth-child(2) {
+            margin-top: 20px;
+            margin-left: 100px;
+            margin-bottom: 20px;
+        }
+    }
+    .stratup {
+        .el-radio-group {
+            float: left;
+            line-height: 40px;
+            padding-top: 5px;
+        }
+        .stratup-date {
+            float: left;
+            .el-form-item__content {
+                padding-top: 0px;
+            }
+        }
+        .el-form-item__error {
+            top: 100% !important;
+        }
+    }
+    .rowDiv {
+        width: 100%;
+        text-align: left;
+        clear: both;
+        margin-bottom: 30px;
+        background-color: #f2f2f2;
+    }
+    .rowTitle {
+        background-color: #f5fafe;
+        height:35px;
+        line-height:35px;
+        border: 1px solid #ebecee;
+        font-weight: bold;
+        padding-left: 15px;
+        font-size: 14px;
+    }
+    [class*="el-col-"] {
+        border-bottom: 1px solid #ebecee;
+    }
+    .no-title {
+        border-top: 1px solid #ebecee;
+        border-bottom: 1px solid #ebecee !important;
+    }
+    .no-bottom {
+        border-bottom: none;
+    }
+    .pay >.el-form-item >.el-form-item__content {
+        padding-top: 0px;
+        padding-left: 0px;
+        // margin-left: 100px !important;
+        .el-form-item__label {
+            background-color: #f2f2f2;
+            width: 90px !important;
+        }
+        .el-input-number {
+            width: 80%;
+            min-width: 150px;
+        }
+        .el-form-item__content {
+            margin-left: 90px !important;
+            padding-top: 20px;
+            padding-left: 10px;
+            padding-right: 10px;
+        }
+    }
+    .pay {
+        .circle-button-col {
+            padding-top: 20px;
+            padding-bottom: 20px;
+            padding-left: 10px;
+            .circle-button {
+                margin-left: 20px;
+            }
+        }
+        .el-col-6 .el-form-item__content {
+            margin-left: 100px !important;
+        }
+    }
+    .rowContent {
+        border-left: 1px solid #ebecee;
+        border-right: 1px solid #ebecee;
+        border-bottom: none;
+        .item {
+            width:100%; 
+            height: 40px;
+            line-height: 40px;
+            padding: 0 15px;
+            span {
+                float:left;
+            }
+        }
+        .input-length {
+            color: #e9e9e9;
+        }
+        .el-form-item {
+            margin-bottom: 0px;
+            background-color: #f9f9f9;
+        }
+        .maxlength-col {
+            padding-top: 10px;
+            padding-bottom: 10px;
+            background-color: #f2f2f2;
+        }
+    }
+}
+
+.cust-detail, .creat-cust {
+    .crumb {
+        margin-bottom: 0px;
+    }
+}
+
+.el-table__body {
+    .el-button--text {
+        margin: 0 8px;
+    }
+}
+
+
+.el-button + .el-button {
+    margin-left:0px;
+}
+.el-pagination span:not([class*=suffix]), .el-pagination button {
+    vertical-align: middle; 
+}
+.el-tabs__header {
+    margin-bottom: 30px;
+}
+.maxlength-col {
+    line-height: 40px;
+    // padding-left:12px;
+    text-align: left;
+    background-color: #fefefe;
+    font-size: $font-size-s;
+    span {
+        color:#cccccc;
+    }
+}
+
+.el-form-item__error {
+    z-index: 2;
+    // position: static;
+}
+
+
+
+body {
+    background-color: $color-white;
+    color: $color-text;
+    font-size: $font-size-n
+}
+
+.clearfix {
+    zoom: 1;
+    &::after {
+        content: '';
+        display: block;
+        clear: both;
+        height: 0;
+        visibility: hidden;
+    }
+}
+
+.crumb {
+    margin-bottom: 30px;
+}
+
+.left {
+    float: left;
+}
+
+.right {
+    float: right;
+}
+
+.el-header {
+    padding: 0;
+}
+
+.line {
+    width: 1px;
+    background-color: #f0f0f0;
+}
+
+.el-button--primary {
+    // background-color: $btn-bg-color;
+    // border-color: $btn-bg-color;
+    color: $color-white
+}
+
+em {
+    font-size: 13px;
+    color: #bbb !important;
+    font-style: normal;
+}
+.el-upload-list__item .el-icon-close {
+    top: 2px;
+    right: 2px;
+}
+// .el-button--default {
+//     border-color: $btn-bg-color;
+//     color: $btn-bg-color;
+// }
+// .el-tabs__active-bar {
+//     height: 3px;
+// }
+// .el-tabs__nav-wrap::after {
+//     height: 1px;
+// }
+
+.h4title {
+    font-size: 14px;
+    line-height: 33px;
+}
+
+.el-card {
+    padding: 0px 20px;
+}
+.el-card__header {
+    padding: 0px;
+}
+.el-card__body {
+    padding: 0px;
+}
+
+.el-table thead {
+    color: #333333 !important;
+    font-weight: bold !important;
+}
+
+// 自定义按钮样式
+.btn {
+    font-size: $font-size-s;
+    border-radius: 5px;
+    position: relative;
+    cursor: pointer;
+    &.btn-bg {
+        padding: 10px 15px;
+        background-color: $btn-bg-color;
+        color: $color-white;
+    }
+    &.btn-light {
+        padding: 10px 15px;
+        background-color: $color-white;
+        color: $btn-color;
+        border: 1px solid $btn-border-color;
+    }
+    &.btn-border {
+        padding: 10px 15px;
+        border: 1px solid $btn-bg-color;
+        color: $btn-bg-color;
+        background-color: $color-white;
+    }
+    &.btn-long {
+        padding: 10px 70px;
+        background-color: $btn-bg-color;
+        color: $color-white;
+    }
+    &.btn-add::before {
+        content: '';
+        display: inline-block;
+        margin-right: 10px;
+        width: 12px;
+        height: 12px;
+        background: url('~images/add.png');
+    }
+    &.btn-open::before {
+        content: '';
+        display: inline-block;
+        vertical-align: middle;
+        margin-right: 10px;
+        margin-top: -4px;
+        width: 11px;
+        height: 7px;
+        background: url('~images/open.png');
+    }
+    &.btn-close::before {
+        content: '';
+        display: inline-block;
+        vertical-align: middle;
+        margin-right: 10px;
+        margin-top: -4px;
+        width: 11px;
+        height: 7px;
+        background: url('~images/close.png');
+    }
+    &.btn-delete::before {
+        content: '';
+        display: inline-block;
+        vertical-align: middle;
+        margin-right: 10px;
+        margin-top: -4px;
+        width: 12px;
+        height: 13px;
+        background: url('~images/delete.png');
+    }
+}
+
+.menu-tree-expan {
+    .el-tree {
+        .el-tree-node {
+            .el-tree-node__label {
+                width: 14px;
+                height: 14px;
+                background: url('~images/tree1.jpg') no-repeat;
+                padding-left: 20px;
+            }
+            .el-tree-node {
+                .el-tree-node__label {
+                    width: 14px;
+                    height: 14px;
+                    background: url('~images/tree1.jpg') no-repeat;
+                    padding-left: 20px;
+                }
+                .el-tree-node {
+                    .el-tree-node__label {
+                        width: 14px;
+                        height: 14px;
+                        background: url('~images/tree1.jpg') no-repeat;
+                        padding-left: 20px;
+                    }
+                    .el-tree-node {
+                        .el-tree-node__label {
+                            width: 14px;
+                            height: 14px;
+                            background: url('~images/tree2.jpg') no-repeat;
+                            padding-left: 20px;
+                        }
+                        .el-tree-node {
+                            .el-tree-node__label {
+                                width: 14px;
+                                height: 14px;
+                                background: url('~images/tree3.jpg') no-repeat;
+                                padding-left: 20px;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

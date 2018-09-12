@@ -24,7 +24,7 @@
     },
     methods: {
       getMainHeight() {
-        console.log('获取Main高度2');
+        console.error('获取welcome页面高度');
         this.minHeight = `${document.documentElement.clientHeight - 136}px`;
         // this.minHeight = `${document.documentElement.clientHeight - 96}px`;
       }
