@@ -1,6 +1,6 @@
 <template>
     <div class="welcome" :style='{minHeight, backgroundColor}'>
-        <p>欢迎来到麟龙后台CRM系统1</p>
+        <!--<p>欢迎来到麟龙后台CRM系统1</p>-->
         <span>欢迎来到麟龙后台CRM系统2</span>
     </div>
 </template>
@@ -36,14 +36,14 @@
     .welcome {
         position: relative;
         width: 100%;
-        span {
+        & > span {
             position: absolute;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
             font-size: 40px;
         }
-        p {
+        & > p {
             position: absolute;
             top: 50%;
             left: 50%;
