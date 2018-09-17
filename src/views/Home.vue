@@ -15,19 +15,29 @@ export default {
     HelloWorld
   },
   created: function () {
-
-    let param = {
-      content: {
-        username: 'GrandKai',
-        password: '123456'
-      }
-    };
-
-    this.$http.post("/auth/login", param).then(response => {
-      console.log('.................', response);
-    })
+    this.login();
   },
   methods: {
+
+    login() {
+      let param = {
+        content: {
+          username: 'GrandKai',
+          password: '123456'
+        }
+      };
+
+      this.$http.post("/auth/login", param).then(data => {
+        this.$message.success(data.message);
+
+        if (0 === data.code) {
+          let content = data.content;
+          let user = content.user;
+          let accessToken = content.accessToken;
+          sessionStorage.setItem('accessToken', accessToken);
+        }
+      });
+    }
   }
 }
 </script>

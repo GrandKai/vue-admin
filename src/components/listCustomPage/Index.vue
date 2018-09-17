@@ -14,7 +14,7 @@
 
         <!-- 表格右下角显示 -->
         <div class="table-corner">
-            <span><slot name="tableCorner"></slot></span>
+            <span><slot name="tableCornerArea"></slot></span>
         </div>
 
         <!-- 分页显示区域 -->

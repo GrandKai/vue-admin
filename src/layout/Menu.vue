@@ -37,10 +37,10 @@
                         <i class="el-icon-location"></i>
                         <span>导航一</span>
                     </template>
-                    <el-menu-item index="home">选项1</el-menu-item>
-                    <el-menu-item index="about">选项2</el-menu-item>
+                    <el-menu-item index="/home">选项1</el-menu-item>
+                    <el-menu-item index="/about">选项2</el-menu-item>
                 </el-submenu>
-                <el-menu-item index="2">
+                <el-menu-item index="/dictionary/type/list">
                     <i class="el-icon-menu"></i>
                     <span slot="title">导航二</span>
                 </el-menu-item>

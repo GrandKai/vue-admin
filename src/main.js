@@ -17,6 +17,9 @@ Vue.use(ElementUI, { size: 'small', zIndex: 3000 });
 Vue.prototype.$http = axios;
 window.$http = axios;
 
+// 分页条目类型
+window.pageSizes = [10, 20, 50, 100 , 200 , 400];
+
 new Vue({
   router,
   store,

@@ -18,14 +18,19 @@ export default new Router({
       children: [
         {path: '', component: Welcome},
         {
-          path: '/about',
+          path: 'about',
           name: 'about',
           component: () => import(/* webpackChunkName: "about" */ '../views/About.vue')
         },
         {
-          path: '/home',
+          path: 'home',
           name: 'home',
           component: () => import(/* webpackChunkName: "about" */ '../views/Home.vue')
+        },
+        {
+          path: 'dictionary/type/list',
+          name: 'dictionaryTypeList',
+          component: () => import('../views/dictionary/type/List.vue')
         },
       ]
     },
