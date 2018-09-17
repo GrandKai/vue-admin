@@ -63,18 +63,18 @@
                             width="180" align="center">
                     </el-table-column>
 
-                    <el-table-column label="删除状态" header-align="center" align="center" fixed="right" width="80px">
+                    <!--<el-table-column label="删除状态" header-align="center" align="center" fixed="right" width="80px">
                         <template slot-scope="scope">
                             <el-tag :type="scope.row.isDeleted === 1 ? 'danger' : 'success'" disable-transitions>
                                 {{scope.row.isDeleted === 1 ? '已删除' : '有效'}}
                             </el-tag>
                         </template>
-                    </el-table-column>
+                    </el-table-column>-->
 
-                    <el-table-column label="禁用状态" header-align="center" align="center" fixed="right" width="80px">
+                    <el-table-column label="状态" header-align="center" align="center" fixed="right" width="80px">
                         <template slot-scope="scope">
-                            <el-tag :type="scope.row.isEnabled === 1 ? 'success' : 'danger'" disable-transitions>
-                                {{ scope.row.isEnabled === 1 ? '已启用' : '已禁用'}}
+                            <el-tag :type="scope.row.isEnabled === '1' ? 'success' : 'danger'" disable-transitions>
+                                {{ scope.row.isEnabled == '1' ? '使用中' : '停用'}}
                             </el-tag>
                         </template>
                     </el-table-column>
@@ -83,17 +83,17 @@
                         <template slot-scope="scope">
 
                             <!--<el-button size="mini" type="text" @click='jump2Page("/product/update", scope.row.id)'-->
-                                       <!--v-if="common.buttonAuth(constant.UPDATE)">编辑-->
+                            <!--v-if="common.buttonAuth(constant.UPDATE)">编辑-->
                             <!--</el-button>-->
 
                             <!--<el-button size="mini" type="text" @click="updateEntityStatus(scope.row)" v-if="common.buttonAuth(constant.STOP)">-->
-                            <el-button size="mini" type="text" @click="updateEntityStatus(scope.row)">
+                            <!--<el-button size="mini" type="text" @click="updateEntityStatus(scope.row)">
                                 {{scope.row.isDeleted === 0 ? '删除' : '有效'}}
-                            </el-button>
+                            </el-button>-->
 
                             <!--<el-button size="mini" type="text" @click="updateEntityIsShow(scope.row)" v-if="common.buttonAuth(constant.SET)">-->
-                            <el-button size="mini" type="text" @click="updateEntityIsShow(scope.row)">
-                                {{scope.row.isEnabled === 0 ? '启用' : '禁用'}}
+                            <el-button size="mini" type="text" @click="updateEntityEnabledStatus(scope.row)">
+                                {{scope.row.isEnabled === 0 ? '启用' : '停用'}}
                             </el-button>
                             <!--<el-button size="mini" type="text" @click="deleteEntity(scope.row)" v-if="common.buttonAuth(constant.DELETE)">-->
                             <el-button size="mini" type="text" @click="deleteEntity(scope.row)">
@@ -141,23 +141,7 @@
           }
         },
 
-        tableData: [{
-          date: '2016-05-02',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
-        }, {
-          date: '2016-05-04',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1517 弄'
-        }, {
-          date: '2016-05-01',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1519 弄'
-        }, {
-          date: '2016-05-03',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1516 弄'
-        }]
+        tableData: []
       }
     },
 
@@ -258,6 +242,34 @@
         //   });
         // });
       },
+
+      updateEntityEnabledStatus(row) {
+        let text = row.isEnabled === '1' ? '停用' : '启用';
+        let isEnabled = row.isEnabled === '1' ? '0' : '1';
+
+        debugger
+        common.confirm({
+          message: `是否${text}【${row.name}】的账户？`,
+        }).then(() => {
+          let param = {
+            content: {
+              userId: row.id,
+              isEnable: isEnabled
+            }
+          };
+
+          this.$http.post("/user/stop", param).then(data => {
+            if (0 === data.code) {
+              this.$message.success(data.message);
+              this.queryPage();
+            } else {
+              this.$message.error(data.message);
+            }
+
+          });
+
+        }).catch(_ => {});
+      }
     },
     mounted() {
       this.queryPage();

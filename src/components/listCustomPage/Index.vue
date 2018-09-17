@@ -1,10 +1,13 @@
 <template>
     <div>
+        <!-- 查询条件区域 -->
         <div class="query-area clearfix">
-            <slot name="queryArea"></slot>
-            <div class="button-area clearfix">
-                <slot name="buttonArea"></slot>
-            </div>
+            <ul>
+                <slot name="queryArea"></slot>
+                <div class="button-area clearfix">
+                    <slot name="buttonArea"></slot>
+                </div>
+            </ul>
         </div>
 
         <!-- 表格区域 -->

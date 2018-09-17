@@ -162,7 +162,7 @@ body .el-table th.gutter{
 
 // 分页
 .pagination {
-    margin-top:30px !important;
+    margin-top:20px !important;
 }
 
 // 表格行高
@@ -310,7 +310,7 @@ body .el-table th.gutter{
 
 .table-corner {
     float:right; 
-    margin:10px 10px 0 0;
+    margin:25px 10px 0 0;
     font-size: $font-size-s;
 }
 .el-badge__content {
@@ -492,6 +492,8 @@ body .el-table th.gutter{
         }
     }
 }
+
+// 添加日志
 .set-log {
     .table-area {
         max-height: 600px;
@@ -641,6 +643,16 @@ body .el-table th.gutter{
 .cust-detail, .creat-cust {
     .crumb {
         margin-bottom: 0px;
+    }
+}
+
+// 分配统计
+.statistics {
+    .el-table th {
+        padding: 5px 0;
+    }
+    .el-table thead.is-group th {
+        background-color: #fff;
     }
 }
 
