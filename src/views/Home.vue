@@ -30,11 +30,13 @@ export default {
       this.$http.post("/auth/login", param).then(data => {
         this.$message.success(data.message);
 
-        if (0 === data.code) {
+        if (200 === data.code) {
           let content = data.content;
           let user = content.user;
           let accessToken = content.accessToken;
+          let refreshToken = content.refreshToken;
           sessionStorage.setItem('accessToken', accessToken);
+          sessionStorage.setItem('refreshToken', refreshToken);
         }
       });
     }

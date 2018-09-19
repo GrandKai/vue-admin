@@ -5,7 +5,7 @@
   "scripts": {
     "serve": "vue-cli-service serve --open",
     "build": "vue-cli-service build --mode=production",
-    "dev": "vue-cli-service serve --open",
+    "dev": "cross-env env_config=dev vue-cli-service serve --open",
     "prod": "vue-cli-service build --mode=production",
     "uat": "vue-cli-service build --mode=test"
   },
@@ -19,6 +19,7 @@
   "devDependencies": {
     "@vue/cli-plugin-babel": "^3.0.1",
     "@vue/cli-service": "^3.0.1",
+    "cross-env": "^5.2.0",
     "node-sass": "^4.9.3",
     "sass-loader": "^7.1.0",
     "vue-template-compiler": "^2.5.17"

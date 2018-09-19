@@ -58,6 +58,12 @@
                     </el-table-column>
 
                     <el-table-column
+                            prop="nickName"
+                            label="昵称"
+                            width="180" align="left">
+                    </el-table-column>
+
+                    <el-table-column
                             prop="createTime"
                             label="创建日期"
                             width="180" align="center">
@@ -93,7 +99,7 @@
 
                             <!--<el-button size="mini" type="text" @click="updateEntityIsShow(scope.row)" v-if="common.buttonAuth(constant.SET)">-->
                             <el-button size="mini" type="text" @click="updateEntityEnabledStatus(scope.row)">
-                                {{scope.row.isEnabled === 0 ? '启用' : '停用'}}
+                                {{scope.row.isEnabled === '0' ? '启用' : '停用'}}
                             </el-button>
                             <!--<el-button size="mini" type="text" @click="deleteEntity(scope.row)" v-if="common.buttonAuth(constant.DELETE)">-->
                             <el-button size="mini" type="text" @click="deleteEntity(scope.row)">
@@ -185,6 +191,8 @@
 
         this.loading = true;
         this.$http.post('/user/page', this.param).then((resp) => {
+
+          console.log('..............查询分页结果：', resp);
           this.loading = false;
           this.paginationShow = true;
 
@@ -254,12 +262,12 @@
           let param = {
             content: {
               userId: row.id,
-              isEnable: isEnabled
+              isEnabled: isEnabled
             }
           };
 
           this.$http.post("/user/stop", param).then(data => {
-            if (0 === data.code) {
+            if (200 === data.code) {
               this.$message.success(data.message);
               this.queryPage();
             } else {

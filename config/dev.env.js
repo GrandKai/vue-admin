@@ -1,6 +1,7 @@
-const hosturl= 'http://localhost:8088';
+const hostUrl = '"http://localhost:8088"';
 // 本地环境
 module.exports = {
   NODE_ENV: '"development"',
-  hosturl:hosturl
-}
+  hostUrl: hostUrl,
+  urlPrefix: '"/api"'
+};

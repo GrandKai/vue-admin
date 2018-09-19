@@ -22,6 +22,12 @@ window.$http = axios;
 Vue.prototype.common = common;
 window.common = common;
 
+// api接口路径
+// Vue.prototype.apiUrl = process.env.hosturl;
+// window.apiUrl = process.env.hosturl;
+Vue.prototype.urlPrefix = process.env.urlPrefix;
+window.urlPrefix = process.env.urlPrefix;
+
 // 分页条目类型
 window.pageSizes = [10, 20, 50, 100 , 200 , 400];
 
