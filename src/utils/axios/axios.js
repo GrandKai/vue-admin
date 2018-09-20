@@ -13,6 +13,10 @@ axios.interceptors.request.use(function (config) {
 axios.interceptors.response.use(function (response) {
   // Do something with response data
 
+  if (200 !== response.status) {
+
+    // TODO: 直接跳转到错误页面
+  }
   return response;
 }, function (error) {
   // Do something with response error

@@ -36,6 +36,7 @@ let $http = {
               let refreshUrl = `${urlPrefix}/auth/refresh/token`;
 
               return refreshToken(refreshUrl, refreshParam).then(data => {
+                console.warn('refreshToken刷新结果', data);
                 if (200 === data.code) {
                   requestParam.accessToken = sessionStorage.getItem('accessToken');
                   return sendSecondRequest(requestUrl, requestParam);
@@ -66,7 +67,10 @@ function refreshToken(requestUrl, requestParam) {
         return Promise.resolve(resp.data);
       } else {
         console.error('刷新token响应code异常', resp);
-        return Promise.reject(resp.data);
+        console.error('TODO:刷新 accessToken 异常，应该直接跳转到登录页面，重新登录');
+
+        //TODO: 如果刷新 accessToken 异常，直接跳转到登录页面，重新登录
+        return Promise.resolve(resp.data);
       }
     } else {
       console.error("刷新 Token 响应状态码异常", resp);
