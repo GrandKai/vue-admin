@@ -193,7 +193,7 @@ export default {
 
     /***********新建系统**************/
     createSystem: function() {
-      this.$router.push("/systemAdd");
+      this.$router.push("/system/add");
     },
 
     /***************　打开修改系统对话框　*********************/

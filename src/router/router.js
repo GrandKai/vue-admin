@@ -4,6 +4,7 @@ import Welcome from '@/layout/Welcome.vue'
 import Index from '@/layout/Index.vue'
 import UserList from 'views/user/List.vue'
 import SystemList from 'views/general/system/List.vue'
+import SystemAdd from 'views/general/system/Add.vue'
 
 Vue.use(Router);
 
@@ -21,6 +22,7 @@ export default new Router({
         {path: '', component: Welcome},
         {path: 'user/list', component: UserList},
         {path: 'system/list', component: SystemList},
+        {path: 'system/add', component: SystemAdd},
 
         {
           path: 'about',
