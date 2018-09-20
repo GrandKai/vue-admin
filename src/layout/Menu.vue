@@ -40,7 +40,7 @@
                         <i class="el-icon-menu"></i>
                         <span>通用管理</span>
                     </template>
-                    <el-menu-item index="/user/list">系统管理</el-menu-item>
+                    <el-menu-item index="/system/list">系统管理</el-menu-item>
                     <el-menu-item index="/user/list">菜单管理</el-menu-item>
                     <el-menu-item index="/user/list">操作管理</el-menu-item>
                 </el-submenu>

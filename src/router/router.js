@@ -3,6 +3,7 @@ import Router from 'vue-router'
 import Welcome from '@/layout/Welcome.vue'
 import Index from '@/layout/Index.vue'
 import UserList from 'views/user/List.vue'
+import SystemList from 'views/general/system/List.vue'
 
 Vue.use(Router);
 
@@ -19,6 +20,8 @@ export default new Router({
       children: [
         {path: '', component: Welcome},
         {path: 'user/list', component: UserList},
+        {path: 'system/list', component: SystemList},
+
         {
           path: 'about',
           name: 'about',
