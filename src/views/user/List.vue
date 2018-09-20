@@ -130,7 +130,6 @@
   export default {
     data() {
       return {
-        // paginationShow: false,
         loading: true,
         paginationShow: false,
         pageSizes: pageSizes,
@@ -166,12 +165,12 @@
       // 改变页码
       handleCurrentChange(val) {
         this.param.page.pageNum = val;
-        // this.queryPage();
+        this.queryPage();
       },
       // 改变每页显示多少条
       handleSizeChange(value) {
         this.param.page.pageSize = value;
-        // this.queryPage();
+        this.queryPage();
       },
 
       handleSelectionChange(val) {
@@ -255,7 +254,6 @@
         let text = row.isEnabled === '1' ? '停用' : '启用';
         let isEnabled = row.isEnabled === '1' ? '0' : '1';
 
-        debugger
         common.confirm({
           message: `是否${text}【${row.name}】的账户？`,
         }).then(() => {
