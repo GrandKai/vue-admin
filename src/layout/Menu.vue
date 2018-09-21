@@ -22,7 +22,7 @@
                     <el-menu-item index="/about">选项1</el-menu-item>
                     <el-menu-item index="/home">选项2</el-menu-item>
                 </el-submenu>
-                <el-menu-item index="/home">
+                <el-menu-item index="/login">
                     <i class="el-icon-setting"></i>
                     <span slot="title">登录</span>
                 </el-menu-item>

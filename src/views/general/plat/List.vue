@@ -35,7 +35,7 @@
                         </template>
                     </el-table-column>
 
-                    <el-table-column label="显示顺序" header-align="center" align="center" fixed="right">
+                    <el-table-column label="显示顺序" header-align="center" align="left" fixed="right">
                         <template slot-scope="scope">
                             <el-button type="text" @click='editSystem(scope.row , "sortNumber" , "显示顺序")'>
                                 {{ scope.row.sortNumber}}
@@ -43,7 +43,7 @@
                         </template>
                     </el-table-column>
 
-                    <el-table-column label="版本号" header-align="center" align="center" fixed="right">
+                    <el-table-column label="版本号" header-align="center" align="left" fixed="right">
                         <template slot-scope="scope">
                             <div class="click-text" @click='editSystem(scope.row , "version" , "版本号")'>
                                 {{ scope.row.version }}
@@ -82,7 +82,7 @@
                                 {{scope.row.isEnabled === '0' ? '启用' : '停用'}}
                             </el-button>
 
-                            <el-button size="mini" type="danger" @click="delSystem(scope.row.id)">
+                            <el-button size="mini" type="danger" @click="deleteEntity(scope.row)">
                                 删除
                             </el-button>
                         </template>
@@ -129,6 +129,7 @@
   // 导入校验规则
   import {v_checkNumber} from "@/utils/function/validate";
   import CustomPage from 'components/listCustomPage/Index'
+  import {queryPlatPage, stopPlat, deletePlat} from 'apis/general/plat'
 
   export default {
     components: {
@@ -206,7 +207,7 @@
         console.log('分页查询入参：', this.param)
 
         this.loading = true;
-        this.$http.post('/plat', this.param).then((resp) => {
+        queryPlatPage(this.param).then((resp) => {
 
           console.log('..............查询分页结果：', resp);
           this.loading = false;
@@ -347,32 +348,36 @@
           }
         });
       },
-      /***************  删除系统　*********************/
-      delSystem(id) {
-        this.$confirm("此操作将永久删除, 是否继续?", "提示", {
-          confirmButtonText: "确定",
-          cancelButtonText: "取消",
-          closeOnPressEscape: false,
-          closeOnClickModal: false,
-          type: "warning"
-        })
-          .then(() => {
-            let param = {
-              content: {id: id, isDeleted: 1, isEnable: 0}
-            };
-            this.$http.post('/api/plat/editSystem', param).then(res => {
-              if (200 === res.data.status) {
-                this.sendAxios();
-                this.$message.success("删除成功！");
-              } else {
-                this.$message.error("删除失败！");
+
+      /***************  清空Form　*********************/
+      clearForm(formName) {
+        // 修改框未初始化时，不清空表单
+        if (typeof this.$refs[formName] != "undefined") {
+          this.$refs[formName].resetFields();
+        }
+      },
+
+      /********************************* 业务逻辑处理 ************************************/
+
+      /**
+       * 删除实体
+       * @param id
+       */
+      deleteEntity(row) {
+          common.confirm({
+            message: `"此操作将永久删除, 是否继续?"”？`,
+          }).then(() => {
+            deletePlat({content: row.id}).then(resp => {
+              if (200 === resp.status) {
+                common.message({
+                  message: `${row.name}删除成功`,
+                });
+                this.queryPage();
               }
             });
-          })
-          .catch(() => {
-          });
+          }).catch(() => {});
       },
-      /***************  停用/启用系统　*********************/
+
       updateEntityEnabledStatus(row) {
 
         let text = row.isEnabled === '1' ? '停用' : '启用';
@@ -387,8 +392,7 @@
               isEnabled: isEnabled
             }
           };
-
-          this.$http.post("/plat/stop", param).then(data => {
+          stopPlat(param).then(data => {
             if (200 === data.code) {
               this.$message.success(data.message);
               this.queryPage();
@@ -400,14 +404,6 @@
 
         }).catch(_ => {});
       },
-
-      /***************  清空Form　*********************/
-      clearForm(formName) {
-        // 修改框未初始化时，不清空表单
-        if (typeof this.$refs[formName] != "undefined") {
-          this.$refs[formName].resetFields();
-        }
-      }
     }
   };
 </script>

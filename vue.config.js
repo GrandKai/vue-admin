@@ -49,11 +49,13 @@ let vueConfig = {
   chainWebpack: (config) => {
     config.resolve.alias
       .set('@', resolve('src'))
+      .set('apis', resolve('src/apis'))
       .set('assets', resolve('src/assets'))
       .set('styles', resolve('src/assets/styles'))
       .set('images', resolve('src/assets/images'))
       .set('components', resolve('src/components'))
       .set('layout', resolve('src/layout'))
+      .set('utils', resolve('src/utils'))
       .set('views', resolve('src/views'));
 
 
