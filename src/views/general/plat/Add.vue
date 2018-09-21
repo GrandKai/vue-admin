@@ -2,7 +2,7 @@
     <div>
         <el-breadcrumb separator-class="el-icon-arrow-right" class="crumb">
             <el-breadcrumb-item :to="{ path: '/' }">通用管理</el-breadcrumb-item>
-            <el-breadcrumb-item :to="{ path: '/systemList' }">系统管理</el-breadcrumb-item>
+            <el-breadcrumb-item :to="{ path: '/system/list' }">系统管理</el-breadcrumb-item>
             <el-breadcrumb-item>新建系统</el-breadcrumb-item>
         </el-breadcrumb>
         <div class="sys-input">
@@ -13,7 +13,7 @@
                 </el-form-item>
 
                 <el-form-item label="系统描述" prop="description">
-                    <el-input v-model.trim="form.description" type="textarea" :rows="4"></el-input>
+                    <el-input v-model.trim="form.description" type="textarea" :rows="4" @keydown.native.enter="onSubmit"></el-input>
                 </el-form-item>
 
                 <el-form-item label="显示顺序" prop="sortNumber">

@@ -7,4 +7,5 @@ export const addPlat = param => $http.post(plat.ADD, param);
 export const updatePlat = param => $http.post(plat.UPDATE, param);
 export const deletePlat = param => $http.post(plat.DELETE, param);
 export const checkExistPlat = param => $http.post(plat.CHECK_EXIST, param);
+export const checkUpdateExistPlat = param => $http.post(plat.CHECK_UPDATE_EXIST, param);
 

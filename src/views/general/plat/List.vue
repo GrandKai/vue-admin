@@ -29,7 +29,7 @@
                     <el-table-column label="系统名称" header-align="center" align="left" fixed="right">
                         <template slot-scope="scope">
                             <el-button style="padding-left:0" type="text"
-                                       @click='editSystem(scope.row , "name" , "系统名称")'>
+                                       @click='updateEntity(scope.row , "name" , "系统名称")'>
                                 {{ scope.row.name }}
                             </el-button>
                         </template>
@@ -37,7 +37,7 @@
 
                     <el-table-column label="显示顺序" header-align="center" align="left" fixed="right">
                         <template slot-scope="scope">
-                            <el-button type="text" @click='editSystem(scope.row , "sortNumber" , "显示顺序")'>
+                            <el-button type="text" @click='updateEntity(scope.row , "sortNumber" , "显示顺序")'>
                                 {{ scope.row.sortNumber}}
                             </el-button>
                         </template>
@@ -45,7 +45,7 @@
 
                     <el-table-column label="版本号" header-align="center" align="left" fixed="right">
                         <template slot-scope="scope">
-                            <div class="click-text" @click='editSystem(scope.row , "version" , "版本号")'>
+                            <div class="click-text" @click='updateEntity(scope.row , "version" , "版本号")'>
                                 {{ scope.row.version }}
                             </div>
                         </template>
@@ -53,16 +53,16 @@
 
                     <el-table-column label="访问URL" header-align="center" align="left" fixed="right">
                         <template slot-scope="scope">
-                            <div class="click-text" @click='editSystem(scope.row , "url" , "访问URL")'>
+                            <div class="click-text" @click='updateEntity(scope.row , "url" , "访问URL")'>
                                 {{ scope.row.url }}
                             </div>
                         </template>
                     </el-table-column>
 
                     <el-table-column label="系统描述" header-align="center" align="left" fixed="right" prop="description"
-                                     @click='editSystem(scope.row , "description" , "系统描述")'>
+                                     @click='updateEntity(scope.row , "description" , "系统描述")'>
                         <template slot-scope="scope">
-                            <div class="click-text" @click='editSystem(scope.row , "description" , "系统描述")'>
+                            <div class="click-text" @click='updateEntity(scope.row , "description" , "系统描述")'>
                                 {{ scope.row.description }}
                             </div>
                         </template>
@@ -110,10 +110,10 @@
         <!-- 编辑权限系统信息对话框 -->
         <el-dialog :title="dlgSettings.title + '设置'" :visible.sync="dlgSettings.visible" width="30%"
                    :close-on-click-modal="false">
-            <el-form :model="editInfo" :rules="rules" ref="editForm" onsubmit="return false;">
+            <el-form :model="editForm" :rules="rules" ref="editForm" onsubmit="return false;">
                 <div class="clearfix">
                     <el-form-item prop="content">
-                        <el-input v-model.trim="editInfo.content" placeholder="请输入内容" class="left role-input"
+                        <el-input v-model.trim="editForm.content" placeholder="请输入内容" class="left role-input"
                                   :type="dlgSettings.inputType" :rows="dlgSettings.rowNum"
                                   @keyup.native.enter="onSubmit"></el-input>
                         <el-button @click="dlgSettings.visible = false" class="left">取 消</el-button>
@@ -129,7 +129,7 @@
 <script>
   // 导入校验规则
   import CustomPage from 'components/listCustomPage/Index'
-  import {queryPlatPage, stopPlat, deletePlat, checkExistPlat} from 'apis/general/plat'
+  import {queryPlatPage, stopPlat, deletePlat, checkUpdateExistPlat, updatePlat} from 'apis/general/plat'
 
   export default {
     components: {
@@ -142,11 +142,7 @@
         pageSizes: pageSizes,
         total: 0,
         param: {
-          content: {
-            name: '',
-            startTime: '',
-            endTime: '',
-          },
+          content: {},
           page: {
             pageNum: 1,
             pageSize: pageSizes[0]
@@ -164,15 +160,12 @@
         },
 
         // 修改的内容
-        editInfo: {
+        editForm: {
           id: "",
           property: "",
           content: ""
         },
 
-        // 修改前内容(用于校验重名系统)
-        beforeEdit: "",
-        // 每页展示条数 （若更改，需同步更改 pageSize的初始属性）
         // 校验规则
         rules: {}
       };
@@ -198,13 +191,13 @@
        */
       queryPage() {
         this.loading = true;
-        queryPlatPage(this.param).then((resp) => {
+        queryPlatPage(this.param).then((data) => {
           this.loading = false;
           this.paginationShow = true;
 
-          if (resp.content && resp.content.list) {
-            this.tableData = resp.content.list;
-            this.total = resp.content.total;
+          if (data.content && data.content.list) {
+            this.tableData = data.content.list;
+            this.total = data.content.total;
           }
         }).catch(error => {
           this.loading = false;
@@ -227,9 +220,8 @@
       },
 
       /***************　打开修改系统对话框　*********************/
-      editSystem(rowData, rowName, dlgTitle) {
-        // 编辑前内容(用于重名校验)
-        this.beforeEdit = rowData.name;
+      updateEntity(row, rowName, dlgTitle) {
+
         // 判断弹出框展示样式
         switch (rowName) {
           case 'description': {
@@ -276,10 +268,10 @@
         }
         // 清空表单
         this.clearForm("editForm");
-        this.editInfo = {
-          id: rowData.id,
+        this.editForm = {
+          id: row.id,
           property: rowName,
-          content: rowData[rowName]
+          content: row[rowName]
         };
       },
       /*********************** 根据系统名 校验是否存在系统  ***************************/
@@ -291,53 +283,45 @@
        * @param callback
        */
       checkExist(rule, value, callback) {
-        if (this.beforeEdit == this.editInfo.content) {
-          callback();
-        }
-        checkExistPlat({content: value}).then(data => {
-          if (200 !== data.code) {
+        let param = {
+          content: {
+            id: this.editForm.id,
+            name: value
+          }
+        };
+        checkUpdateExistPlat(param).then(data => {
+          if (200 === data.code) {
+            callback();
+          } else if (4001 === data.code) {
             callback(new Error("系统已存在，请修改后在提交"));
           } else {
-            callback();
+            this.$message.error(data.message);
           }
         });
       },
 
       /***************　提交修改信息　*********************/
       onSubmit() {
-        if (this.beforeEdit == this.editInfo.content) {
-          this.dlgSettings.visible = false; // 对话框关闭
-          this.$message.success("修改成功！");
-          return;
-        }
         this.$refs.editForm.validate(valid => {
           if (valid) {
-            // 提交修改
-            this.sendAxiosForEdit();
-          } else {
-            return;
-          }
-        });
-      },
-      /***************  发送修改系统请求　*********************/
-      sendAxiosForEdit() {
-        // 传入参数
-        let param = {
-          content: {}
-        };
-        param.content.id = this.editInfo.id; // 修改记录的ID
-        param.content[this.editInfo.property] = this.editInfo.content; // 修改记录的属性和属性值
-        this.$http.post('/api/plat/editSystem', param).then(res => {
-          if (200 === res.data.status) {
-            this.sendAxios();
-            this.dlgSettings.visible = false; // 对话框关闭
-            this.$message.success("修改成功！");
-          } else if (1002 === res.data.status) {
-            this.dlgSettings.visible = true; // 对话框开启
-            this.$message.error("系统已存在");
-          } else {
-            this.dlgSettings.visible = true; // 对话框开启
-            this.$message.error("修改失败！");
+            // 传入参数
+            let param = {
+              content: {
+                id: this.editForm.id, // 修改记录的ID
+              }
+            };
+            // 修改记录的属性和属性值
+            param.content[this.editForm.property] = this.editForm.content;
+
+            updatePlat(param).then(data => {
+              this.dlgSettings.visible = false; // 对话框关闭
+              if (200 === data.code) {
+                this.$message.success(data.message);
+                this.queryPage();
+              } else {
+                this.$message.error(data.message);
+              }
+            });
           }
         });
       },
@@ -360,10 +344,10 @@
         }).then(() => {
           deletePlat({content: row.id}).then(data => {
             if (200 === data.code) {
-              common.message({
-                message: `【${row.name}】删除成功`,
-              });
+              this.$message.success(`【${row.name}】删除成功`);
               this.queryPage();
+            } else {
+              this.$message.error(data.message);
             }
           });
         }).catch(() => {
@@ -391,9 +375,7 @@
             } else {
               this.$message.error(data.message);
             }
-
           });
-
         }).catch(_ => {
         });
       },

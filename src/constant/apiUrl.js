@@ -5,4 +5,5 @@ export const plat = {
   UPDATE: '/plat/update',
   DELETE: '/plat/delete',
   CHECK_EXIST: '/plat/check/exist',
+  CHECK_UPDATE_EXIST: '/plat/check/update/exist',
 };
