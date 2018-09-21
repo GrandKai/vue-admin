@@ -526,4 +526,17 @@ export default {
   focus(event) {
     event.currentTarget.select();
   },
+
+  v_checkNumber: function(rule, value, callback) {
+    if (!(/^[0-9]+$/.test(value))) {
+      callback(new Error('请输入数字值'));
+    } else {
+      if (!(value <= 30000 && value >=1)) {
+        callback(new Error("排序值范围是1-30000"));
+      } else {
+        callback();
+      }
+    }
+
+  }
 }

@@ -59,7 +59,8 @@
                         </template>
                     </el-table-column>
 
-                    <el-table-column label="系统描述" header-align="center" align="left" fixed="right" prop="description" @click='editSystem(scope.row , "description" , "系统描述")'>
+                    <el-table-column label="系统描述" header-align="center" align="left" fixed="right" prop="description"
+                                     @click='editSystem(scope.row , "description" , "系统描述")'>
                         <template slot-scope="scope">
                             <div class="click-text" @click='editSystem(scope.row , "description" , "系统描述")'>
                                 {{ scope.row.description }}
@@ -127,9 +128,8 @@
 
 <script>
   // 导入校验规则
-  import {v_checkNumber} from "@/utils/function/validate";
   import CustomPage from 'components/listCustomPage/Index'
-  import {queryPlatPage, stopPlat, deletePlat} from 'apis/general/plat'
+  import {queryPlatPage, stopPlat, deletePlat, checkExistPlat} from 'apis/general/plat'
 
   export default {
     components: {
@@ -155,15 +155,6 @@
 
         tableData: [],
 
-        // 系统信息
-        systemInfo: {
-          id: "",
-          name: "",
-          info: "",
-          sortNumber: "",
-          url: "",
-          version: ""
-        },
         // 弹出框属性设置
         dlgSettings: {
           title: "", // 弹窗标题
@@ -171,12 +162,14 @@
           inputType: "text", // 弹窗内文本框类型
           rowNum: 1 // 文本框行数
         },
+
         // 修改的内容
         editInfo: {
           id: "",
           property: "",
           content: ""
         },
+
         // 修改前内容(用于校验重名系统)
         beforeEdit: "",
         // 每页展示条数 （若更改，需同步更改 pageSize的初始属性）
@@ -204,12 +197,8 @@
        * @param param
        */
       queryPage() {
-        console.log('分页查询入参：', this.param)
-
         this.loading = true;
         queryPlatPage(this.param).then((resp) => {
-
-          console.log('..............查询分页结果：', resp);
           this.loading = false;
           this.paginationShow = true;
 
@@ -233,7 +222,6 @@
         this.queryPage();
       },
 
-      /***********新建系统**************/
       addEntity: function () {
         this.$router.push("/system/add");
       },
@@ -241,10 +229,10 @@
       /***************　打开修改系统对话框　*********************/
       editSystem(rowData, rowName, dlgTitle) {
         // 编辑前内容(用于重名校验)
-        this.beforeEdit = rowData.rowName;
+        this.beforeEdit = rowData.name;
         // 判断弹出框展示样式
         switch (rowName) {
-          case 'info': {
+          case 'description': {
             this.dlgSettings = {title: dlgTitle, visible: true, inputType: "textarea", rowNum: 4};
             break;
           }
@@ -257,13 +245,13 @@
         switch (rowName) {
           case 'sortNumber': {
             // 手动添加的数字校验
-            this.rules.content = [{validator: v_checkNumber, trigger: "blur"}];
+            this.rules.content = [{validator: common.v_checkNumber, trigger: "blur"}];
             break;
           }
           case 'name': {
             this.rules.content = [
               {required: true, message: "请输入" + dlgTitle + "，长度在50个字符内", trigger: "blur", max: 50},
-              {validator: this.whetherExist, trigger: "blur"}
+              {validator: this.checkExist, trigger: "blur"}
             ];
             break;
           }
@@ -295,21 +283,26 @@
         };
       },
       /*********************** 根据系统名 校验是否存在系统  ***************************/
-      whetherExist(rule, value, callback) {
+
+      /**
+       * 校验系统是否存在
+       * @param rule
+       * @param value 系统名
+       * @param callback
+       */
+      checkExist(rule, value, callback) {
         if (this.beforeEdit == this.editInfo.content) {
           callback();
         }
-        let param = {content: {name: value}};
-        this.$http
-          .post('/api/plat/whetherExitSystem', param)
-          .then(res => {
-            if (200 != res.data.status) {
-              callback(new Error("系统已存在，请修改后在提交"));
-            } else {
-              callback();
-            }
-          });
+        checkExistPlat({content: value}).then(data => {
+          if (200 !== data.code) {
+            callback(new Error("系统已存在，请修改后在提交"));
+          } else {
+            callback();
+          }
+        });
       },
+
       /***************　提交修改信息　*********************/
       onSubmit() {
         if (this.beforeEdit == this.editInfo.content) {
@@ -357,25 +350,24 @@
         }
       },
 
-      /********************************* 业务逻辑处理 ************************************/
-
       /**
        * 删除实体
        * @param id
        */
       deleteEntity(row) {
-          common.confirm({
-            message: `"此操作将永久删除, 是否继续?"”？`,
-          }).then(() => {
-            deletePlat({content: row.id}).then(resp => {
-              if (200 === resp.status) {
-                common.message({
-                  message: `${row.name}删除成功`,
-                });
-                this.queryPage();
-              }
-            });
-          }).catch(() => {});
+        common.confirm({
+          message: `此操作将永久删除, 是否继续？`,
+        }).then(() => {
+          deletePlat({content: row.id}).then(data => {
+            if (200 === data.code) {
+              common.message({
+                message: `【${row.name}】删除成功`,
+              });
+              this.queryPage();
+            }
+          });
+        }).catch(() => {
+        });
       },
 
       updateEntityEnabledStatus(row) {
@@ -402,7 +394,8 @@
 
           });
 
-        }).catch(_ => {});
+        }).catch(_ => {
+        });
       },
     }
   };

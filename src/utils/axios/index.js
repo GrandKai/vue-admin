@@ -45,7 +45,10 @@ let $http = {
 
             default:
               console.error('请求数据异常', code, data);
-              return Promise.reject('请求数据异常');
+              // FIXME: 是否直接拒绝请求
+              // return Promise.reject('请求数据异常');
+
+              return Promise.resolve(data);
           }
         default:
           console.error('请求状态异常', httpStatus);
@@ -88,7 +91,7 @@ function sendSecondRequest(requestUrl, requestParam) {
         return Promise.resolve(resp.data);
       } else {
         console.error('二次请求响应响应code异常', resp);
-        return Promise.reject(resp.data);
+        return Promise.resolve(resp.data);
       }
     } else {
       console.error("二次请求响应响应状态码异常", resp);
