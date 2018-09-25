@@ -1,5 +1,6 @@
 export const plat = {
   QUERY_PAGE: '/plat',
+  QUERY_LIST: '/plat/list',
   STOP: '/plat/stop',
   ADD: '/plat/add',
   UPDATE: '/plat/update',

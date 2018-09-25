@@ -2,7 +2,7 @@
     <div>
         <el-breadcrumb separator-class="el-icon-arrow-right" class="crumb">
             <el-breadcrumb-item :to="{ path: '/' }">通用管理</el-breadcrumb-item>
-            <el-breadcrumb-item :to="{ path: '/system/list' }">系统管理</el-breadcrumb-item>
+            <el-breadcrumb-item :to="{ path: '/system' }">系统管理</el-breadcrumb-item>
             <el-breadcrumb-item>新建系统</el-breadcrumb-item>
         </el-breadcrumb>
         <div class="sys-input">
@@ -110,7 +110,7 @@
                   version: ""
                 };
                 this.$message.success(data.message);
-                this.$router.push("/system/list");
+                this.$router.push("/system");
               } else {
                 this.$message.error(data.message);
               }

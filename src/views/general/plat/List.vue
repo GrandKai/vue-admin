@@ -2,7 +2,7 @@
     <div>
         <el-breadcrumb separator-class="el-icon-arrow-right" class="crumb">
             <el-breadcrumb-item :to="{ path: '/' }">通用管理</el-breadcrumb-item>
-            <el-breadcrumb-item :to="{ path: '/system/list' }">系统管理</el-breadcrumb-item>
+            <el-breadcrumb-item :to="{ path: '/system' }">系统管理</el-breadcrumb-item>
         </el-breadcrumb>
 
         <custom-page>
@@ -108,21 +108,21 @@
 
 
         <!-- 编辑权限系统信息对话框 -->
-        <!--<el-dialog :title="dlgSettings.title + '设置'" :visible.sync="dlgSettings.visible" width="30%"-->
-                   <!--:close-on-click-modal="false">-->
-            <!--<el-form :model="editForm" :rules="rules" ref="editForm" onsubmit="return false;">-->
-                <!--<div class="clearfix">-->
-                    <!--<el-form-item prop="content">-->
-                        <!--<el-input v-model.trim="editForm.content" placeholder="请输入内容" class="left role-input"-->
-                                  <!--:type="dlgSettings.inputType" :rows="dlgSettings.rowNum"-->
-                                  <!--@keyup.native.enter="onSubmit"></el-input>-->
-                        <!--<el-button @click="dlgSettings.visible = false" class="left">取 消</el-button>-->
-                        <!--<el-button type="primary" @click="onSubmit" class="left">保 存</el-button>-->
-                    <!--</el-form-item>-->
-                <!--</div>-->
-            <!--</el-form>-->
-        <!--</el-dialog>-->
-        <plat-update-dialog :dlgSettings1="dlgSettings" :dialogVisible="false"></plat-update-dialog>
+        <el-dialog :title="dlgSettings.title + '设置'" :visible.sync="dlgSettings.visible" width="30%"
+                   :close-on-click-modal="false">
+            <el-form :model="editForm" :rules="rules" ref="editForm" onsubmit="return false;">
+                <div class="clearfix">
+                    <el-form-item prop="content">
+                        <el-input v-model.trim="editForm.content" placeholder="请输入内容" class="left role-input"
+                                  :type="dlgSettings.inputType" :rows="dlgSettings.rowNum"
+                                  @keyup.native.enter="onSubmit"></el-input>
+                        <el-button @click="dlgSettings.visible = false" class="left">取 消</el-button>
+                        <el-button type="primary" @click="onSubmit" class="left">保 存</el-button>
+                    </el-form-item>
+                </div>
+            </el-form>
+        </el-dialog>
+        <!--<plat-update-dialog :dlgSettings1="dlgSettings" :dialogVisible="false"></plat-update-dialog>-->
 
     </div>
 </template>
@@ -130,16 +130,22 @@
 <script>
   // 导入校验规则
   import CustomPage from 'components/listCustomPage/Index'
-  import PlatUpdate from 'components/business/dialog/PlatUpdate'
+  // import PlatUpdate from 'components/business/dialog/PlatUpdate'
   import {queryPlatPage, stopPlat, deletePlat, checkUpdateExistPlat, updatePlat} from 'apis/general/plat'
 
   export default {
     components: {
       'custom-page': CustomPage,
-      'plat-update-dialog': PlatUpdate
+      // 'plat-update-dialog': PlatUpdate
     },
     data() {
       return {
+        // 修改的内容
+        editForm: {
+          id: "",
+          property: "",
+          content: ""
+        },
         loading: false,
         paginationShow: false,
         pageSizes: pageSizes,

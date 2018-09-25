@@ -1,15 +1,16 @@
 <template>
     <div>
         <!-- 编辑权限系统信息对话框 -->
-        <el-dialog :title="dlgSettings.title + '设置'" :visible.sync="dialogVisible" width="30%" :close-on-click-modal="false">
-            <el-form :model="editForm" :rules="rules" ref="editForm" onsubmit="return false;">
+        <el-dialog :title="title + '设置'"
+                   :visible.sync="dialogVisible"
+                   width="30%"
+                   :close-on-click-modal="false"
+                   :before-close="closeDialog"
+        >
+            <el-form :model="form" :rules="rules" ref="form" onsubmit="return false;">
                 <div class="clearfix">
-                    <el-form-item prop="content">
-                        <el-input v-model.trim="editForm.content" placeholder="请输入内容" class="left role-input" :type="dlgSettings.inputType" :rows="dlgSettings.rowNum"
-                                  @keyup.native.enter="onSubmit"></el-input>
-                        <el-button @click="dlgSettings.visible = false" class="left">取 消</el-button>
-                        <el-button type="primary" @click="onSubmit" class="left" :loading="isLoad">保 存</el-button>
-                    </el-form-item>
+                    <slot name="contentArea"></slot>
+
                 </div>
             </el-form>
         </el-dialog>
@@ -23,29 +24,19 @@
       return {
 
         // 修改的内容
-        editForm: {
+        form: {
           id: "",
           property: "",
           content: ""
         },
         isLoad: false,
-
-        // 校验规则
-        rules: {},
-
-        // 弹出框属性设置
-        dlgSettings: {
-          title: "", // 弹窗标题
-          visible: false, // 弹窗可见
-          inputType: "text", // 弹窗内文本框类型
-          rowNum: 1 // 文本框行数
-        },
+        content: '1111111111'
       }
     },
-    props: ['dialogVisible', 'dlgSettings1'],
+    props: ['dialogVisible', 'title', 'rules'],
     watch: {
       'dialogVisible': function (newVal, oldVal) {
-        console.log('dialogVisible default value is:', newVal);
+        console.log('watch dialogVisible default value is:', newVal);
         let vm = this;
         // 如果关闭当前页
         if (!newVal) { // 打开确定按钮
@@ -59,11 +50,39 @@
     },
     methods: {
 
-      onSubmit() {
+      save() {
 
+        console.error('规则:', this.rules);
+        console.error('表单信息:',this.form);
+        this.$emit('saveDialog');
+
+        this.$refs.form.validate(valid => {
+          if (valid) {
+            /*// 传入参数
+            let param = {
+              content: {
+                id: this.editForm.id, // 修改记录的ID
+              }
+            };
+            // 修改记录的属性和属性值
+            param.content[this.editForm.property] = this.editForm.content;
+
+            updatePlat(param).then(data => {
+              this.dlgSettings.visible = false; // 对话框关闭
+              if (200 === data.code) {
+                this.$message.success(data.message);
+                this.queryPage();
+              } else {
+                this.$message.error(data.message);
+              }
+            });*/
+          }
+        });
       },
+
       /***************　打开修改系统对话框　*********************/
       updateEntity(row, rowName, dlgTitle) {
+/*
 
         // 判断弹出框展示样式
         switch (rowName) {
@@ -109,13 +128,33 @@
             break;
           }
         }
-        // 清空表单
-        this.clearForm("editForm");
-        this.editForm = {
+*/
+
+        // console.error('重置表单域', this.$refs.form);
+
+        this.form = {
           id: row.id,
           property: rowName,
           content: row[rowName]
         };
+      },
+
+      // TODO: 可以提取到公共方法
+      // 重置表单域,
+      resetFields() {
+        // DOM is not updated yet
+        this.$nextTick(()=> {
+          // DOM is now updated
+          this.$refs['form'].resetFields();
+        });
+      },
+
+      closeDialog() {
+        // 重置表单域
+        this.resetFields();
+
+        // 关闭对话框
+        this.$emit("closeDialog");
       },
     },
 
