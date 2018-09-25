@@ -12,7 +12,7 @@
                     </div>
 
                     <!-- 按钮区域 -->
-                    <div class="btn-groups tree-button">
+                    <div class="btn-groups tree-button menu-btn">
                         <slot name="buttonArea"></slot>
                     </div>
 
@@ -80,5 +80,15 @@
         float: right;
         background-color: #f0f0f0;
         /*background-color: red;*/
+    }
+
+    .menu-btn {
+        margin-bottom: 30px;
+        .el-button {
+            margin-right: 10px;
+            &:last-child {
+                margin-right: 0;
+            }
+        }
     }
 </style>

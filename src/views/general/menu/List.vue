@@ -9,11 +9,9 @@
         <!-- 菜单区域 -->
         <tree-from>
             <template slot="queryArea">
-                查询区域
-
                 <div class="menu-select">
                     <span class="sysSpan">所属系统 </span>
-                    <el-select v-model="platId" placeholder="请选择操作系统" clearable @change="getTreeData(platId)" ref="select">
+                    <el-select v-model="platId" placeholder="请选择操作系统" clearable @change="selectChange" ref="select">
                         <el-option v-for="item in options" :key="item.id" :label="item.name" :value="item.id">
                         </el-option>
                     </el-select>
@@ -21,7 +19,10 @@
             </template>
             <!-- 按钮区域 -->
             <template slot="buttonArea">
-                按钮区域
+                <el-button type="primary" @click="addEntity" :disabled="addDisabled"><i class="el-icon-plus"></i> 新建</el-button>
+                <el-button type="success" @click="treeOpen"><i class="el-icon-arrow-down"></i> 展开</el-button>
+                <el-button type="success" @click="treeClose"><i class="el-icon-arrow-up"></i> 收起</el-button>
+                <el-button type="danger" @click="deleteEntity" :disabled="deleteDisabled"><i class="el-icon-delete"></i> 删除</el-button>
             </template>
 
             <!-- 树区域 -->
@@ -39,7 +40,8 @@
 
 <script>
   import TreeForm from 'components/business/treeForm/Index';
-  import {queryPlatList} from 'apis/general/plat'
+  import {queryPlatList} from 'apis/general/plat';
+  import {queryMenusByPlatId} from 'apis/general/menu';
 
   export default {
     components: {
@@ -51,6 +53,9 @@
         platId: '',
         // 所有系统信息
         options: [],
+
+        addDisabled: true,
+        deleteDisabled: true
       };
     },
     created() {
@@ -70,7 +75,29 @@
        * 根据所选系统查询树形数据
        * @param value
        */
-      getTreeData(value) {
+      selectChange(value) {
+
+        let param = {
+          content: {
+            platId: value
+          }
+        };
+
+        queryMenusByPlatId(param).then(data => {
+          console.log('根据平台id查询所有菜单信息', data);
+        })
+      },
+
+      addEntity() {
+
+      },
+      deleteEntity() {
+
+      },
+      treeOpen() {
+
+      },
+      treeClose() {
 
       }
     }
@@ -108,16 +135,6 @@
 
     .menu-select {
         margin-bottom: 30px;
-    }
-
-    .menu-btn {
-        margin-bottom: 30px;
-        .el-button {
-            margin-right: 10px;
-            &:last-child {
-                margin-right: 0;
-            }
-        }
     }
 
     .el-tree {
