@@ -41,6 +41,13 @@ let $http = {
                   requestParam.accessToken = sessionStorage.getItem('accessToken');
                   return sendSecondRequest(requestUrl, requestParam);
                 }
+                // refresh 过期处理
+                if (1013 === data.code) {
+                  sessionStorage.removeItem("accessToken");
+                  sessionStorage.removeItem("refreshToken");
+
+                  // TODO: 跳转到登录页面
+                }
               });
 
             default:

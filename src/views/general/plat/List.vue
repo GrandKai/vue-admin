@@ -108,20 +108,21 @@
 
 
         <!-- 编辑权限系统信息对话框 -->
-        <el-dialog :title="dlgSettings.title + '设置'" :visible.sync="dlgSettings.visible" width="30%"
-                   :close-on-click-modal="false">
-            <el-form :model="editForm" :rules="rules" ref="editForm" onsubmit="return false;">
-                <div class="clearfix">
-                    <el-form-item prop="content">
-                        <el-input v-model.trim="editForm.content" placeholder="请输入内容" class="left role-input"
-                                  :type="dlgSettings.inputType" :rows="dlgSettings.rowNum"
-                                  @keyup.native.enter="onSubmit"></el-input>
-                        <el-button @click="dlgSettings.visible = false" class="left">取 消</el-button>
-                        <el-button type="primary" @click="onSubmit()" class="left">保 存</el-button>
-                    </el-form-item>
-                </div>
-            </el-form>
-        </el-dialog>
+        <!--<el-dialog :title="dlgSettings.title + '设置'" :visible.sync="dlgSettings.visible" width="30%"-->
+                   <!--:close-on-click-modal="false">-->
+            <!--<el-form :model="editForm" :rules="rules" ref="editForm" onsubmit="return false;">-->
+                <!--<div class="clearfix">-->
+                    <!--<el-form-item prop="content">-->
+                        <!--<el-input v-model.trim="editForm.content" placeholder="请输入内容" class="left role-input"-->
+                                  <!--:type="dlgSettings.inputType" :rows="dlgSettings.rowNum"-->
+                                  <!--@keyup.native.enter="onSubmit"></el-input>-->
+                        <!--<el-button @click="dlgSettings.visible = false" class="left">取 消</el-button>-->
+                        <!--<el-button type="primary" @click="onSubmit" class="left">保 存</el-button>-->
+                    <!--</el-form-item>-->
+                <!--</div>-->
+            <!--</el-form>-->
+        <!--</el-dialog>-->
+        <plat-update-dialog :dlgSettings1="dlgSettings" :dialogVisible="false"></plat-update-dialog>
 
     </div>
 </template>
@@ -129,11 +130,13 @@
 <script>
   // 导入校验规则
   import CustomPage from 'components/listCustomPage/Index'
+  import PlatUpdate from 'components/business/dialog/PlatUpdate'
   import {queryPlatPage, stopPlat, deletePlat, checkUpdateExistPlat, updatePlat} from 'apis/general/plat'
 
   export default {
     components: {
-      'custom-page': CustomPage
+      'custom-page': CustomPage,
+      'plat-update-dialog': PlatUpdate
     },
     data() {
       return {
@@ -159,18 +162,11 @@
           rowNum: 1 // 文本框行数
         },
 
-        // 修改的内容
-        editForm: {
-          id: "",
-          property: "",
-          content: ""
-        },
-
         // 校验规则
         rules: {}
       };
     },
-    created: function () {
+    created () {
       this.queryPage();
     },
     methods: {

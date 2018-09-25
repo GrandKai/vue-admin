@@ -39,8 +39,8 @@
     },
     methods: {
       getMainHeight() {
-        console.error('获取Index页面高度');
-        this.minHeight = `${document.documentElement.clientHeight - 96}px`
+        this.minHeight = `${document.documentElement.clientHeight - 96}px`;
+        console.error('获取Index页面高度', this.minHeight);
       }
     },
     components: {Menu},
