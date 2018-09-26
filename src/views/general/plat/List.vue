@@ -239,7 +239,7 @@
         switch (rowName) {
           case 'sortNumber': {
             // 手动添加的数字校验
-            this.rules.content = [{validator: common.v_checkNumber, trigger: "blur"}];
+            this.rules.content = [{validator: common.checkNumber, trigger: "blur"}];
             break;
           }
           case 'name': {

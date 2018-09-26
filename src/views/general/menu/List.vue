@@ -11,10 +11,12 @@
             <template slot="queryArea">
                 <div class="menu-select">
                     <span class="sysSpan">所属系统 </span>
-                    <el-select v-model="platId" placeholder="请选择操作系统" clearable @change="selectChange" ref="select">
+                    <el-select v-model="form.platId" placeholder="请选择操作系统" clearable @change="selectChange" ref="select">
                         <el-option v-for="item in options" :key="item.id" :label="item.name" :value="item.id">
                         </el-option>
                     </el-select>
+                    <br/>
+                    platId: <input v-model="form.platId"/>
                 </div>
             </template>
             <!-- 按钮区域 -->
@@ -27,12 +29,54 @@
 
             <!-- 树区域 -->
             <template slot="treeArea">
-                树区域
+                <el-tree :data="treeData"
+                         :props="defaultProps"
+                         @node-click="handleNodeClick"
+                         default-expand-all
+                         highlight-current
+                         :show-checkbox="false"
+                         :expand-on-click-node="false"
+                         node-key="id"
+                         ref="tree"
+                >
+
+                </el-tree>
             </template>
 
             <!-- 表单区域 -->
             <template slot="formArea">
-                表单区域
+                <el-form :model="form" :rules="rules" ref="form" label-width="100px" :disabled="formDisabled">
+
+                    <el-form-item label="菜单名称" prop="name">
+                        <el-input v-model="form.name"></el-input>
+                    </el-form-item>
+
+                    <el-form-item label="菜单URL" prop="router">
+                        <el-input v-model="form.router"></el-input>
+                    </el-form-item>
+
+                    <el-form-item label="菜单图标" prop="image">
+                        <el-input v-model="form.image"></el-input>
+                    </el-form-item>
+
+                    <el-form-item label="显示顺序" prop="sortNumber">
+                        <el-input v-model="form.sortNumber"></el-input>
+                    </el-form-item>
+
+                    <el-form-item label="菜单显示" prop="isShow" align="left">
+                        <el-switch v-model="form.isShow"
+                                   active-value="1"
+                                   inactive-value="0"
+                                   active-text="显示"
+                                   inactive-text="隐藏"
+                                   active-color="#13ce66"
+                        ></el-switch>
+                    </el-form-item>
+
+                    <el-form-item>
+                        <el-button type="primary" @click="onSubmit('form')">提交</el-button>
+                    </el-form-item>
+                </el-form>
             </template>
         </tree-from>
     </div>
@@ -41,7 +85,7 @@
 <script>
   import TreeForm from 'components/business/treeForm/Index';
   import {queryPlatList} from 'apis/general/plat';
-  import {queryMenusByPlatId} from 'apis/general/menu';
+  import {queryMenusByPlatId, addMenu} from 'apis/general/menu';
 
   export default {
     components: {
@@ -49,13 +93,70 @@
     },
     data() {
       return {
-        // 所选系统id
-        platId: '',
         // 所有系统信息
         options: [],
 
         addDisabled: true,
-        deleteDisabled: true
+        deleteDisabled: true,
+        // formDisabled: true,
+        formDisabled: false,
+
+        defaultProps: {
+          children: 'children',
+          label: 'label'
+        },
+        treeData: [{
+          label: '一级 1',
+          children: [{
+            label: '二级 1-1',
+            children: [{
+              label: '三级 1-1-1'
+            }]
+          }]
+        }, {
+          label: '一级 2',
+          children: [{
+            label: '二级 2-1',
+            children: [{
+              label: '三级 2-1-1'
+            }]
+          }, {
+            label: '二级 2-2',
+            children: [{
+              label: '三级 2-2-1'
+            }]
+          }]
+        }],
+
+        // 表单信息
+        form: {
+          // 所选系统id
+          platId: '',
+          name: '',
+          router: '',
+          sortNumber: '',
+          isShow: '1',
+          isLeaf: '',
+        },
+        rules: {
+          name: [
+            {required: true, message: '请输入菜单名称', trigger: 'blur'},
+            {min: 1, max: 50, message: '长度在 1 到 50 个字符', trigger: 'blur'}
+          ],
+          router: [
+            {required: true, message: '请输入菜单URL', trigger: 'blur'},
+            {min: 1, max: 500, message: '长度在 1 到 500 个字符', trigger: 'blur'}
+          ],
+          image: [
+            {max: 500, message: '长度小于 500 个字符', trigger: 'blur'}
+          ],
+          sortNumber: [
+            {required: true, validator: common.checkNumber, trigger: "blur"}
+          ],
+          isShow: [
+            {required: true, message: "请选择菜单显示状态", trigger: "blur"}
+          ],
+        }
       };
     },
     created() {
@@ -78,9 +179,7 @@
       selectChange(value) {
 
         let param = {
-          content: {
-            platId: value
-          }
+          content: this.from.platId
         };
 
         queryMenusByPlatId(param).then(data => {
@@ -99,7 +198,40 @@
       },
       treeClose() {
 
+      },
+
+      handleNodeClick(data) {
+        console.log(data);
+      },
+
+      onSubmit(formName) {
+        this.$refs[formName].validate(valid => {
+          if (valid) {
+            common.confirm({
+              message: `是否确定对该菜单执行此次操作？`,
+            }).then(() => {
+
+              let param = {
+                content: this.form
+              };
+              addMenu(param).then(data => {
+                if (200 === data.code) {
+                  this.$message.success(data.message);
+                  // this.queryPage();
+                } else {
+                  this.$message.error(data.message);
+                }
+              });
+            }).catch(() => {
+            });
+          } else {
+            console.error('error submit!!');
+            return false;
+          }
+        });
       }
+
+
     }
   }
 </script>

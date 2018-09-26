@@ -527,7 +527,7 @@ export default {
     event.currentTarget.select();
   },
 
-  v_checkNumber: function(rule, value, callback) {
+  checkNumber: function(rule, value, callback) {
     if (!(/^[0-9]+$/.test(value))) {
       callback(new Error('请输入数字值'));
     } else {

@@ -4,7 +4,7 @@
             <el-col :span="12">
                 <!-- TODO: 指定高度 -->
                 <div class="line" ></div>
-                <div class="grid-content bg-purple menu-left">
+                <div class="grid-content bg-purple">
 
                     <!-- 查询区域 -->
                     <div class="query-area">
@@ -78,8 +78,8 @@
         width: 1px;
         min-height: 500px;
         float: right;
-        background-color: #f0f0f0;
-        /*background-color: red;*/
+        /*background-color: #f0f0f0;*/
+        background-color: red;
     }
 
     .menu-btn {

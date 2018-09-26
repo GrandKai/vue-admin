@@ -71,7 +71,7 @@
             }
           ],
           sortNumber: [
-            {required: true, validator: common.v_checkNumber, trigger: "blur"}
+            {required: true, validator: common.checkNumber, trigger: "blur"}
           ],
           url: [
             {
