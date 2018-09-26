@@ -183,7 +183,16 @@
               let content = data.content;
               console.log('根据平台id查询所有菜单信息', content);
 
-              this.treeData = common.toTree(content);
+              // 获取选中的平台名称
+              console.log('获取选中的平台名称', );
+
+              let platName = this.$refs.select.selected.currentLabel;
+              let root = {
+                label: platName,
+                children: common.toTree(content)
+              };
+
+              this.treeData = [root];
             } else {
               this.$message.error(data.message);
             }
