@@ -289,7 +289,7 @@ export default {
    * { data: "数据数组" , nodeName :"节点显示名称属性名" , nodeId : "节点ID属性名" , parentId : "父节点ID属性名"};
    * { data: data , nodeName : "organizeName" , nodeId : "organizeCode" , parentId : "organizeParentCode" };
    */
-  toTree(config) {
+  /*toTree(config) {
     // 删除 所有 children,以防止多次调用
     config.data.forEach(function (item) {
       delete item.children;
@@ -314,6 +314,32 @@ export default {
       }
     });
     return val;
+  },*/
+
+
+  toTree(data) {
+
+    // 将数组结构转换成以 id 为 key，item 为 value 的 json 对象
+    let map = {};
+    data.forEach(item => {
+      item.label = item.name;
+      map[item.id] = item;
+    });
+
+    let output = [];
+    data.forEach(item => {
+      // 遍历 data, 看 map 中是否存在父元素
+      let parent = map[item.parentId];
+      // 如果存在父元素，说明该元素不在顶级元素中，那么将该元素添加到对应的父级元素下
+      if (parent) {
+        (parent.children || (parent.children = [])).push(item);
+      } else {
+        // 如果不存在，则该元素是顶级元素
+        output.push(item)
+      }
+    });
+    console.log('转换成树形结构数据：', output);
+    return output;
   },
 
   /****************** 展开树 **********************/

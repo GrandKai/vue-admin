@@ -15,7 +15,8 @@
                         <el-option v-for="item in options" :key="item.id" :label="item.name" :value="item.id"></el-option>
                     </el-select>
                     <br/>
-                    platId: <input v-model="form.platId"/>
+                    platId: <input v-model="form.platId" width="500"/>
+                    parentId: <input v-model="form.parentId" width="500"/>
                 </div>
             </template>
             <!-- 按钮区域 -->
@@ -116,33 +117,13 @@
           children: 'children',
           label: 'label'
         },
-        treeData: [{
-          label: '一级 1',
-          children: [{
-            label: '二级 1-1',
-            children: [{
-              label: '三级 1-1-1'
-            }]
-          }]
-        }, {
-          label: '一级 2',
-          children: [{
-            label: '二级 2-1',
-            children: [{
-              label: '三级 2-1-1'
-            }]
-          }, {
-            label: '二级 2-2',
-            children: [{
-              label: '三级 2-2-1'
-            }]
-          }]
-        }],
+        treeData: [],
 
         // 表单信息
         form: {
           // 所选系统id
           platId: '',
+          parentId: '',
           name: '',
           router: '',
           sortNumber: '',
@@ -183,11 +164,11 @@
           }
         });
       },
+
       /**
        * 根据所选系统查询树形数据
-       * @param value
        */
-      selectChange(value) {
+      selectChange() {
 
         let platId = this.form.platId;
         if (platId) {
@@ -198,7 +179,14 @@
           };
 
           queryMenusByPlatId(param).then(data => {
-            console.log('根据平台id查询所有菜单信息', data);
+            if (200 === data.code) {
+              let content = data.content;
+              console.log('根据平台id查询所有菜单信息', content);
+
+              this.treeData = common.toTree(content);
+            } else {
+              this.$message.error(data.message);
+            }
           })
         }
       },
@@ -216,8 +204,12 @@
 
       },
 
-      handleNodeClick(data) {
-        console.log(data);
+      handleNodeClick(item) {
+        if (item || item.id) {
+          this.form.parentId = item.id;
+          this.formDisabled = false;
+          console.log('当前选中树形元素id:', this.form.parentId);
+        }
       },
 
       onSubmit(formName) {
@@ -234,6 +226,9 @@
                 if (200 === data.code) {
                   this.$message.success(data.message);
                   // this.queryPage();
+                  // TODO: 1.重置表单信息,2.刷新树型数据
+                  this.$refs[formName].resetFields();
+                  this.selectChange();
                 } else {
                   this.$message.error(data.message);
                 }
