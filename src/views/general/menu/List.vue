@@ -12,8 +12,7 @@
                 <div class="menu-select">
                     <span class="sysSpan">所属系统 </span>
                     <el-select v-model="form.platId" placeholder="请选择操作系统" clearable @change="selectChange" ref="select">
-                        <el-option v-for="item in options" :key="item.id" :label="item.name" :value="item.id">
-                        </el-option>
+                        <el-option v-for="item in options" :key="item.id" :label="item.name" :value="item.id"></el-option>
                     </el-select>
                     <br/>
                     platId: <input v-model="form.platId"/>
@@ -45,7 +44,7 @@
 
             <!-- 表单区域 -->
             <template slot="formArea">
-                <el-form :model="form" :rules="rules" ref="form" label-width="100px" :disabled="formDisabled">
+                <el-form :model="form" :rules="rules" ref="form" label-width="100px" :disabled="formDisabled" status-icon>
 
                     <el-form-item label="菜单名称" prop="name">
                         <el-input v-model="form.name"></el-input>
@@ -91,6 +90,18 @@
     components: {
       'tree-from': TreeForm
     },
+    watch: {
+      'form.platId': {
+        handler(val, oldVal) {
+          console.log('form.platId', val);
+          if (!val) {
+            this.formDisabled = true;
+          }
+        },
+        deep: true
+      },
+    },
+
     data() {
       return {
         // 所有系统信息
@@ -99,7 +110,7 @@
         addDisabled: true,
         deleteDisabled: true,
         // formDisabled: true,
-        formDisabled: false,
+        formDisabled: true,
 
         defaultProps: {
           children: 'children',
@@ -178,13 +189,18 @@
        */
       selectChange(value) {
 
-        let param = {
-          content: this.from.platId
-        };
+        let platId = this.form.platId;
+        if (platId) {
+          let param = {
+            content: {
+              platId: platId
+            }
+          };
 
-        queryMenusByPlatId(param).then(data => {
-          console.log('根据平台id查询所有菜单信息', data);
-        })
+          queryMenusByPlatId(param).then(data => {
+            console.log('根据平台id查询所有菜单信息', data);
+          })
+        }
       },
 
       addEntity() {
