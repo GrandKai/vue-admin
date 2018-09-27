@@ -42,7 +42,7 @@
                     </template>
                     <el-menu-item index="/system">系统管理</el-menu-item>
                     <el-menu-item index="/menu">菜单管理</el-menu-item>
-                    <el-menu-item index="/user/list">操作管理</el-menu-item>
+                    <el-menu-item index="/test/menu">操作管理</el-menu-item>
                 </el-submenu>
 
                 <el-submenu index="/3">

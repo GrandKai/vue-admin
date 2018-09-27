@@ -15,8 +15,8 @@
                         <el-option v-for="item in options" :key="item.id" :label="item.name" :value="item.id"></el-option>
                     </el-select>
                     <br/>
-                    platId: <input v-model="form.platId" width="500"/>
-                    parentId: <input v-model="form.parentId" width="500"/>
+                    <!--platId: <input v-model="form.platId" width="500"/>-->
+                    <!--parentId: <input v-model="form.parentId" width="500"/>-->
                 </div>
             </template>
             <!-- 按钮区域 -->
@@ -38,23 +38,6 @@
                          :expand-on-click-node="false"
                          node-key="id"
                          ref="tree" v-show="treeIsShow">
-                    <span class="custom-tree-node" slot-scope="{ node, data }">
-                        <span>{{ node.label }}</span>
-                        <span>
-                          <el-button
-                                  type="text"
-                                  size="mini"
-                                  @click="() => append(data)">
-                            Append
-                          </el-button>
-                          <el-button
-                                  type="text"
-                                  size="mini"
-                                  @click="() => remove(node, data)">
-                            Delete
-                          </el-button>
-                        </span>
-                    </span>
                 </el-tree>
             </template>
 
@@ -100,7 +83,7 @@
 <script>
   import TreeForm from 'components/business/treeForm/Index';
   import {queryPlatList} from 'apis/general/plat';
-  import {queryMenusByPlatId, addMenu, updateMenu} from 'apis/general/menu';
+  import {queryMenusByPlatId, addMenu, updateMenu, deleteMenu} from 'apis/general/menu';
 
   const sortNumber = 10;
   const isShow = '1';
@@ -178,26 +161,6 @@
     },
     methods: {
 
-      append(data) {
-        console.log('====================.',data);
-        const newChild = { id: id++, label: 'testtest', children: [] };
-        if (!data.children) {
-          this.$set(data, 'children', []);
-        }
-        data.children.push(newChild);
-      },
-
-      remove(node, data) {
-        const parent = node.parent;
-        const children = parent.data.children || parent.data;
-        const index = children.findIndex(d => d.id === data.id);
-        console.log('.................remove1node:',node);
-        console.log('.................remove2data:',data);
-        console.log('.................remove3children:',children);
-        console.log('.................remove4index:',index);
-        children.splice(index, 1);
-      },
-
       queryAllPlat() {
         queryPlatList().then(data => {
           console.log('查询所有平台', data);
@@ -239,8 +202,11 @@
                 label: platName,
                 children: common.toTree(content)
               };
+              let ary = [];
+              ary.push(root);
 
-              this.treeData = [root];
+              // this.treeData = ary);
+              this.treeData = JSON.parse(JSON.stringify(ary));
             } else {
               this.$message.error(data.message);
             }
@@ -255,7 +221,9 @@
         }).then(() => {
 
           let platId = this.form.platId ? this.form.platId : '';
-          let parentId = this.form.parentId ? this.form.parentId : '';
+
+          let currentNodeKey = this.$refs.tree.getCurrentKey();
+          let parentId = currentNodeKey ? currentNodeKey : '';
 
           let param = {
             content: {
@@ -264,7 +232,7 @@
               platId: platId,
               parentId: parentId,
               name: '默认菜单',
-              router: '',
+              router: '/',
               image: '',
               sortNumber: sortNumber,
               isShow: isShow,
@@ -281,24 +249,76 @@
               this.$refs.form.resetFields();
 
               let currentNodeData = this.$refs.tree.getCurrentNode();
-              console.log('currentNode1:', currentNodeData);
+              console.log('currentNodeData:', currentNodeData);
 
+              // 向当前节点下添加子节点
               if (currentNodeData) {
                 if (!currentNodeData.children) {
                   this.$set(currentNodeData, 'children', []);
                 }
                 currentNodeData.children.push(newMenu);
               }
+
+              this.setNodeForm(newMenu.id, newMenu);
+
             } else {
               this.$message.error(data.message);
             }
           });
         }).catch(_ => {
         });
+      },
 
+      /**
+       * 设置节点选中，并设置表单信息
+       * @param currentNodeId
+       * @param currentNode
+       */
+      setNodeForm(currentNodeId, currentNode) {
+        // 设置选中树节点，并出发 node-click 设置对应的表单信息
+        this.$nextTick(() => {
+          this.$refs.tree.setCurrentKey(currentNodeId);
+          this.handleNodeClick(currentNode);
+        });
+      },
 
+      updateParentChildren(callBack) {
+        let currentNodeKey = this.$refs.tree.getCurrentKey();
 
+        // 更新node-key的子节点
+        let node = this.$refs.tree.getNode(currentNodeKey);
 
+        let parent = node.parent;
+        let parentNodeKey = parent.data.id;
+        let children = parent.data.children;
+
+        callBack(parentNodeKey, children, currentNodeKey);
+      },
+
+      /**
+       * 获取当前节点的节点信息，父节点信息，当前节点id，父节点id，父节点所有children
+       * @returns {{currentNode: D | *, parentNode: *, currentNodeKey: K | *, parentNodeKey: *, children: *}}
+       */
+      getParentChildren() {
+        let currentNodeKey = this.$refs.tree.getCurrentKey();
+
+        // 更新node-key的子节点
+        let node = this.$refs.tree.getNode(currentNodeKey);
+        let currentNodeData = this.$refs.tree.getCurrentNode();
+
+        let parent = node.parent;
+        let parentNodeKey = parent.data.id;
+        let children = parent.data.children;
+
+        return {
+          currentNodeKey: currentNodeKey,
+          currentNode: node,
+          currentNodeData: currentNodeData,
+          parentNodeKey: parentNodeKey,
+          parentNode: parent,
+          parentNodeData: parent.data,
+          children: children
+        };
       },
 
       updateEntity() {
@@ -313,50 +333,20 @@
             let updatedMenu = data.content;
             updatedMenu.label = updatedMenu.name;
 
-            let currentNodeKey = this.$refs.tree.getCurrentKey();
+            this.updateParentChildren((parentNodeKey, children, currentNodeKey) => {
 
-            // 更新node-key的子节点
-            let node = this.$refs.tree.getNode(currentNodeKey);
-
-            const parent = node.parent;
-            const parentId = parent.data.id;
-            const children = parent.data.children;
-
-            let ary = [];
-            for (let i = 0; children && i < children.length; i++) {
-              let item = children[i];
-              if (item.id === currentNodeKey) {
-                ary.push(updatedMenu)
-              } else {
-                ary.push(item);
+              let ary = [];
+              for (let i = 0; children && i < children.length; i++) {
+                let item = children[i];
+                if (item.id === currentNodeKey) {
+                  ary.push(updatedMenu)
+                } else {
+                  ary.push(item);
+                }
               }
-            }
-
-            this.$refs.tree.updateKeyChildren(parentId, ary);
-
-            /*let currentNodeData = this.$refs.tree.getCurrentNode();
-            let node = this.$refs.tree.getNode(currentNodeKey);
-
-            console.log('修改前当前节点信息：', currentNodeData,node, currentNodeKey);
-
-            const parent = node.parent;
-            const children = parent.data.children || parent.data;
-            const index = children.findIndex(d => d.id === currentNodeKey);
-
-            console.error('当前索引：', index, children);
-            // this.$set(currentNodeData, 'name', updatedMenu.name);
-
-            children.splice(index, 1);
-            children.splice(index, 1, updatedMenu);
-
-            console.error('children修改后的值：', children)*/
-
-            // if (currentNodeData) {
-            //   if (!currentNodeData.children) {
-            //     this.$set(currentNodeData, 'children', []);
-            //   }
-            //   currentNodeData.children.push(updatedMenu);
-            // }
+              this.$refs.tree.updateKeyChildren(parentNodeKey, ary);
+              this.setNodeForm(currentNodeKey, updatedMenu);
+            });
 
           } else {
             this.$message.error(data.message);
@@ -364,6 +354,38 @@
         });
       },
       deleteEntity() {
+
+        let currentNodeKey = this.$refs.tree.getCurrentKey();
+
+        common.confirm({
+          message: `请确认删除的是最底层子节点菜单信息！`
+        }).then(() => {
+          let param = {
+            content: currentNodeKey
+          };
+          deleteMenu(param).then(data => {
+            if (200 === data.code) {
+              this.$message.success(data.message);
+
+              this.updateParentChildren((parentNodeKey, children, currentNodeKey) => {
+
+                let ary = [];
+                for (let i = 0; children && i < children.length; i++) {
+                  let item = children[i];
+                  if (item.id !== currentNodeKey) {
+                    ary.push(item);
+                  }
+                }
+                this.$refs.tree.updateKeyChildren(parentNodeKey, ary);
+                this.$refs.form.resetFields();
+              });
+              // 删除成功后，刷新树的信息
+            } else {
+              this.$message.error(data.message);
+            }
+          });
+        }).catch(_ => {
+        });
 
       },
       treeOpen() {
@@ -376,6 +398,7 @@
       handleNodeClick(item) {
         console.log('当前选中node节点:', item);
         this.addDisabled = false;
+        this.deleteDisabled = false;
 
         if (item && item.id) {
           this.formDisabled = false;
