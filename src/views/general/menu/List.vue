@@ -316,7 +316,23 @@
             let currentNodeKey = this.$refs.tree.getCurrentKey();
 
             // 更新node-key的子节点
-            this.$refs.tree.updateKeyChildren(currentNodeKey,updatedMenu);
+            let node = this.$refs.tree.getNode(currentNodeKey);
+
+            const parent = node.parent;
+            const parentId = parent.data.id;
+            const children = parent.data.children;
+
+            let ary = [];
+            for (let i = 0; children && i < children.length; i++) {
+              let item = children[i];
+              if (item.id === currentNodeKey) {
+                ary.push(updatedMenu)
+              } else {
+                ary.push(item);
+              }
+            }
+
+            this.$refs.tree.updateKeyChildren(parentId, ary);
 
             /*let currentNodeData = this.$refs.tree.getCurrentNode();
             let node = this.$refs.tree.getNode(currentNodeKey);
