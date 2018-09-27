@@ -8,6 +8,9 @@ const SystemAdd = () => import('views/general/plat/Add.vue');
 const MenuList = () => import('views/general/menu/List.vue');
 const MenuAdd = () => import('views/general/menu/Add.vue');
 
+const OperationList = () => import('views/general/operation/List.vue');
+const OperationAdd = () => import('views/general/operation/Add.vue');
+
 const TestTree = () => import('components/business/tree/Test.vue');
 
 const DictionaryTypeList = () => import('views/dictionary/type/List.vue');
@@ -42,6 +45,14 @@ let router = [
   {
     path: 'menu/add',
     component: MenuAdd
+  },
+  {
+    path: 'operation',
+    component: OperationList
+  },
+  {
+    path: 'operation/add',
+    component: OperationAdd
   },
   {
     path: 'dictionary/type/list',

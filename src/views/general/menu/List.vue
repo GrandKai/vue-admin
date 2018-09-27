@@ -2,8 +2,8 @@
     <div>
         <!-- 面包屑区域 -->
         <el-breadcrumb separator-class="el-icon-arrow-right" class="crumb">
-            <el-breadcrumb-item :to="{ path: '/' }">菜单管理</el-breadcrumb-item>
-            <el-breadcrumb-item>菜单信息</el-breadcrumb-item>
+            <el-breadcrumb-item :to="{ path: '/' }">通用管理</el-breadcrumb-item>
+            <el-breadcrumb-item :to="{ path: '/menu' }">菜单管理</el-breadcrumb-item>
         </el-breadcrumb>
 
         <!-- 菜单区域 -->
