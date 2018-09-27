@@ -37,9 +37,24 @@
                          :show-checkbox="false"
                          :expand-on-click-node="false"
                          node-key="id"
-                         ref="tree"
-                >
-
+                         ref="tree" v-show="treeIsShow">
+                    <span class="custom-tree-node" slot-scope="{ node, data }">
+                        <span>{{ node.label }}</span>
+                        <span>
+                          <el-button
+                                  type="text"
+                                  size="mini"
+                                  @click="() => append(data)">
+                            Append
+                          </el-button>
+                          <el-button
+                                  type="text"
+                                  size="mini"
+                                  @click="() => remove(node, data)">
+                            Delete
+                          </el-button>
+                        </span>
+                    </span>
                 </el-tree>
             </template>
 
@@ -85,7 +100,10 @@
 <script>
   import TreeForm from 'components/business/treeForm/Index';
   import {queryPlatList} from 'apis/general/plat';
-  import {queryMenusByPlatId, addMenu} from 'apis/general/menu';
+  import {queryMenusByPlatId, addMenu, updateMenu} from 'apis/general/menu';
+
+  const sortNumber = 10;
+  const isShow = '1';
 
   export default {
     components: {
@@ -104,6 +122,7 @@
     },
 
     data() {
+
       return {
         // 所有系统信息
         options: [],
@@ -118,16 +137,19 @@
           label: 'label'
         },
         treeData: [],
+        treeIsShow: false,
 
         // 表单信息
         form: {
           // 所选系统id
+          id: '',
           platId: '',
           parentId: '',
           name: '',
           router: '',
-          sortNumber: '',
-          isShow: '1',
+          image: '',
+          sortNumber: sortNumber,
+          isShow: isShow,
           isLeaf: '',
         },
         rules: {
@@ -156,6 +178,26 @@
     },
     methods: {
 
+      append(data) {
+        console.log('====================.',data);
+        const newChild = { id: id++, label: 'testtest', children: [] };
+        if (!data.children) {
+          this.$set(data, 'children', []);
+        }
+        data.children.push(newChild);
+      },
+
+      remove(node, data) {
+        const parent = node.parent;
+        const children = parent.data.children || parent.data;
+        const index = children.findIndex(d => d.id === data.id);
+        console.log('.................remove1node:',node);
+        console.log('.................remove2data:',data);
+        console.log('.................remove3children:',children);
+        console.log('.................remove4index:',index);
+        children.splice(index, 1);
+      },
+
       queryAllPlat() {
         queryPlatList().then(data => {
           console.log('查询所有平台', data);
@@ -171,6 +213,11 @@
       selectChange() {
 
         let platId = this.form.platId;
+
+        this.treeIsShow = !!platId;
+        this.addDisabled = true;
+        this.deleteDisabled = true;
+
         if (platId) {
           let param = {
             content: {
@@ -183,11 +230,12 @@
               let content = data.content;
               console.log('根据平台id查询所有菜单信息', content);
 
-              // 获取选中的平台名称
-              console.log('获取选中的平台名称', );
-
               let platName = this.$refs.select.selected.currentLabel;
+              let platId = this.$refs.select.selected.currentValue;
+              // 获取选中的平台名称
+              console.log('获取选中的平台名称', platName, 'id:', platId);
               let root = {
+                id: platId,
                 label: platName,
                 children: common.toTree(content)
               };
@@ -196,12 +244,108 @@
             } else {
               this.$message.error(data.message);
             }
-          })
+          });
         }
       },
 
       addEntity() {
 
+        common.confirm({
+          message: `是否确定添加默认菜单？`,
+        }).then(() => {
+
+          let platId = this.form.platId ? this.form.platId : '';
+          let parentId = this.form.parentId ? this.form.parentId : '';
+
+          let param = {
+            content: {
+              // 所选系统id
+              id: '',
+              platId: platId,
+              parentId: parentId,
+              name: '默认菜单',
+              router: '',
+              image: '',
+              sortNumber: sortNumber,
+              isShow: isShow,
+              isLeaf: '',
+            }
+          };
+
+          addMenu(param).then(data => {
+            if (200 === data.code) {
+              let newMenu = data.content;
+              newMenu.label = newMenu.name;
+
+              this.$message.success(data.message);
+              this.$refs.form.resetFields();
+
+              let currentNodeData = this.$refs.tree.getCurrentNode();
+              console.log('currentNode1:', currentNodeData);
+
+              if (currentNodeData) {
+                if (!currentNodeData.children) {
+                  this.$set(currentNodeData, 'children', []);
+                }
+                currentNodeData.children.push(newMenu);
+              }
+            } else {
+              this.$message.error(data.message);
+            }
+          });
+        }).catch(_ => {
+        });
+
+
+
+
+      },
+
+      updateEntity() {
+        let param = {
+          content: this.form
+        };
+        updateMenu(param).then(data => {
+          if (200 === data.code) {
+            this.$message.success(data.message);
+            this.$refs.form.resetFields();
+
+            let updatedMenu = data.content;
+            updatedMenu.label = updatedMenu.name;
+
+            let currentNodeKey = this.$refs.tree.getCurrentKey();
+
+            // 更新node-key的子节点
+            this.$refs.tree.updateKeyChildren(currentNodeKey,updatedMenu);
+
+            /*let currentNodeData = this.$refs.tree.getCurrentNode();
+            let node = this.$refs.tree.getNode(currentNodeKey);
+
+            console.log('修改前当前节点信息：', currentNodeData,node, currentNodeKey);
+
+            const parent = node.parent;
+            const children = parent.data.children || parent.data;
+            const index = children.findIndex(d => d.id === currentNodeKey);
+
+            console.error('当前索引：', index, children);
+            // this.$set(currentNodeData, 'name', updatedMenu.name);
+
+            children.splice(index, 1);
+            children.splice(index, 1, updatedMenu);
+
+            console.error('children修改后的值：', children)*/
+
+            // if (currentNodeData) {
+            //   if (!currentNodeData.children) {
+            //     this.$set(currentNodeData, 'children', []);
+            //   }
+            //   currentNodeData.children.push(updatedMenu);
+            // }
+
+          } else {
+            this.$message.error(data.message);
+          }
+        });
       },
       deleteEntity() {
 
@@ -214,10 +358,21 @@
       },
 
       handleNodeClick(item) {
-        if (item || item.id) {
-          this.form.parentId = item.id;
+        console.log('当前选中node节点:', item);
+        this.addDisabled = false;
+
+        if (item && item.id) {
           this.formDisabled = false;
-          console.log('当前选中树形元素id:', this.form.parentId);
+
+          // 设置选中的表单信息
+          this.form.id = item.id;
+          this.form.parentId = item.parentId;
+          this.form.name = item.name;
+          this.form.router = item.router;
+          this.form.image = item.image;
+          this.form.sortNumber = item.sortNumber;
+          this.form.isShow = item.isShow;
+          this.form.isLeaf = item.isLeaf;
         }
       },
 
@@ -227,21 +382,7 @@
             common.confirm({
               message: `是否确定对该菜单执行此次操作？`,
             }).then(() => {
-
-              let param = {
-                content: this.form
-              };
-              addMenu(param).then(data => {
-                if (200 === data.code) {
-                  this.$message.success(data.message);
-                  // this.queryPage();
-                  // TODO: 1.重置表单信息,2.刷新树型数据
-                  this.$refs[formName].resetFields();
-                  this.selectChange();
-                } else {
-                  this.$message.error(data.message);
-                }
-              });
+              this.updateEntity();
             }).catch(() => {
             });
           } else {
@@ -258,6 +399,15 @@
 
 
 <style lang="scss" scoped>
+    .custom-tree-node {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        font-size: 14px;
+        padding-right: 8px;
+    }
+
     .sysSpan {
         font-size: 14px;
         font-weight: bold;
