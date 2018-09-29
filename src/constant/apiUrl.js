@@ -14,8 +14,11 @@ export const menu = {
   ADD: '/menu/add',
   UPDATE: '/menu/update',
   DELETE: '/menu/delete',
-  // QUERY_LIST: '/plat/list',
-  // STOP: '/plat/stop',
-  // CHECK_EXIST: '/plat/check/exist',
-  // CHECK_UPDATE_EXIST: '/plat/check/update/exist',
+};
+
+export const operation = {
+  QUERY_OPERATIONS_BY_PLAT_ID: '/operation/query/by/platId',
+  ADD: '/operation/add',
+  UPDATE: '/operation/update',
+  DELETE: '/operation/delete',
 };

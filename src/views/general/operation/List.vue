@@ -50,6 +50,8 @@
 
 <script>
   import TreeForm from 'components/business/treeForm/Index';
+  import {queryPlatList} from 'apis/general/plat';
+  import {queryOperationsByPlatId, addOperation, updateOperation, deleteOperation} from 'apis/general/operation';
 
   export default {
     components: {
@@ -59,6 +61,8 @@
       return {
         // 所有系统信息
         options: [],
+        addDisabled: true,
+        deleteDisabled: true,
 
         defaultProps: {
           children: 'children',
@@ -74,11 +78,13 @@
         },
       }
     },
+    created() {
+      this.queryAllPlat();
+    },
     methods: {
 
       queryAllPlat() {
         queryPlatList().then(data => {
-          console.log('查询所有平台', data);
           if (200 === data.code) {
             this.options = data.content;
           }
@@ -100,7 +106,7 @@
             }
           };
 
-          queryMenusByPlatId(param).then(data => {
+          queryOperationsByPlatId(param).then(data => {
             if (200 === data.code) {
               let content = data.content;
               console.log('根据平台id查询所有菜单信息', content);
