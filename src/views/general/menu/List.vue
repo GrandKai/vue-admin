@@ -202,11 +202,9 @@
                 label: platName,
                 children: common.toTree(content)
               };
-              let ary = [];
-              ary.push(root);
 
-              // this.treeData = ary);
-              this.treeData = JSON.parse(JSON.stringify(ary));
+              this.treeData = [root];
+              // this.treeData = JSON.parse(JSON.stringify(ary));
             } else {
               this.$message.error(data.message);
             }

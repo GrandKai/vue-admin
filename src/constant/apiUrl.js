@@ -22,3 +22,9 @@ export const operation = {
   UPDATE: '/operation/update',
   DELETE: '/operation/delete',
 };
+
+export const permission = {
+  ADD: '/permission/add',
+  UPDATE: '/permission/update',
+  DELETE: '/permission/delete',
+};

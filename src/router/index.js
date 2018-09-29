@@ -21,7 +21,7 @@ export default new Router({
     },
     {
       path: '/',
-      name: 'Index',
+      // name: 'Index',
       component: Index,
       children: [
         {path: '', component: Welcome},
