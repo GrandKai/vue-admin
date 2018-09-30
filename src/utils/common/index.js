@@ -10,7 +10,14 @@ export default {
       let sortNumber1 = a.sortNumber;
       let sortNumber2 = b.sortNumber;
       if (sortNumber1 === sortNumber2) {
-        return a.updateTime > b.updateTime
+        if (a.updateTime === b.updateTime) {
+          return 0;
+        } else if (a.updateTime > b.updateTime) {
+          // 按修改时间降序
+          return -1;
+        } else {
+          return 1;
+        }
       }
       return sortNumber1 - sortNumber2;
     });
@@ -356,6 +363,9 @@ export default {
     return output;
   },
 
+  sortTree() {
+
+  },
   /****************** 展开树 **********************/
   /** 需要定义的变量如下：
    * treeShow: true, // 树的显示状态
