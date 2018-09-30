@@ -257,6 +257,7 @@
                 currentNodeData.children.push(newMenu);
               }
 
+              common.sort(currentNodeData.children);
               this.setNodeForm(newMenu.id, newMenu);
 
             } else {
@@ -342,6 +343,7 @@
                   ary.push(item);
                 }
               }
+              common.sort(ary);
               this.$refs.tree.updateKeyChildren(parentNodeKey, ary);
               this.setNodeForm(currentNodeKey, updatedMenu);
             });

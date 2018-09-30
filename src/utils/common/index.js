@@ -2,6 +2,20 @@ import {$vm} from '@/main'
 
 export default {
 
+  /**
+   * 菜单排序
+   */
+  sort(ary) {
+    ary.sort((a, b) => {
+      let sortNumber1 = a.sortNumber;
+      let sortNumber2 = b.sortNumber;
+      if (sortNumber1 === sortNumber2) {
+        return a.updateTime > b.updateTime
+      }
+      return sortNumber1 - sortNumber2;
+    });
+  },
+
   // 电话号码校验
   isMobilePhone: function (tel) {
     let pattern = /^((13[0-9])|(17[0-9])|(14[0-9])|(15[0-9])|(18[0-9]))\d{8}$/;

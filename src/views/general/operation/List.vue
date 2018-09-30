@@ -17,18 +17,17 @@
                         <el-option v-for="item in options" :key="item.id" :label="item.name" :value="item.id"></el-option>
                     </el-select>
                     <br/>
-                    <!--operationForm.id: <input v-model="operationForm.id" width="500"/>
+                    <!--
+                    operationForm.id: <input v-model="operationForm.id" width="500"/>
                     operationForm.platId: <input v-model="operationForm.platId" width="500"/>
                     operationForm.parentId: <input v-model="operationForm.parentId" width="500"/>
                     operationForm.type: <input v-model="operationForm.type" width="500"/>
 
                     <br>
-                    <br>
-                    <br>
-                    <br>
                     permissionForm.id: <input v-model="permissionForm.id" width="500"/>
                     permissionForm.platId: <input v-model="permissionForm.platId" width="500"/>
-                    permissionForm.parentId: <input v-model="permissionForm.parentId" width="500"/>-->
+                    permissionForm.parentId: <input v-model="permissionForm.parentId" width="500"/>
+                    -->
                 </div>
             </template>
 
@@ -106,7 +105,6 @@
   import TreeForm from 'components/business/treeForm/Index';
   import {queryPlatList} from 'apis/general/plat';
   import {queryDictionaryItemList} from 'apis/dictionary/item';
-
 
   import {
     queryOperationsByPlatId,
@@ -262,7 +260,6 @@
           message: `是否确定添加默认${'operation' === type ? '子' : ''}操作？`,
         }).then(() => {
 
-          debugger
           // 添加操作
           if ('menu' === type) {
 
@@ -282,7 +279,7 @@
                 let newEntity = data.content;
                 newEntity.label = newEntity.name;
 
-                this.setNodeForm(newEntity);
+                this.setNodeAddForm(newEntity);
               }
             }).catch(_ => {});
           }
@@ -306,11 +303,22 @@
                 let newEntity = data.content;
                 newEntity.label = newEntity.name;
 
-                this.setNodeForm(newEntity);
+                this.setNodeAddForm(newEntity);
               }
             }).catch(_ => {});
           }
         })
+      },
+      /**
+       * 设置节点选中，并设置表单信息
+       * @param currentNode
+       */
+      setNodeUpdateForm(currentNode) {
+        // 设置选中树节点，并出发 node-click 设置对应的表单信息
+        this.$nextTick(() => {
+          this.$refs.tree.setCurrentKey(currentNode.currentNodeId);
+          this.handleNodeClick(currentNode);
+        });
       },
 
       /**
@@ -318,7 +326,7 @@
        * @param currentNodeId
        * @param currentNode
        */
-      setNodeForm(currentNode) {
+      setNodeAddForm(currentNode) {
 
         let currentNodeData = this.$refs.tree.getCurrentNode();
         console.log('currentNodeData:', currentNodeData);
@@ -330,6 +338,9 @@
           }
           currentNodeData.children.push(currentNode);
         }
+
+        common.sort(currentNodeData.children);
+        this.$refs.tree.updateChildren(currentNodeData.id, currentNodeData.children);
 
         // 设置选中树节点，并出发 node-click 设置对应的表单信息
         this.$nextTick(() => {
@@ -473,10 +484,80 @@
 
               if ('operationForm' === formName) {
                 console.log('提交操作信息')
+                let param = {
+                  content: {
+                    id: this.operationForm.id,
+                    name: this.operationForm.name,
+                    parentId: this.operationForm.parentId,
+                    code: this.operationForm.code,
+                    sortNumber: this.operationForm.sortNumber
+                  }
+                };
+                updateOperation(param).then(data => {
+                  if (200 === data.code) {
+                    this.$message.success(data.message);
+                    let updatedOperation = data.content;
+                    updatedOperation.label = updatedOperation.name;
+
+                    this.updateParentChildren((parentNodeKey, children, currentNodeKey) => {
+
+                      let ary = [];
+                      for (let i = 0; children && i < children.length; i++) {
+                        let item = children[i];
+                        if (item.id === currentNodeKey) {
+                          ary.push(updatedOperation)
+                        } else {
+                          ary.push(item);
+                        }
+                      }
+
+                      common.sort(ary);
+                      this.$refs.tree.updateKeyChildren(parentNodeKey, ary);
+                      this.setNodeUpdateForm(updatedOperation);
+                    });
+                  } else {
+                    this.$message.error(data.message);
+                  }
+                });
               }
 
               if ('permissionForm' === formName) {
                 console.log('提交权限信息')
+                let param = {
+                  content: {
+                    id: this.permissionForm.id,
+                    parentId: this.permissionForm.parentId,
+                    name: this.permissionForm.name,
+                    url: this.permissionForm.url,
+                    sortNumber: this.permissionForm.sortNumber
+                  }
+                };
+                updatePermission(param).then(data => {
+                  if (200 === data.code) {
+                    this.$message.success(data.message);
+                    let updatedPermission = data.content;
+                    updatedPermission.label = updatedPermission.name;
+
+                    this.updateParentChildren((parentNodeKey, children, currentNodeKey) => {
+
+                      let ary = [];
+                      for (let i = 0; children && i < children.length; i++) {
+                        let item = children[i];
+                        if (item.id === currentNodeKey) {
+                          ary.push(updatedPermission)
+                        } else {
+                          ary.push(item);
+                        }
+                      }
+
+                      common.sort(ary);
+                      this.$refs.tree.updateKeyChildren(parentNodeKey, ary);
+                      this.setNodeUpdateForm(updatedPermission);
+                    });
+                  } else {
+                    this.$message.error(data.message);
+                  }
+                });
 
               }
             }).catch(() => {
