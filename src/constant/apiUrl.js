@@ -28,3 +28,19 @@ export const permission = {
   UPDATE: '/permission/update',
   DELETE: '/permission/delete',
 };
+
+export const dictionaryItem = {
+  QUERY_PAGE: '/dictionary/item',
+  QUERY_LIST: '/dictionary/item/list',
+  UPDATE: '/dictionary/item/update',
+  DELETE: '/dictionary/item/delete',
+  CHECK_EXIST: '/dictionary/item/check/exist',
+  CHECK_UPDATE_EXIST: '/dictionary/item/check/update/exist',
+};
+export const dictionaryType = {
+  QUERY_PAGE: '/dictionary/type',
+  UPDATE: '/dictionary/type/update',
+  DELETE: '/dictionary/type/delete',
+  CHECK_EXIST: '/dictionary/type/check/exist',
+  CHECK_UPDATE_EXIST: '/dictionary/type/check/update/exist',
+};

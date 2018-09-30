@@ -17,11 +17,10 @@
                         <el-option v-for="item in options" :key="item.id" :label="item.name" :value="item.id"></el-option>
                     </el-select>
                     <br/>
-                    operationForm.id: <input v-model="operationForm.id" width="500"/>
+                    <!--operationForm.id: <input v-model="operationForm.id" width="500"/>
                     operationForm.platId: <input v-model="operationForm.platId" width="500"/>
                     operationForm.parentId: <input v-model="operationForm.parentId" width="500"/>
                     operationForm.type: <input v-model="operationForm.type" width="500"/>
-
 
                     <br>
                     <br>
@@ -29,7 +28,7 @@
                     <br>
                     permissionForm.id: <input v-model="permissionForm.id" width="500"/>
                     permissionForm.platId: <input v-model="permissionForm.platId" width="500"/>
-                    permissionForm.parentId: <input v-model="permissionForm.parentId" width="500"/>
+                    permissionForm.parentId: <input v-model="permissionForm.parentId" width="500"/>-->
                 </div>
             </template>
 
@@ -66,7 +65,7 @@
 
                     <el-form-item label="操作编码" prop="code" align="left">
                         <el-select v-model="operationForm.code" placeholder="请选择操作编码" clearable ref="codeSelect">
-                            <el-option v-for="item in codeOptions" :key="item.value" :label="item.label" :value="item.value">
+                            <el-option v-for="item in codeOptions" :key="item.id" :label="item.name" :value="item.code">
                             </el-option>
                         </el-select>
                     </el-form-item>
@@ -106,6 +105,9 @@
 <script>
   import TreeForm from 'components/business/treeForm/Index';
   import {queryPlatList} from 'apis/general/plat';
+  import {queryDictionaryItemList} from 'apis/dictionary/item';
+
+
   import {
     queryOperationsByPlatId,
     addOperation,
@@ -130,28 +132,7 @@
         // 所有系统信息
         options: [],
         // 所有操作编码信息
-        codeOptions: [
-          {
-            value: 'a',
-            label: '新增'
-          },
-          {
-            value: 'b',
-            label: '修改'
-          },
-          {
-            value: 'c',
-            label: '删除'
-          },
-          {
-            value: 'd',
-            label: '查询'
-          },
-          {
-            value: 'e',
-            label: '启停'
-          },
-        ],
+        codeOptions: [],
         addDisabled: true,
         deleteDisabled: true,
 
@@ -211,6 +192,7 @@
     },
     created() {
       this.queryAllPlat();
+      this.queryAllDicItemList();
     },
     methods: {
 
@@ -218,6 +200,16 @@
         queryPlatList().then(data => {
           if (200 === data.code) {
             this.options = data.content;
+          }
+        });
+      },
+      queryAllDicItemList() {
+        let param = {
+          content: 'operation'
+        };
+        queryDictionaryItemList(param).then(data => {
+          if (200 === data.code) {
+            this.codeOptions = data.content;
           }
         });
       },

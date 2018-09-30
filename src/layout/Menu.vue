@@ -53,6 +53,17 @@
                     <el-menu-item index="/user/list">权限功能管理</el-menu-item>
                     <el-menu-item index="/user/list">角色管理</el-menu-item>
                 </el-submenu>
+
+                <el-submenu index="/4">
+                    <template slot="title">
+                        <i class="el-icon-menu"></i>
+                        <span>数据字典</span>
+                    </template>
+                    <el-menu-item index="/dictionary/type">数据类型</el-menu-item>
+                    <el-menu-item index="/dictionary/item">数据项目</el-menu-item>
+                </el-submenu>
+
+
             </el-menu>
         </el-col>
     </el-row>
