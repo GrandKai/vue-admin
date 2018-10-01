@@ -37,10 +37,30 @@ export const dictionaryItem = {
   CHECK_EXIST: '/dictionary/item/check/exist',
   CHECK_UPDATE_EXIST: '/dictionary/item/check/update/exist',
 };
+
 export const dictionaryType = {
   QUERY_PAGE: '/dictionary/type',
   UPDATE: '/dictionary/type/update',
   DELETE: '/dictionary/type/delete',
   CHECK_EXIST: '/dictionary/type/check/exist',
   CHECK_UPDATE_EXIST: '/dictionary/type/check/update/exist',
+};
+
+export const authority = {
+    QUERY_PAGE: '/authority',
+    ADD: '/authority/add',
+    UPDATE: '/authority/update',
+    DELETE: '/authority/delete',
+    CHECK_EXIST: '/authority/check/exist',
+    CHECK_UPDATE_EXIST: '/authority/check/update/exist',
+};
+
+
+export const role = {
+    QUERY_PAGE: '/role',
+    ADD: '/role/add',
+    UPDATE: '/role/update',
+    DELETE: '/role/delete',
+    CHECK_EXIST: '/role/check/exist',
+    CHECK_UPDATE_EXIST: '/role/check/update/exist',
 };

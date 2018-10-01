@@ -343,10 +343,12 @@
         this.$refs.tree.updateChildren(currentNodeData.id, currentNodeData.children);
 
         // 设置选中树节点，并出发 node-click 设置对应的表单信息
-        this.$nextTick(() => {
-          this.$refs.tree.setCurrentKey(currentNode.id);
-          this.handleNodeClick(currentNode);
-        });
+          setTimeout(() => {
+              this.$nextTick(() => {
+                  this.$refs.tree.setCurrentKey(currentNode.id);
+                  this.handleNodeClick(currentNode);
+              });
+          }, 500);
       },
 
       updateParentChildren(callBack) {
