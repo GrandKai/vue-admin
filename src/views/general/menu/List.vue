@@ -9,7 +9,7 @@
         <!-- 菜单区域 -->
         <tree-from>
             <template slot="queryArea">
-                <div class="menu-select">
+                <li>
                     <span class="sysSpan">所属系统 </span>
                     <el-select v-model="form.platId" placeholder="请选择操作系统" clearable @change="selectChange" ref="select">
                         <el-option v-for="item in options" :key="item.id" :label="item.name" :value="item.id"></el-option>
@@ -17,7 +17,7 @@
                     <br/>
                     <!--platId: <input v-model="form.platId" width="500"/>-->
                     <!--parentId: <input v-model="form.parentId" width="500"/>-->
-                </div>
+                </li>
             </template>
             <!-- 按钮区域 -->
             <template slot="buttonArea">

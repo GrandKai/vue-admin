@@ -51,7 +51,7 @@
                         <span>权限管理</span>
                     </template>
                     <el-menu-item index="/authority">权限管理</el-menu-item>
-                    <el-menu-item index="/user/list">角色管理</el-menu-item>
+                    <el-menu-item index="/role">角色管理</el-menu-item>
                 </el-submenu>
 
                 <el-submenu index="/4">

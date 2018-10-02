@@ -14,6 +14,9 @@ const OperationAdd = () => import('views/general/operation/Add.vue');
 
 const AuthorityList = () => import('views/privilege/authority/List.vue');
 
+const RoleList = () => import('views/privilege/role/List.vue');
+const RoleAdd = () => import('views/privilege/role/Add.vue');
+
 const TestTree = () => import('components/business/tree/Test.vue');
 
 const DictionaryTypeList = () => import('views/dictionary/type/List.vue');
@@ -59,15 +62,23 @@ let router = [
   },
   {
     path: 'dictionary/type/list',
-    name: 'dictionaryTypeList',
     component: DictionaryTypeList
   },
 
   {
       path: 'authority',
-      name: 'authority',
       component: AuthorityList
   },
+
+  {
+      path: 'role',
+      component: RoleList
+  },
+
+    {
+        path: 'role/add',
+        component: RoleAdd
+    },
 ];
 
 export default router;

@@ -26,24 +26,23 @@
                             width="60" header-align="center" align="center">
                     </el-table-column>
 
-                    <el-table-column label="系统名称" header-align="center" align="left" fixed="right">
+                    <el-table-column label="系统名称" header-align="left" align="left" fixed="right">
                         <template slot-scope="scope">
-                            <el-button style="padding-left:0" type="text"
-                                       @click='updateEntity(scope.row , "name" , "系统名称")'>
+                            <div class="click-text" @click='updateEntity(scope.row , "name" , "系统名称")'>
                                 {{ scope.row.name }}
-                            </el-button>
+                            </div>
                         </template>
                     </el-table-column>
 
-                    <el-table-column label="显示顺序" header-align="center" align="left" fixed="right">
+                    <el-table-column label="显示顺序" header-align="left" align="left" fixed="right">
                         <template slot-scope="scope">
-                            <el-button type="text" @click='updateEntity(scope.row , "sortNumber" , "显示顺序")'>
+                            <div class="click-text" @click='updateEntity(scope.row , "sortNumber" , "显示顺序")'>
                                 {{ scope.row.sortNumber}}
-                            </el-button>
+                            </div>
                         </template>
                     </el-table-column>
 
-                    <el-table-column label="版本号" header-align="center" align="left" fixed="right">
+                    <el-table-column label="版本号" header-align="left" align="left" fixed="right">
                         <template slot-scope="scope">
                             <div class="click-text" @click='updateEntity(scope.row , "version" , "版本号")'>
                                 {{ scope.row.version }}
@@ -51,7 +50,7 @@
                         </template>
                     </el-table-column>
 
-                    <el-table-column label="访问URL" header-align="center" align="left" fixed="right">
+                    <el-table-column label="访问URL" header-align="left" align="left" fixed="right">
                         <template slot-scope="scope">
                             <div class="click-text" @click='updateEntity(scope.row , "url" , "访问URL")'>
                                 {{ scope.row.url }}
@@ -59,8 +58,7 @@
                         </template>
                     </el-table-column>
 
-                    <el-table-column label="系统描述" header-align="center" align="left" fixed="right" prop="description"
-                                     @click='updateEntity(scope.row , "description" , "系统描述")'>
+                    <el-table-column label="系统描述" header-align="left" align="left" fixed="right">
                         <template slot-scope="scope">
                             <div class="click-text" @click='updateEntity(scope.row , "description" , "系统描述")'>
                                 {{ scope.row.description }}
