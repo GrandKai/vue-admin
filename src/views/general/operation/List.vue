@@ -507,7 +507,11 @@
                       for (let i = 0; children && i < children.length; i++) {
                         let item = children[i];
                         if (item.id === currentNodeKey) {
-                          ary.push(updatedOperation)
+
+                            if (item.children) {
+                                updatedOperation.children = item.children;
+                            }
+                          ary.push(updatedOperation);
                         } else {
                           ary.push(item);
                         }
@@ -546,6 +550,9 @@
                       for (let i = 0; children && i < children.length; i++) {
                         let item = children[i];
                         if (item.id === currentNodeKey) {
+                            if (item.children) {
+                                updatedPermission.children = item.children;
+                            }
                           ary.push(updatedPermission)
                         } else {
                           ary.push(item);
