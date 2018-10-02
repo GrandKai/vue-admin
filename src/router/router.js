@@ -1,3 +1,5 @@
+
+//页面配置文件
 const About = () => import('views/About.vue');
 
 

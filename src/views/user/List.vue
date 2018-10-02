@@ -44,7 +44,7 @@
         <li>
           <el-input clearable
                     v-model="param.content.name"
-                    placeholder="用户名/昵称/手机号/QQ"
+                    placeholder="用户名/昵称"
                     style="width: 220px"
                     @input="clearInput"
                     @keyup.native.enter="queryPage"></el-input>
@@ -290,15 +290,16 @@
       },
 
       updateEntityEnabledStatus(row) {
+        console.info(row)
         let text = row.isEnabled === '1' ? '停用' : '启用';
         let isEnabled = row.isEnabled === '1' ? '0' : '1';
 
         common.confirm({
-          message: `是否${text}【${row.name}】的账户？`
+          message: `是否${text}【${row.userName}】的账户？`
         }).then(() => {
           let param = {
             content: {
-              userId: row.id,
+              userId: row.userId,
               isEnabled: isEnabled
             }
           };
