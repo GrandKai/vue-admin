@@ -157,7 +157,7 @@
 <script>
     import CustomPage from 'components/listCustomPage/Index'
     import {queryPlatList} from 'apis/general/plat';
-    import {queryRolePage, addRole, updateRole, deleteRole} from 'apis/privilege/role'
+    import {queryRolePage, updateRole, deleteRole} from 'apis/privilege/role';
     export default {
 
         components: {
