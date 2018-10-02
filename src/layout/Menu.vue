@@ -32,7 +32,7 @@
                         <i class="el-icon-location"></i>
                         <span>用户管理</span>
                     </template>
-                    <el-menu-item index="/user/list">用户信息</el-menu-item>
+                    <el-menu-item index="/user">用户信息</el-menu-item>
                 </el-submenu>
 
                 <el-submenu index="/2">
@@ -50,7 +50,7 @@
                         <i class="el-icon-menu"></i>
                         <span>权限管理</span>
                     </template>
-                    <el-menu-item index="/user/list">权限功能管理</el-menu-item>
+                    <el-menu-item index="/authority">权限管理</el-menu-item>
                     <el-menu-item index="/user/list">角色管理</el-menu-item>
                 </el-submenu>
 

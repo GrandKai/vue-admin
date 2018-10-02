@@ -13,6 +13,9 @@ const MenuAdd = () => import('views/general/menu/Add.vue');
 const OperationList = () => import('views/general/operation/List.vue');
 const OperationAdd = () => import('views/general/operation/Add.vue');
 
+
+const AuthorityList = () => import('views/privilege/authority/List.vue');
+
 const TestTree = () => import('components/business/tree/Test.vue');
 
 const DictionaryTypeList = () => import('views/dictionary/type/List.vue');
@@ -29,7 +32,7 @@ let router = [
     component: About
   },
   {
-    path: 'user/list',
+    path: 'user',
     component: UserList
   },
   {
@@ -64,6 +67,12 @@ let router = [
     path: 'dictionary/type/list',
     name: 'dictionaryTypeList',
     component: DictionaryTypeList
+  },
+
+  {
+      path: 'authority',
+      name: 'authority',
+      component: AuthorityList
   },
 ];
 
