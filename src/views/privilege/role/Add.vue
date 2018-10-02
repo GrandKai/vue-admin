@@ -8,7 +8,7 @@
         </el-breadcrumb>
 
         <el-row>
-            <el-col :span="12">
+            <el-col :span="13">
 
                 <el-form ref="form" :model="form" :rules="rules" label-width="120px">
 

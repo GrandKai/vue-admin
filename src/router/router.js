@@ -17,6 +17,7 @@ const OperationAdd = () => import('views/general/operation/Add.vue');
 
 
 const AuthorityList = () => import('views/privilege/authority/List.vue');
+const AuthorityAdd = () => import('views/privilege/authority/Add.vue');
 
 const RoleList = () => import('views/privilege/role/List.vue');
 const RoleAdd = () => import('views/privilege/role/Add.vue');
@@ -77,6 +78,11 @@ let router = [
       path: 'authority',
       component: AuthorityList
   },
+
+    {
+        path: 'authority/add',
+        component: AuthorityAdd
+    },
 
   {
       path: 'role',

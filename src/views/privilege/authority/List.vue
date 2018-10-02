@@ -7,23 +7,216 @@
             <el-breadcrumb-item :to="{ path: '/authority' }">权限管理</el-breadcrumb-item>
         </el-breadcrumb>
 
+        <div>
+            <el-row>
+
+
+                <el-col :span="13">
+
+                    <custom-page>
+                        <template slot="queryArea">
+
+                            <li>
+                                <span class="sysSpan">所属系统 </span>
+                                <el-select v-model="param.content.platId" placeholder="请选择操作系统" clearable
+                                           @change="queryPage"
+                                           ref="select">
+                                    <el-option v-for="item in options" :key="item.id" :label="item.name"
+                                               :value="item.id"></el-option>
+                                </el-select>
+                                <br/>
+                                <!--platId: <input v-model="form.platId" width="500"/>-->
+                                <!--parentId: <input v-model="form.parentId" width="500"/>-->
+                            </li>
+                            <li>
+                                <el-input v-model="param.content.name" placeholder="权限名称/权限描述"
+                                          @keyup.native.enter="queryPage"
+                                          style="width: 220px"
+                                          clearable @input="clearInput"></el-input>
+                            </li>
+
+                            <li>
+                                <el-button type="primary" @click="queryPage()" icon="el-icon-search">查 询
+                                </el-button>
+                            </li>
+                            <li>
+                                <el-button @click="clearQueryParam" icon="el-icon-delete">清 空
+                                </el-button>
+                            </li>
+                        </template>
+
+                        <template slot="buttonArea">
+                            <li>
+                                <el-button type="primary" @click="addEntity"><i class="el-icon-plus"></i> 新建权限
+                                </el-button>
+                            </li>
+                        </template>
+
+                        <template slot="tableArea">
+
+
+                            <el-table :data="tableData" border stripe highlight-current-row
+                                      row-key="id" ref="multipleTable"
+                                      :row-class-name="tableRowClassName"
+                                      @cell-click="handleCellClick" v-loading="loading">
+
+                                <!-- 显示索引 -->
+                                <el-table-column
+                                        prop="module"
+                                        :formatter="formatter"
+                                        label="序号"
+                                        width="60" header-align="center" align="center">
+                                </el-table-column>
+
+                                <el-table-column label="权限名称" header-align="left" align="left" fixed="right">
+                                    <template slot-scope="scope">
+                                        <div class="click-text" @click='updateEntity(scope.row , "name" , "权限名称")'>
+                                            {{ scope.row.name }}
+                                        </div>
+                                    </template>
+                                </el-table-column>
+
+                                <el-table-column label="权限描述" header-align="left" align="left" fixed="right"
+                                                 width="150%">
+                                    <template slot-scope="scope">
+                                        <div class="click-text"
+                                             @click='updateEntity(scope.row , "description" , "系统描述")'>
+                                            {{ scope.row.description }}
+                                        </div>
+                                    </template>
+                                </el-table-column>
+
+                                <el-table-column label="所属系统" header-align="left" align="left" fixed="right"
+                                                 width="100%"
+                                                 prop="platName">
+                                </el-table-column>
+
+                                <el-table-column label="显示顺序" header-align="left" align="left" fixed="right"
+                                                 width="80%">
+                                    <template slot-scope="scope">
+                                        <div class="click-text"
+                                             @click='updateEntity(scope.row , "sortNumber" , "显示顺序")'>
+                                            {{ scope.row.sortNumber}}
+                                        </div>
+                                    </template>
+                                </el-table-column>
+
+                                <el-table-column label="操作" header-align="center" align="center" fixed="right"
+                                                 width="80%">
+                                    <template slot-scope="scope">
+
+                                        <el-button size="mini" type="danger" @click="deleteEntity(scope.row)">
+                                            删除
+                                        </el-button>
+                                    </template>
+                                </el-table-column>
+                            </el-table>
+                        </template>
+
+
+                        <template slot="paginationArea">
+
+                            <el-pagination v-show="paginationShow"
+                                           @current-change="handleCurrentChange"
+                                           @size-change="handleSizeChange"
+                                           background
+                                           :page-sizes="pageSizes"
+                                           :current-page.sync="param.page.pageNum" :page-size="param.page.pageSize"
+                                           layout="total, sizes,prev, pager, next, jumper" :total="total">
+                            </el-pagination>
+
+                        </template>
+                    </custom-page>
+
+                </el-col>
+
+                <el-col :span="1">
+
+                    <div class="line"></div>
+
+                </el-col>
+
+                <el-col :span="10">
+
+                    <tree>
+
+                        <!-- 按钮区域 -->
+                        <template slot="buttonArea">
+                            <el-button type="success" @click="treeOpen"><i class="el-icon-arrow-down"></i> 展开
+                            </el-button>
+                            <el-button type="success" @click="treeClose"><i class="el-icon-arrow-up"></i> 收起</el-button>
+                        </template>
+
+                        <!-- 树区域 -->
+                        <template slot="treeArea">
+
+                            <el-tree :data="treeData"
+                                     :props="defaultProps"
+                                     @node-click="handleNodeClick"
+                                     default-expand-all
+                                     highlight-current
+                                     :show-checkbox="true"
+                                     :expand-on-click-node="false"
+                                     node-key="id"
+                                     ref="tree" v-show="treeIsShow" style="max-height: 500px; overflow-y: auto">
+                            </el-tree>
+
+                        </template>
+
+                    </tree>
+
+                </el-col>
+            </el-row>
+
+        </div>
     </div>
 </template>
 
 <script>
 
-    import {queryAuthorityPage} from 'apis/privilege/authority'
+    import {queryPlatList} from 'apis/general/plat';
+    import {queryAuthorityPage, addAuthority, deleteAuthority, updateAuthority} from 'apis/privilege/authority'
+
+
+    import {queryOperationsByPlatId} from 'apis/general/operation';
+
+    import Tree from 'components/business/tree/Index';
+    import CustomPage from 'components/listCustomPage/Index'
+
     export default {
+        components: {
+            'tree': Tree,
+            'custom-page': CustomPage,
+        },
         data() {
 
             return {
+                treeData: [],
+                treeIsShow: false,
+
+                defaultProps: {
+                    children: 'children',
+                    label: 'label'
+                },
+
+                // 所有系统信息
+                options: [],
+                // 修改的内容
+                editForm: {
+                    id: "",
+                    property: "",
+                    content: ""
+                },
 
                 loading: false,
                 paginationShow: false,
                 pageSizes: pageSizes,
                 total: 0,
                 param: {
-                    content: {},
+                    content: {
+                        name: '',
+                        platId: '',
+                    },
                     page: {
                         pageNum: 1,
                         pageSize: pageSizes[0]
@@ -31,18 +224,291 @@
                 },
 
                 tableData: [],
+
+                // 弹出框属性设置
+                dlgSettings: {
+                    title: "", // 弹窗标题
+                    visible: false, // 弹窗可见
+                    inputType: "text", // 弹窗内文本框类型
+                    rowNum: 1 // 文本框行数
+                },
                 // 校验规则
                 rules: {}
             }
         },
         created() {
-            queryAuthorityPage(this.param).then(data => {
-                console.log('请求权限数据', data)
-            })
-        }
+            this.queryPage();
+            this.queryAllPlat();
+            // queryAuthorityPage(this.param).then(data => {
+            //     console.log('请求权限数据', data)
+            // })
+        },
+        methods: {
+
+
+            queryAllPlat() {
+                queryPlatList().then(data => {
+                    console.log('查询所有平台', data);
+                    if (200 === data.code) {
+                        this.options = data.content;
+                    }
+                });
+            },
+
+
+            tableRowClassName({row, rowIndex}) {
+                // 把每一行的索引放进row
+                row.rowIndex = rowIndex
+            },
+
+            formatter(row, column, cellValue, index) {
+                //放回索引值
+                return this.param.page.pageSize * (this.param.page.pageNum - 1) + 1 + row.rowIndex;
+            },
+            /**
+             * 分页查询
+             * @param param
+             */
+            queryPage() {
+                this.loading = true;
+                queryAuthorityPage(this.param).then((data) => {
+                    this.loading = false;
+                    this.paginationShow = true;
+
+                    if (data.content && data.content.list) {
+                        this.tableData = data.content.list;
+                        this.total = data.content.total;
+                    }
+                }).catch(error => {
+                    this.loading = false;
+                });
+            },
+
+
+            // 改变页码
+            handleCurrentChange(val) {
+                this.param.page.pageNum = val;
+                this.queryPage();
+            },
+            // 改变每页显示多少条
+            handleSizeChange(value) {
+                this.param.page.pageSize = value;
+                this.queryPage();
+            },
+
+            addEntity: function () {
+                this.$router.push("/authority/add");
+            },
+
+            /***************　打开修改系统对话框　*********************/
+            updateEntity(row, rowName, dlgTitle) {
+
+                // 判断弹出框展示样式
+                switch (rowName) {
+                    case 'description': {
+                        this.dlgSettings = {title: dlgTitle, visible: true, inputType: "textarea", rowNum: 4};
+                        break;
+                    }
+                    default: {
+                        this.dlgSettings = {title: dlgTitle, visible: true, inputType: "text", rowNum: 1};
+                        break;
+                    }
+                }
+                // 根据列名添加校验规则
+                switch (rowName) {
+                    case 'sortNumber': {
+                        // 手动添加的数字校验
+                        this.rules.content = [{validator: common.checkNumber, trigger: "blur"}];
+                        break;
+                    }
+                    case 'name': {
+                        this.rules.content = [
+                            {required: true, message: "请输入" + dlgTitle + "，长度在50个字符内", trigger: "blur", max: 50},
+                            // {validator: this.checkExist, trigger: "blur"}
+                        ];
+                        break;
+                    }
+                    case 'description': {
+                        this.rules.content = [
+                            {required: true, message: "请输入" + dlgTitle + "，长度在500个字符内", trigger: "blur", max: 500},
+                        ];
+                        break;
+                    }
+                }
+                // 清空表单
+                this.clearForm("editForm");
+                this.editForm = {
+                    id: row.id,
+                    property: rowName,
+                    content: row[rowName]
+                };
+            },
+
+            /***************　提交修改信息　*********************/
+            onSubmit() {
+                this.$refs.editForm.validate(valid => {
+                    if (valid) {
+                        // 传入参数
+                        let param = {
+                            content: {
+                                id: this.editForm.id, // 修改记录的ID
+                            }
+                        };
+                        // 修改记录的属性和属性值
+                        param.content[this.editForm.property] = this.editForm.content;
+
+                        updateAuthority(param).then(data => {
+                            this.dlgSettings.visible = false; // 对话框关闭
+                            if (200 === data.code) {
+                                this.$message.success(data.message);
+                                this.queryPage();
+                            } else {
+                                this.$message.error(data.message);
+                            }
+                        });
+                    }
+                });
+            },
+
+            /***************  清空Form　*********************/
+            clearForm(formName) {
+                // 修改框未初始化时，不清空表单
+                if (typeof this.$refs[formName] != "undefined") {
+                    this.$refs[formName].resetFields();
+                }
+            },
+
+            /**
+             * 删除实体
+             * @param id
+             */
+            deleteEntity(row) {
+                common.confirm({
+                    message: `此操作将永久删除, 是否继续？`,
+                }).then(() => {
+                    deleteAuthority({content: row.id}).then(data => {
+                        if (200 === data.code) {
+                            this.$message.success(`【${row.name}】删除成功`);
+                            this.queryPage();
+                        } else {
+                            this.$message.error(data.message);
+                        }
+                    });
+                }).catch(() => {
+                });
+            },
+
+            // 清空查询条件
+            clearQueryParam() {
+                this.param.content = {
+                    name: '',
+                    platId: '',
+                };
+                this.queryPage();
+                this.$refs.multipleTable.clearSelection();
+            },
+            clearInput() {
+                console.log("........................")
+            },
+
+
+            treeOpen() {
+
+            },
+            treeClose() {
+
+            },
+            handleNodeClick(nodeData) {
+                console.log('当前选中node节点:', nodeData);
+                // 不是根节点才能进行按钮操作
+                /*let type = nodeData.type;
+                if (nodeData.parentId) {
+                    this.operationFormIsShow = 'operation' === type;
+                    this.permissionFormIsShow = 'permission' === type;
+                }
+
+                this.addDisabled = !('menu' === type || 'operation' === type);
+
+                let currentNodeData = this.$refs.tree.getCurrentNode();
+                let children = currentNodeData.children;
+
+                // 设置删除按钮
+                this.deleteDisabled = !('operation' === nodeData.type || 'permission' === nodeData.type) || (children && children.length > 0);
+
+                // 设置选中的【操作】表单信息
+                if (this.operationFormIsShow) {
+                    this.$refs.operationForm.resetFields();
+
+                    this.operationForm.id = nodeData.id;
+                    this.operationForm.parentId = nodeData.parentId;
+                    this.operationForm.name = nodeData.name;
+                    this.operationForm.sortNumber = nodeData.sortNumber;
+                    this.operationForm.type = nodeData.type;
+                    this.operationForm.code = nodeData.url;
+
+                }
+
+                // 设置选中的【权限】表单信息
+                if (this.permissionFormIsShow) {
+                    this.$refs.permissionForm.resetFields();
+
+                    this.permissionForm.id = nodeData.id;
+                    this.permissionForm.name = nodeData.name;
+                    this.permissionForm.parentId = nodeData.parentId;
+                    this.permissionForm.sortNumber = nodeData.sortNumber;
+                    this.permissionForm.url = nodeData.url;
+
+                }
+*/
+            },
+            handleCellClick(row, column, cell, event) {
+                console.log('点击单元格', row, column, cell, event);
+                let platId = row.platId;
+                let platName = row.platName;
+                if (platId) {
+                    this.treeIsShow = !!platId;
+                    // TODO: 根据平台 id 获取所有操作树信息
+
+                    let param = {
+                        content: {
+                            platId: platId
+                        }
+                    };
+
+                    queryOperationsByPlatId(param).then(data => {
+                        if (200 === data.code) {
+                            let content = data.content;
+                            console.log('根据平台id查询所有操作信息', content);
+
+                            // 获取选中的平台名称
+                            console.log('获取选中的平台名称', platName, 'id:', platId);
+                            let root = {
+                                id: platId,
+                                label: platName,
+                                children: common.toTree(content)
+                            };
+
+                            this.treeData = [root];
+                        } else {
+                            this.$message.error(data.message);
+                        }
+                    });
+                }
+
+
+            }
+        },
+
     }
 </script>
 
 <style scoped>
 
+    .line {
+        width: 1px;
+        min-height: 500px;
+        float: right;
+        /*background-color: #f0f0f0;*/
+        background-color: red;
+    }
 </style>

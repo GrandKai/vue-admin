@@ -116,7 +116,6 @@
     updatePermission,
     deletePermission,
   } from 'apis/general/operation';
-  import {operation} from "../../../constant/apiUrl";
 
   const sortNumber = 10;
   export default {
@@ -230,7 +229,7 @@
           queryOperationsByPlatId(param).then(data => {
             if (200 === data.code) {
               let content = data.content;
-              console.log('根据平台id查询所有菜单信息', content);
+              console.log('根据平台id查询所有操作信息', content);
 
               let platName = this.$refs.select.selected.currentLabel;
               let platId = this.$refs.select.selected.currentValue;
