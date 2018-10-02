@@ -295,7 +295,11 @@
         let isEnabled = row.isEnabled === '1' ? '0' : '1';
 
         common.confirm({
+<<<<<<< .merge_file_e5Oef3
           message: `是否${text}【${row.userName}】的账户？`
+=======
+          message: `是否${text}【${row.name}】的账户？`
+>>>>>>> .merge_file_KB50u9
         }).then(() => {
           let param = {
             content: {
