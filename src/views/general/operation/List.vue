@@ -50,7 +50,7 @@
                          :show-checkbox="false"
                          :expand-on-click-node="false"
                          node-key="id"
-                         ref="tree" v-show="treeIsShow">
+                         ref="tree" v-show="treeIsShow" style="overflow-y: auto;max-height: 500px">
                 </el-tree>
             </template>
 

@@ -55,6 +55,7 @@ export const dictionaryType = {
 
 export const authority = {
     QUERY_PAGE: '/authority',
+    QUERY_LIST: '/authority/list',
     ADD: '/authority/add',
     UPDATE: '/authority/update',
     DELETE: '/authority/delete',
