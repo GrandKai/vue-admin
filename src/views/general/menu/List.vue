@@ -338,7 +338,10 @@
               for (let i = 0; children && i < children.length; i++) {
                 let item = children[i];
                 if (item.id === currentNodeKey) {
-                  ary.push(updatedMenu)
+                    if (item.children) {
+                        updatedMenu.children = item.children;
+                    }
+                  ary.push(updatedMenu);
                 } else {
                   ary.push(item);
                 }
