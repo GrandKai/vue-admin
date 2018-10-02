@@ -1,4 +1,4 @@
-import {$vm} from '@/main'
+import {$vm} from '@/main';
 
 export default {
 
@@ -26,122 +26,122 @@ export default {
   // 电话号码校验
   isMobilePhone: function (tel) {
     let pattern = /^((13[0-9])|(17[0-9])|(14[0-9])|(15[0-9])|(18[0-9]))\d{8}$/;
-    return pattern.test(tel)
+    return pattern.test(tel);
   },
 
   // 是否为空
   isEmpty: function (str) {
-    return (typeof str === 'undefined') || (str == null) || (str === '') || (str === 'null') || (str === 'NULL') || (str == undefined) || (str == "undefined")
+    return (typeof str === 'undefined') || (str == null) || (str === '') || (str === 'null') || (str === 'NULL') || (str == undefined) || (str == 'undefined');
   },
 
   // 是否为字符串
   isString: function (it) {
-    return !!arguments.length && it != null && (typeof it === 'string' || it instanceof String)
+    return !!arguments.length && it != null && (typeof it === 'string' || it instanceof String);
   },
 
   // 是否为数组
   isArray: function (it) {
-    return (it && it instanceof Array) || Array.isArray(it)
+    return (it && it instanceof Array) || Array.isArray(it);
   },
 
   // 是否为方法
   isFunction: function (obj) {
-    return typeof obj === 'function'
+    return typeof obj === 'function';
   },
 
   isDOMElement: function (obj) {
-    return !!(obj && typeof window !== 'undefined' && (obj === window || obj.nodeType))
+    return !!(obj && typeof window !== 'undefined' && (obj === window || obj.nodeType));
   },
 
   // 是否为布尔
   isBoolean: function (obj) {
-    return obj === true || obj === false
+    return obj === true || obj === false;
   },
 
   isNumeric: function (obj) {
-    return /^\d+(\.\d+)?$/.test(obj)
+    return /^\d+(\.\d+)?$/.test(obj);
   },
 
   isChinese: function (str) {
-    return /[\u4E00-\u9FA5]/g.test(str)
+    return /[\u4E00-\u9FA5]/g.test(str);
   },
 
   trim: function (str) {
-    return str.replace(/(^\s*)|(\s*$)/g, '')
+    return str.replace(/(^\s*)|(\s*$)/g, '');
   },
 
   // 字符串转json
   stringToJson: function (json) {
     if (typeof json === 'object') {
-      return json
+      return json;
     }
-    return JSON.parse(json)
+    return JSON.parse(json);
   },
 
   // json转字符串
   jsonToString: function (json) {
     if (this.isString(json)) {
-      return json
+      return json;
     }
-    return JSON.stringify(json)
+    return JSON.stringify(json);
   },
 
   // 放到缓存中
   pushLocalStorage: function (key, value) {
-    value = this.jsonToString(value)
-    sessionStorage.setItem(key, value)
+    value = this.jsonToString(value);
+    sessionStorage.setItem(key, value);
   },
 
   // 从缓存中取出
   popLocalStorage: function (key) {
-    var value = sessionStorage.getItem(key)
+    var value = sessionStorage.getItem(key);
     if (!this.isEmpty(value)) {
-      value = this.stringToJson(value)
-      return value
+      value = this.stringToJson(value);
+      return value;
     } else {
-      return "";
+      return '';
     }
   },
 
   // 格式化日期
   dateFormat: function (date, fmt) {
     if (!date instanceof Date) {
-      return ""
+      return '';
     }
     if (!fmt || !this.isString(fmt)) {
-      fmt = "yyyy-MM-dd"
+      fmt = 'yyyy-MM-dd';
     }
     var o = {
-      "M+": date.getMonth() + 1, // 月份
-      "d+": date.getDate(), // 日
-      "h+": date.getHours() % 12 == 0 ? 12 : date.getHours() % 12, // 小时
-      "H+": date.getHours(), // 小时
-      "m+": date.getMinutes(), // 分
-      "s+": date.getSeconds(), // 秒
-      "q+": Math.floor((date.getMonth() + 3) / 3), // 季度
-      "S": date.getMilliseconds() // 毫秒
+      'M+': date.getMonth() + 1, // 月份
+      'd+': date.getDate(), // 日
+      'h+': date.getHours() % 12 == 0 ? 12 : date.getHours() % 12, // 小时
+      'H+': date.getHours(), // 小时
+      'm+': date.getMinutes(), // 分
+      's+': date.getSeconds(), // 秒
+      'q+': Math.floor((date.getMonth() + 3) / 3), // 季度
+      'S': date.getMilliseconds() // 毫秒
     };
     var week = {
-      "0": "\u65e5",
-      "1": "\u4e00",
-      "2": "\u4e8c",
-      "3": "\u4e09",
-      "4": "\u56db",
-      "5": "\u4e94",
-      "6": "\u516d"
+      '0': '\u65e5',
+      '1': '\u4e00',
+      '2': '\u4e8c',
+      '3': '\u4e09',
+      '4': '\u56db',
+      '5': '\u4e94',
+      '6': '\u516d'
     };
     if (/(y+)/.test(fmt)) {
-      fmt = fmt.replace(RegExp.$1, (date.getFullYear() + "").substr(4 - RegExp.$1.length))
+      fmt = fmt.replace(RegExp.$1, (date.getFullYear() + '').substr(4 - RegExp.$1.length));
     }
     if (/(E+)/.test(fmt)) {
-      fmt = fmt.replace(RegExp.$1, ((RegExp.$1.length > 1) ? (RegExp.$1.length > 2 ? "\u661f\u671f" : "\u5468") : "") + week[date.getDay() + ""])
+      fmt = fmt.replace(RegExp.$1, ((RegExp.$1.length > 1) ? (RegExp.$1.length > 2 ? '\u661f\u671f' : '\u5468') : '') + week[date.getDay() + '']);
     }
     for (var k in o) {
-      if (new RegExp("(" + k + ")").test(fmt)) {
-        fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)))
+      if (new RegExp('(' + k + ')').test(fmt)) {
+        fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (('00' + o[k]).substr(('' + o[k]).length)));
       }
     }
-    return fmt
+    return fmt;
   },
   // 克隆对象
   clone: function (obj) {
@@ -149,34 +149,34 @@ export default {
     if (obj instanceof Array) {
       buf = [];
       for (var i = 0; i < obj.length; i++) {
-        buf.push(this.clone(obj[i]))
+        buf.push(this.clone(obj[i]));
       }
     } else if (obj instanceof Object) {
-      buf = {}
+      buf = {};
       for (var j in obj) {
-        buf[j] = this.clone(obj[j])
+        buf[j] = this.clone(obj[j]);
       }
     } else {
-      buf = obj
+      buf = obj;
     }
-    return buf
+    return buf;
   },
   // 字符串转数字
   stringToInt: function (str) {
     if ((typeof str === 'undefined') || (str == null) || (str === '') || (str === 'null') || (str === 'NULL')) {
       return 0;
     } else {
-      return parseFloat(str)
+      return parseFloat(str);
     }
   },
   numberFormat: function (val, index) {
     var vm = this;
-    var fa = "";
-    val = val + "";
-    if (val.substring(0, 1) == "-")
+    var fa = '';
+    val = val + '';
+    if (val.substring(0, 1) == '-')
     // fa = "-"; // 允许为负数
-      fa = ""; // 不允许为负数
-    var str = "";
+      fa = ''; // 不允许为负数
+    var str = '';
     if (index == 1) {
       str = (val.replace(/[^0-9.]/g, '')).replace(/[.][0-9]*[.]/, '.').replace(/^(\-)*(\d+)\.(\d).*$/, '$1$2.$3');
     } else if (index == 2) {
@@ -184,8 +184,8 @@ export default {
     } else {
       str = (val.replace(/[^0-9.]/g, '')).replace(/[.][0-9]*[.]/, '.');
     }
-    if (str.substring(0, 1) == ".")
-      str = "0" + str;
+    if (str.substring(0, 1) == '.')
+      str = '0' + str;
     return fa + str;
   },
   // 是否存在数字
@@ -199,11 +199,11 @@ export default {
   getQueryString: function () {
     var url = location.href; //获取url中"?"符后的字串
     var theRequest = new Object();
-    if (url.indexOf("?") != -1) {
-      var str = url.substr(url.indexOf("?") + 1);
-      var strs = str.split("&");
+    if (url.indexOf('?') != -1) {
+      var str = url.substr(url.indexOf('?') + 1);
+      var strs = str.split('&');
       for (var i = 0; i < strs.length; i++) {
-        theRequest[strs[i].split("=")[0]] = unescape(strs[i].split("=")[1]);
+        theRequest[strs[i].split('=')[0]] = unescape(strs[i].split('=')[1]);
       }
     }
     return theRequest;
@@ -247,7 +247,7 @@ export default {
   formatPhone: function (phone) {
     var str = '1366668888';
     if (phone.length == 11) {
-      return phone.substr(0, 3) + "****" + phone.substr(7);
+      return phone.substr(0, 3) + '****' + phone.substr(7);
     } else {
       return phone;
     }
@@ -289,15 +289,15 @@ export default {
 
   getUrlParam: function (key) {
     let currentUrl = window.location.href;
-    let paramStr = currentUrl.substr(currentUrl.indexOf("?") + 1);
-    let paramArr = paramStr.split("&");
+    let paramStr = currentUrl.substr(currentUrl.indexOf('?') + 1);
+    let paramArr = paramStr.split('&');
     let result = null;
     paramArr.map((item) => {
       // alert(key)
       // alert(item.split("=")[0])
       // alert(item.split("=")[1])
-      if (key == item.split("=")[0]) {
-        result = item.split("=")[1];
+      if (key == item.split('=')[0]) {
+        result = item.split('=')[1];
       }
     });
     return result;
@@ -356,7 +356,7 @@ export default {
         (parent.children || (parent.children = [])).push(item);
       } else {
         // 如果不存在，则该元素是顶级元素
-        output.push(item)
+        output.push(item);
       }
     });
     console.log('转换成树形结构数据：', output);
@@ -383,9 +383,9 @@ export default {
       if (this.currentTreeKey != null) {
         this.$nextTick(() => {
           this.$refs.departmentTree.setCurrentKey(this.currentTreeKey);
-        })
+        });
       }
-    }, 10)
+    }, 10);
   },
 
   /****************** 合并树 **********************/
@@ -398,16 +398,16 @@ export default {
    */
   treeClose() {
     this.currentTreeKey = this.$refs.departmentTree.getCurrentKey();
-    this.isExpand = false
-    this.treeShow = false
+    this.isExpand = false;
+    this.treeShow = false;
     setTimeout(() => {
-      this.treeShow = true
+      this.treeShow = true;
       if (this.currentTreeKey != null) {
         this.$nextTick(() => {
           this.$refs.departmentTree.setCurrentKey(this.currentTreeKey);
-        })
+        });
       }
-    }, 10)
+    }, 10);
   },
 
   // 列表中空数据的显示形式
@@ -437,16 +437,16 @@ export default {
   // 通过身份证号获得身份详细信息
   getInfoByCard(idcard) {
     //获取出生日期
-    let birth = idcard.substring(6, 10) + "-" + idcard.substring(10, 12) + "-" + idcard.substring(12, 14);
+    let birth = idcard.substring(6, 10) + '-' + idcard.substring(10, 12) + '-' + idcard.substring(12, 14);
 
     //获取性别
     let sex = {};
     if (parseInt(idcard.substr(16, 1)) % 2 == 1) {
       //男
-      sex = {code: 1, name: "男"};
+      sex = {code: 1, name: '男'};
     } else {
       //女
-      sex = {code: 2, name: "女"};
+      sex = {code: 2, name: '女'};
     }
     //获取年龄
     let age = 0;
@@ -457,7 +457,7 @@ export default {
     if (idcard.substring(10, 12) < month || idcard.substring(10, 12) == month && idcard.substring(12, 14) <= day) {
       age++;
     }
-    return {sex, age, birth}
+    return {sex, age, birth};
   },
 
   // 确认提示框的共通
@@ -467,14 +467,14 @@ export default {
       cancelButtonText: common.isEmpty(option.cancelButtonText) ? '取消' : option.cancelButtonText,
       type: 'warning',
       closeOnPressEscape: false,
-      closeOnClickModal: false,
+      closeOnClickModal: false
     });
   },
 
   // 提示信息的共通
   message(option) {
     if (common.isEmpty(option.type)) {
-      option.type = "success"
+      option.type = 'success';
     }
     if (common.isEmpty(option.confirmButtonText) && common.isEmpty(option.confirm)) { // 如果没有按钮
       $vm.$message({
@@ -484,14 +484,14 @@ export default {
     } else { // 如果有按钮
       return $vm.$alert(option.message, {
         dangerouslyUseHTMLString: true,
-        confirmButtonText: common.isEmpty(option.confirmButtonText) ? '确定' : option.confirmButtonText,
-      })
+        confirmButtonText: common.isEmpty(option.confirmButtonText) ? '确定' : option.confirmButtonText
+      });
     }
   },
 
   // 其他联系方式，后四位是****
   formatContactInformation: function (info) {
-    return info.substring(0, info.length - 4) + "****";
+    return info.substring(0, info.length - 4) + '****';
   },
 
   // 地址市后显示****
@@ -520,7 +520,7 @@ export default {
       }
       if (!common.isArray(valA)) { //子级不是数组时,比较属性值
         if (valB != valA) {
-          console.log(key, "有变化")
+          console.log(key, '有变化');
           flag = false;
           break;
         }
@@ -548,7 +548,7 @@ export default {
   // 空转空串
   nullToString: function (param) {
     if (common.isEmpty(param)) {
-      return "";
+      return '';
     } else {
       return param;
     }
@@ -582,11 +582,11 @@ export default {
       callback(new Error('请输入数字值'));
     } else {
       if (!(value <= 30000 && value >=1)) {
-        callback(new Error("排序值范围是1-30000"));
+        callback(new Error('排序值范围是1-30000'));
       } else {
         callback();
       }
     }
+  },
+};
 
-  }
-}

@@ -1,3 +1,4 @@
+//后台方法配置
 export const plat = {
   QUERY_PAGE: '/plat',
   QUERY_LIST: '/plat/list',
@@ -15,6 +16,12 @@ export const menu = {
   UPDATE: '/menu/update',
   DELETE: '/menu/delete',
 };
+
+//用户管理
+export const user = {
+  QUERY_USER_BY_USER_NAME: '/user/queryUserByUserName',
+  ADD_USER_INFO: '/user/addUserInfo'
+}
 
 export const operation = {
   QUERY_OPERATIONS_BY_PLAT_ID: '/operation/query/by/platId',

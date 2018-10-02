@@ -1,3 +1,4 @@
+//引用方法
 import {plat} from '@/constant/apiUrl';
 import $http from '@/utils/axios'
 
