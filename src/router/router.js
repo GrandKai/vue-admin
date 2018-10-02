@@ -2,6 +2,8 @@ const About = () => import('views/About.vue');
 
 
 const UserList = () => import('views/user/List.vue');
+const UserAdd = () => import('views/user/Add.vue');
+
 const SystemList = () => import('views/general/plat/List.vue');
 const SystemAdd = () => import('views/general/plat/Add.vue');
 
@@ -29,6 +31,10 @@ let router = [
   {
     path: 'user/list',
     component: UserList
+  },
+  {
+    path: 'user/add',
+    component: UserAdd
   },
   {
     path: 'system',
