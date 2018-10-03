@@ -1,3 +1,12 @@
+
+// 白名单
+export const auth = {
+    LOGIN: '/auth/login',
+    LOGOUT: '/auth/logout',
+    MENUS: '/auth/menu/list',
+    PLATS: '/auth/plat/list',
+};
+
 //后台方法配置
 export const plat = {
   QUERY_PAGE: '/plat',
@@ -21,10 +30,11 @@ export const menu = {
 export const user = {
   QUERY_USER_BY_USER_NAME: '/user/queryUserByUserName',
   ADD_USER_INFO: '/user/addUserInfo'
-}
+};
 
 export const operation = {
   QUERY_LIST: '/operation/list',
+  QUERY_GRANTED_LIST: '/operation/granted/list',
   ADD: '/operation/add',
   UPDATE: '/operation/update',
   DELETE: '/operation/delete',

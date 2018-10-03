@@ -86,7 +86,6 @@
                 },
 
                 options: [],
-                operationOptions: [],
                 form: {
                     platId: '',
                     name: '',

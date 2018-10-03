@@ -2,6 +2,7 @@ import {operation, permission} from '@/constant/apiUrl';
 import $http from '@/utils/axios'
 
 export const queryOperationList = param => $http.post(operation.QUERY_LIST, param);
+export const queryGrantedOperationList = param => $http.post(operation.QUERY_GRANTED_LIST, param);
 export const addOperation = param => $http.post(operation.ADD, param);
 export const updateOperation = param => $http.post(operation.UPDATE, param);
 export const deleteOperation = param => $http.post(operation.DELETE, param);

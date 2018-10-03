@@ -195,7 +195,7 @@
     import {queryAuthorityPage, addAuthority, deleteAuthority, updateAuthority} from 'apis/privilege/authority'
 
 
-    import {queryPermissionList} from 'apis/general/operation';
+    import {queryOperationList} from 'apis/general/operation';
 
     import Tree from 'components/business/tree/Index';
     import CustomPage from 'components/listCustomPage/Index'
@@ -256,9 +256,6 @@
         created() {
             this.queryPage();
             this.queryAllPlat();
-            // queryAuthorityPage(this.param).then(data => {
-            //     console.log('请求权限数据', data)
-            // })
         },
         methods: {
 
@@ -438,45 +435,6 @@
             handleNodeClick(nodeData) {
                 console.log('当前选中node节点:', nodeData);
                 // 不是根节点才能进行按钮操作
-                /*let type = nodeData.type;
-                if (nodeData.parentId) {
-                    this.operationFormIsShow = 'operation' === type;
-                    this.permissionFormIsShow = 'permission' === type;
-                }
-
-                this.addDisabled = !('menu' === type || 'operation' === type);
-
-                let currentNodeData = this.$refs.tree.getCurrentNode();
-                let children = currentNodeData.children;
-
-                // 设置删除按钮
-                this.deleteDisabled = !('operation' === nodeData.type || 'permission' === nodeData.type) || (children && children.length > 0);
-
-                // 设置选中的【操作】表单信息
-                if (this.operationFormIsShow) {
-                    this.$refs.operationForm.resetFields();
-
-                    this.operationForm.id = nodeData.id;
-                    this.operationForm.parentId = nodeData.parentId;
-                    this.operationForm.name = nodeData.name;
-                    this.operationForm.sortNumber = nodeData.sortNumber;
-                    this.operationForm.type = nodeData.type;
-                    this.operationForm.code = nodeData.url;
-
-                }
-
-                // 设置选中的【权限】表单信息
-                if (this.permissionFormIsShow) {
-                    this.$refs.permissionForm.resetFields();
-
-                    this.permissionForm.id = nodeData.id;
-                    this.permissionForm.name = nodeData.name;
-                    this.permissionForm.parentId = nodeData.parentId;
-                    this.permissionForm.sortNumber = nodeData.sortNumber;
-                    this.permissionForm.url = nodeData.url;
-
-                }
-*/
             },
             handleCellClick(row, column, cell, event) {
                 console.log('点击单元格', row, column, cell, event);
@@ -492,7 +450,7 @@
                         }
                     };
 
-                    queryPermissionList(param).then(data => {
+                    queryOperationList(param).then(data => {
                         if (200 === data.code) {
                             let content = data.content;
                             console.log('根据平台id查询所有操作信息', content);

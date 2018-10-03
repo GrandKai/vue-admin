@@ -1,7 +1,7 @@
 <template>
     <div>
         <el-container>
-            <el-aside class="elAside" :width="asideWidth">
+            <el-aside class="elAside" :width="asideWidth" >
                 <Menu/>
             </el-aside>
             <el-container>

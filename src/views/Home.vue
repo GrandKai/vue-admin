@@ -1,45 +1,57 @@
 <template>
-  <div class="home">
-    <img alt="Vue logo" src="../assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App111111111111111111111111111"/>
-  </div>
+    <div class="home">
+
+        aaaaaaaaaaaaaaaaa
+        <img alt="Vue logo" src="../assets/logo.png">
+    </div>
 </template>
 
 <script>
-// @ is an alias to /src
-import HelloWorld from '@/components/HelloWorld.vue'
+    // @ is an alias to /src
+    import HelloWorld from '@/components/HelloWorld.vue'
 
-export default {
-  name: 'home',
-  components: {
-    HelloWorld
-  },
-  created: function () {
-    this.login();
-  },
-  methods: {
+    import {queryGrantedOperationList} from 'apis/general/operation'
 
-    login() {
-      let param = {
-        content: {
-          username: 'GrandKai',
-          password: '123456'
+    export default {
+        created: function () {
+            this.login();
+        },
+        methods: {
+
+            queryGrantedOperationList1() {
+
+                let param = {
+                    content: {
+                        menuId: ''
+                    }
+                };
+
+                queryGrantedOperationList(param).then(data => {
+                    console.log('根据菜单id查询操作权限', data);
+                });
+            },
+
+            login() {
+                let param = {
+                    content: {
+                        username: 'GrandKai',
+                        password: '123456'
+                    }
+                };
+
+                this.$http.post("/auth/login", param).then(data => {
+                    this.$message.success(data.message);
+
+                    if (200 === data.code) {
+                        let content = data.content;
+                        let user = content.user;
+                        let accessToken = content.accessToken;
+                        let refreshToken = content.refreshToken;
+                        sessionStorage.setItem('accessToken', accessToken);
+                        sessionStorage.setItem('refreshToken', refreshToken);
+                    }
+                });
+            }
         }
-      };
-
-      this.$http.post("/auth/login", param).then(data => {
-        this.$message.success(data.message);
-
-        if (200 === data.code) {
-          let content = data.content;
-          let user = content.user;
-          let accessToken = content.accessToken;
-          let refreshToken = content.refreshToken;
-          sessionStorage.setItem('accessToken', accessToken);
-          sessionStorage.setItem('refreshToken', refreshToken);
-        }
-      });
     }
-  }
-}
 </script>
