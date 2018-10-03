@@ -48,10 +48,12 @@
                         <el-tree :data="treeData"
                                  :props="defaultProps"
                                  @node-click="handleNodeClick"
+                                 @check-change="handleCheckChange"
                                  default-expand-all
                                  highlight-current
                                  :show-checkbox="true"
                                  :expand-on-click-node="false"
+                                 check-on-click-node
                                  node-key="id"
                                  ref="tree" v-show="treeIsShow" style="max-height: 500px; overflow-y: auto">
                         </el-tree>
@@ -69,7 +71,8 @@
 
 <script>
     import {queryPlatList} from 'apis/general/plat';
-    import {queryPermissionList, addOperation} from 'apis/general/operation';
+    import {queryOperationList} from 'apis/general/operation';
+    import {addAuthority} from 'apis/privilege/authority';
 
     export default {
         data() {
@@ -135,8 +138,32 @@
             },
 
             handleNodeClick(nodeData) {
-                console.log('当前选中node节点:', nodeData);
+                // console.log('当前选中node节点:', nodeData);
+                let checkedNodes = this.$refs.tree.getCheckedNodes();
+                console.log("handleNodeClick:", checkedNodes);
             },
+
+            handleCheckChange(nodeData, selfChecked, childrenContainChecked) {
+
+                debugger;
+                let checkedNodes = this.$refs.tree.getCheckedNodes(false, true);
+
+                if (checkedNodes) {
+                   let filteredNode = checkedNodes.filter(item => {
+                       // 过滤掉根菜单并删除children
+                       if (item.type) {
+                           delete item.children;
+                           return item;
+                       }
+                   });
+
+                   this.form.operations = filteredNode;
+                } else {
+                    this.form.operations = [];
+                }
+            },
+
+
             /**
              * 根据所选系统查询权限信息
              */
@@ -154,7 +181,7 @@
                     // 根据平台 id 查询所有权限信息
                     this.treeIsShow = !!platId;
 
-                    queryPermissionList(param).then(data => {
+                    queryOperationList(param).then(data => {
                         if (200 === data.code) {
                             let content = data.content;
                             console.log('根据平台id查询所有操作信息', content);
@@ -182,7 +209,7 @@
                         let param = {
                             content: this.form
                         };
-                        addOperation(param).then(data => {
+                        addAuthority(param).then(data => {
                             if (200 === data.code) {
                                 this.form = {
                                     platId: '',
