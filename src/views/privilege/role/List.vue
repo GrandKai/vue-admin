@@ -157,7 +157,7 @@
 <script>
     import CustomPage from 'components/listCustomPage/Index'
     import {queryPlatList} from 'apis/general/plat';
-    import {queryRolePage, updateRole, deleteRole} from 'apis/privilege/role';
+    import {queryRolePage, updateRole, deleteRole, checkUpdateExistRole} from 'apis/privilege/role';
     export default {
 
         components: {
@@ -307,6 +307,30 @@
                 };
             },
 
+            /**
+             * 校验角色是否存在
+             * @param rule
+             * @param value 角色名
+             * @param callback
+             */
+            checkExist(rule, value, callback) {
+                let param = {
+                    content: {
+                        id: this.editForm.id,
+                        name: value
+                    }
+                };
+                checkUpdateExistRole(param).then(data => {
+                    if (200 === data.code) {
+                        callback();
+                    } else if (4001 === data.code) {
+                        callback(new Error(data.message));
+                    } else {
+                        this.$message.error(data.message);
+                    }
+                });
+            },
+
             /***************　提交修改信息　*********************/
             onSubmit() {
                 this.$refs.editForm.validate(valid => {
@@ -351,7 +375,7 @@
                 }).then(() => {
                     deleteRole({content: row.id}).then(data => {
                         if (200 === data.code) {
-                            this.$message.success(`【${row.name}】删除成功`);
+                            this.$message.success(`【${row.name}】角色删除成功`);
                             this.queryPage();
                         } else {
                             this.$message.error(data.message);

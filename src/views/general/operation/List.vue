@@ -107,7 +107,7 @@
   import {queryDictionaryItemList} from 'apis/dictionary/item';
 
   import {
-    queryOperationsByPlatId,
+    queryPermissionList,
     addOperation,
     updateOperation,
     deleteOperation,
@@ -226,7 +226,7 @@
             }
           };
 
-          queryOperationsByPlatId(param).then(data => {
+          queryPermissionList(param).then(data => {
             if (200 === data.code) {
               let content = data.content;
               console.log('根据平台id查询所有操作信息', content);

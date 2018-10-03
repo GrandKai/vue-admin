@@ -178,7 +178,7 @@
     import {queryAuthorityPage, addAuthority, deleteAuthority, updateAuthority} from 'apis/privilege/authority'
 
 
-    import {queryOperationsByPlatId} from 'apis/general/operation';
+    import {queryPermissionList} from 'apis/general/operation';
 
     import Tree from 'components/business/tree/Index';
     import CustomPage from 'components/listCustomPage/Index'
@@ -475,7 +475,7 @@
                         }
                     };
 
-                    queryOperationsByPlatId(param).then(data => {
+                    queryPermissionList(param).then(data => {
                         if (200 === data.code) {
                             let content = data.content;
                             console.log('根据平台id查询所有操作信息', content);

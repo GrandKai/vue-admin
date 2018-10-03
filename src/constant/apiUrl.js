@@ -11,7 +11,7 @@ export const plat = {
 };
 
 export const menu = {
-  QUERY_MENUS_BY_PLAT_ID: '/menu/query/by/platId',
+  QUERY_LIST: '/menu/list',
   ADD: '/menu/add',
   UPDATE: '/menu/update',
   DELETE: '/menu/delete',
@@ -24,13 +24,14 @@ export const user = {
 }
 
 export const operation = {
-  QUERY_OPERATIONS_BY_PLAT_ID: '/operation/query/by/platId',
+  QUERY_LIST: '/operation/list',
   ADD: '/operation/add',
   UPDATE: '/operation/update',
   DELETE: '/operation/delete',
 };
 
 export const permission = {
+  QUERY_LIST: '/permission/list',
   ADD: '/permission/add',
   UPDATE: '/permission/update',
   DELETE: '/permission/delete',

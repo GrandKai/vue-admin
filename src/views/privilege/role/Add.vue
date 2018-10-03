@@ -2,7 +2,7 @@
     <div>
         <!-- 面包屑区域 -->
         <el-breadcrumb separator-class="el-icon-arrow-right" class="crumb">
-            <el-breadcrumb-item :to="{ path: '/' }">权限管理</el-breadcrumb-item>
+            <el-breadcrumb-item :to="{ path: '' }">权限管理</el-breadcrumb-item>
             <el-breadcrumb-item :to="{ path: '/role' }">角色管理</el-breadcrumb-item>
             <el-breadcrumb-item :to="{ path: '' }">新建角色</el-breadcrumb-item>
         </el-breadcrumb>
@@ -56,7 +56,7 @@
 
 <script>
     import {queryPlatList} from 'apis/general/plat';
-    import {addRole} from 'apis/privilege/role';
+    import {addRole, checkExistRole} from 'apis/privilege/role';
     import {queryAuthorityList} from 'apis/privilege/authority'
     export default {
         data() {
@@ -105,7 +105,7 @@
 
         methods: {
             /**
-             * 根据所选系统查询树形数据
+             * 根据所选系统查询权限信息
              */
             selectChange() {
 
@@ -129,15 +129,6 @@
                 }
             },
 
-            handleCheckAllChange(val) {
-                this.form.authorities = val ? this.authorityOptions : [];
-                this.isIndeterminate = false;
-            },
-            handleCheckedCitiesChange(value) {
-                let checkedCount = value.length;
-                this.checkAll = checkedCount === this.authorityOptions.length;
-                this.isIndeterminate = checkedCount > 0 && checkedCount < this.authorityOptions.length;
-            },
             queryAllPlat() {
                 queryPlatList().then(data => {
                     console.log('查询所有平台', data);
@@ -179,11 +170,13 @@
              * @param callback
              */
             checkExist(rule, value, callback) {
-                checkExistPlat({content: value}).then(data => {
-                    if (200 !== data.code) {
-                        callback(new Error("角色已存在，请修改后在提交"));
-                    } else {
+                checkExistRole({content: value}).then(data => {
+                    if (200 === data.code) {
                         callback();
+                    } else if (4001 === data.code) {
+                        callback(new Error(data.message));
+                    } else {
+                        this.$message.error(data.message);
                     }
                 });
             },

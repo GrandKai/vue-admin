@@ -83,7 +83,7 @@
 <script>
   import TreeForm from 'components/business/treeForm/Index';
   import {queryPlatList} from 'apis/general/plat';
-  import {queryMenusByPlatId, addMenu, updateMenu, deleteMenu} from 'apis/general/menu';
+  import {queryMenuList, addMenu, updateMenu, deleteMenu} from 'apis/general/menu';
 
   const sortNumber = 10;
   const isShow = '1';
@@ -188,7 +188,7 @@
             }
           };
 
-          queryMenusByPlatId(param).then(data => {
+          queryMenuList(param).then(data => {
             if (200 === data.code) {
               let content = data.content;
               console.log('根据平台id查询所有菜单信息', content);
@@ -204,7 +204,6 @@
               };
 
               this.treeData = [root];
-              // this.treeData = JSON.parse(JSON.stringify(ary));
             } else {
               this.$message.error(data.message);
             }
