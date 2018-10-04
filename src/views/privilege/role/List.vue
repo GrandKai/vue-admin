@@ -12,8 +12,10 @@
 
                 <li>
                     <span class="sysSpan">所属系统 </span>
-                    <el-select v-model="param.content.platId" placeholder="请选择操作系统" clearable @change="queryPage" ref="select">
-                        <el-option v-for="item in options" :key="item.id" :label="item.name" :value="item.id"></el-option>
+                    <el-select v-model="param.content.platId" placeholder="请选择操作系统" clearable @change="queryPage"
+                               ref="select">
+                        <el-option v-for="item in options" :key="item.id" :label="item.name"
+                                   :value="item.id"></el-option>
                     </el-select>
                     <br/>
                     <!--platId: <input v-model="form.platId" width="500"/>-->
@@ -86,7 +88,7 @@
                     <el-table-column label="功能权限" header-align="center" align="center" fixed="right">
                         <template slot-scope="scope">
 
-                            <el-button type="text">
+                            <el-button type="text" @click="queryAuthorityList(scope.row)">
                                 设置功能权限
                             </el-button>
                         </template>
@@ -105,11 +107,11 @@
                     <el-table-column label="操作" header-align="center" align="center" fixed="right" min-width="210px">
                         <template slot-scope="scope">
 
-                            <el-button size="mini" @click="">
+                            <el-button size="mini">
                                 成员管理
                             </el-button>
 
-                            <el-button size="mini" type="danger" @click="deleteEntity(scope.row)">
+                            <el-button type="danger" @click="deleteEntity(scope.row)">
                                 删除
                             </el-button>
                         </template>
@@ -133,10 +135,10 @@
         </custom-page>
 
 
-
-
         <!-- 编辑【角色】信息对话框 -->
-        <el-dialog :title="dlgSettings.title + '设置'" :visible.sync="dlgSettings.visible" width="30%"
+        <el-dialog :title="dlgSettings.title + '设置'"
+                   :visible.sync="dlgSettings.visible"
+                   width="30%"
                    :close-on-click-modal="false">
             <el-form :model="editForm" :rules="rules" ref="editForm" onsubmit="return false;">
                 <div class="clearfix">
@@ -149,6 +151,36 @@
                     </el-form-item>
                 </div>
             </el-form>
+
+        </el-dialog>
+
+        <el-dialog
+                title="功能权限设置"
+                :visible.sync="authorityVisible"
+                width="30%"
+                :close-on-click-modal="false"
+                center>
+
+            <div class="content-padding">
+                <el-header class="header-height">
+                    所属系统：<span class="system-font">{{authorityPlatName}}</span>
+                </el-header>
+                <el-checkbox-group v-model="checkedAuthorities" @change="handleCheckedAuthoritiesChange">
+                    <el-row v-for="item in authorities">
+                        <el-col :span="24">
+                            <el-checkbox :label="item.id" :key="item.id">{{item.name}}
+                            </el-checkbox>
+                        </el-col>
+                    </el-row>
+
+                </el-checkbox-group>
+            </div>
+
+
+            <span slot="footer" class="dialog-footer">
+                <el-button @click="authorityVisible = false">取 消</el-button>
+                <el-button type="primary" @click="authorityVisible = false">保 存</el-button>
+            </span>
         </el-dialog>
 
     </div>
@@ -157,7 +189,9 @@
 <script>
     import CustomPage from 'components/listCustomPage/Index'
     import {queryPlatList} from 'apis/general/plat';
+    import {queryAuthorityList} from 'apis/privilege/authority';
     import {queryRolePage, updateRole, deleteRole, checkUpdateExistRole} from 'apis/privilege/role';
+
     export default {
 
         components: {
@@ -165,6 +199,10 @@
         },
         data() {
             return {
+                authorityPlatName: '',
+                authorityVisible: false,
+                authorities: [],
+                checkedAuthorities: [],
                 // 所有系统信息
                 options: [],
                 // 修改的内容
@@ -203,7 +241,7 @@
             }
         },
 
-        created () {
+        created() {
             this.queryPage();
             this.queryAllPlat();
         },
@@ -397,6 +435,31 @@
             clearInput() {
                 console.log("........................")
             },
+
+            queryAuthorityList(row) {
+                let param = {
+                    content: {
+                        platId: row.platId
+                    }
+                };
+                this.authorityPlatName = row.platName;
+
+                queryAuthorityList(param).then(data => {
+                    console.log(data.message, data.content);
+
+                    if (200 === data.code) {
+                        this.authorityVisible = true;
+                        this.authorities = data.content;
+
+
+                    } else {
+                        this.$message.error(data.message);
+                    }
+                });
+            },
+            handleCheckedAuthoritiesChange(value) {
+
+            }
         }
 
     }
@@ -404,6 +467,18 @@
 
 <style scoped>
 
+
+    .header-height {
+        height: 40px !important;
+    }
+
+    .system-font {
+        font-weight: bold;
+    }
+
+    .content-padding {
+        padding-left: 5%;
+    }
 
     .click-text {
         color: #409eff;

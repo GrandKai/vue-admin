@@ -105,7 +105,7 @@
                                                  width="80%">
                                     <template slot-scope="scope">
 
-                                        <el-button size="mini" type="danger" @click="deleteEntity(scope.row)">
+                                        <el-button type="danger" @click="deleteEntity(scope.row)">
                                             删除
                                         </el-button>
                                     </template>

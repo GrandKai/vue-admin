@@ -77,11 +77,11 @@
                     <el-table-column label="操作" header-align="center" align="center" fixed="right" min-width="210px">
                         <template slot-scope="scope">
 
-                            <el-button size="mini" @click="updateEntityEnabledStatus(scope.row)">
+                            <el-button @click="updateEntityEnabledStatus(scope.row)">
                                 {{scope.row.isEnabled === '0' ? '启用' : '停用'}}
                             </el-button>
 
-                            <el-button size="mini" type="danger" @click="deleteEntity(scope.row)">
+                            <el-button type="danger" @click="deleteEntity(scope.row)">
                                 删除
                             </el-button>
                         </template>

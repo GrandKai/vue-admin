@@ -88,21 +88,21 @@
                     <el-table-column label="操作" header-align="center" align="center" fixed="right" min-width="210px">
                         <template slot-scope="scope">
 
-                            <!--<el-button size="mini" type="text" @click='jump2Page("/product/update", scope.row.id)'-->
+                            <!--<el-button type="text" @click='jump2Page("/product/update", scope.row.id)'-->
                             <!--v-if="common.buttonAuth(constant.UPDATE)">编辑-->
                             <!--</el-button>-->
 
-                            <!--<el-button size="mini" type="text" @click="updateEntityStatus(scope.row)" v-if="common.buttonAuth(constant.STOP)">-->
-                            <!--<el-button size="mini" type="text" @click="updateEntityStatus(scope.row)">
+                            <!--<el-button type="text" @click="updateEntityStatus(scope.row)" v-if="common.buttonAuth(constant.STOP)">-->
+                            <!--<el-button type="text" @click="updateEntityStatus(scope.row)">
                                 {{scope.row.isDeleted === 0 ? '删除' : '有效'}}
                             </el-button>-->
 
-                            <!--<el-button size="mini" type="text" @click="updateEntityIsShow(scope.row)" v-if="common.buttonAuth(constant.SET)">-->
-                            <el-button size="mini" type="text" @click="updateEntityEnabledStatus(scope.row)">
+                            <!--<el-button type="text" @click="updateEntityIsShow(scope.row)" v-if="common.buttonAuth(constant.SET)">-->
+                            <el-button type="text" @click="updateEntityEnabledStatus(scope.row)">
                                 {{scope.row.isEnabled === '0' ? '启用' : '停用'}}
                             </el-button>
-                            <!--<el-button size="mini" type="text" @click="deleteEntity(scope.row)" v-if="common.buttonAuth(constant.DELETE)">-->
-                            <el-button size="mini" type="text" @click="deleteEntity(scope.row)">
+                            <!--<el-button type="text" @click="deleteEntity(scope.row)" v-if="common.buttonAuth(constant.DELETE)">-->
+                            <el-button type="text" @click="deleteEntity(scope.row)">
                                 删除
                             </el-button>
                         </template>
