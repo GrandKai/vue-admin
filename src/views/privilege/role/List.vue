@@ -179,7 +179,7 @@
 
             <span slot="footer" class="dialog-footer">
                 <el-button @click="authorityVisible = false">取 消</el-button>
-                <el-button type="primary" @click="authorityVisible = false">保 存</el-button>
+                <el-button type="primary" @click="submitRoleAuthority">保 存</el-button>
             </span>
         </el-dialog>
 
@@ -190,7 +190,7 @@
     import CustomPage from 'components/listCustomPage/Index'
     import {queryPlatList} from 'apis/general/plat';
     import {queryAuthorityList} from 'apis/privilege/authority';
-    import {queryRolePage, updateRole, deleteRole, checkUpdateExistRole} from 'apis/privilege/role';
+    import {queryRolePage, queryRoleAuthorityList, addRoleAuthority, updateRole, deleteRole, checkUpdateExistRole} from 'apis/privilege/role';
 
     export default {
 
@@ -436,13 +436,22 @@
                 console.log("........................")
             },
 
+            /**
+             * 根据平台id获取权限列表
+             **/
             queryAuthorityList(row) {
+                let roleId = row.id;
+                let platId = row.platId;
+                let platName = row.platName;
+
+                this.editForm.id = roleId;
+
                 let param = {
                     content: {
-                        platId: row.platId
+                        platId: platId
                     }
                 };
-                this.authorityPlatName = row.platName;
+                this.authorityPlatName = platName;
 
                 queryAuthorityList(param).then(data => {
                     console.log(data.message, data.content);
@@ -451,14 +460,59 @@
                         this.authorityVisible = true;
                         this.authorities = data.content;
 
+                        this.queryRoleAuthorityList(roleId);
+                    } else {
+                        this.$message.error(data.message);
+                    }
+                });
+            },
 
+            /**
+             * 根据角色id获取已经设置的权限
+             * @param roleId
+             */
+            queryRoleAuthorityList(roleId) {
+                this.checkedAuthorities = [];
+                queryRoleAuthorityList({content: roleId}).then(data => {
+                    console.log(data.message, data.content);
+
+                    if (200 === data.code) {
+                        this.checkedAuthorities = data.content.map(item => item.authorityId);
                     } else {
                         this.$message.error(data.message);
                     }
                 });
             },
             handleCheckedAuthoritiesChange(value) {
+                console.log('处理选中的权限集合', value);
+            },
 
+            /**
+             * 添加角色权限对应关系
+             */
+            submitRoleAuthority() {
+                let roleId = this.editForm.id;
+                let authorities = this.checkedAuthorities;
+                debugger
+                if (roleId && authorities) {
+                    let param = {
+                        content: {
+                            roleId: roleId,
+                            authorities: authorities
+                        }
+                    };
+
+                    addRoleAuthority(param).then(data => {
+                        console.log(data.message, data.content);
+
+                        if (200 === data.code) {
+                            this.authorityVisible = false;
+                            this.$message.success(data.message);
+                        } else {
+                            this.$message.error(data.message);
+                        }
+                    });
+                }
             }
         }
 

@@ -77,9 +77,12 @@ export const authority = {
 
 export const role = {
     QUERY_PAGE: '/role',
+    QUERY_List: '/role/list',
     ADD: '/role/add',
+    AUTHORITY_ADD: '/role/authority/add',
     UPDATE: '/role/update',
     DELETE: '/role/delete',
     CHECK_EXIST: '/role/check/exist',
     CHECK_UPDATE_EXIST: '/role/check/update/exist',
+    QUERY_ROLE_AUTHORITY_LIST: '/role/authority/list',
 };
