@@ -138,33 +138,37 @@
 
                 <el-col :span="10">
 
-                    <tree>
+                    <div v-show="treeIsShow">
+                        <tree>
 
-                        <!-- 按钮区域 -->
-                        <template slot="buttonArea">
-                            <el-button type="success" @click="treeOpen"><i class="el-icon-arrow-down"></i> 展开
-                            </el-button>
-                            <el-button type="success" @click="treeClose"><i class="el-icon-arrow-up"></i> 收起</el-button>
-                        </template>
+                            <!-- 按钮区域 -->
+                            <template slot="buttonArea">
+                                <el-button type="primary" @click="editAuthority"><i class="el-icon-edit"></i> 保 存
+                                </el-button>
+                                <el-button @click="treeOpen"><i class="el-icon-arrow-down"></i> 展 开</el-button>
+                                <el-button @click="treeClose"><i class="el-icon-arrow-up"></i> 收 起</el-button>
+                            </template>
 
-                        <!-- 树区域 -->
-                        <template slot="treeArea">
+                            <!-- 树区域 -->
+                            <template slot="treeArea">
 
-                            <el-tree :data="treeData"
-                                     :props="defaultProps"
-                                     @node-click="handleNodeClick"
-                                     default-expand-all
-                                     highlight-current
-                                     :show-checkbox="true"
-                                     :expand-on-click-node="false"
-                                     node-key="id"
-                                     ref="tree" v-show="treeIsShow" style="max-height: 500px; overflow-y: auto">
-                            </el-tree>
+                                <el-tree :data="treeData"
+                                         :props="defaultProps"
+                                         @node-click="handleNodeClick"
+                                         @check-change="handleCheckChange"
+                                         default-expand-all
+                                         highlight-current
+                                         :show-checkbox="true"
+                                         :expand-on-click-node="false"
+                                         check-on-click-node
+                                         node-key="id"
+                                         ref="tree" style="max-height: 500px; overflow-y: auto">
+                                </el-tree>
 
-                        </template>
+                            </template>
 
-                    </tree>
-
+                        </tree>
+                    </div>
                 </el-col>
             </el-row>
         </div>
@@ -192,7 +196,14 @@
 <script>
 
     import {queryPlatList} from 'apis/general/plat';
-    import {queryAuthorityPage, addAuthority, deleteAuthority, updateAuthority} from 'apis/privilege/authority'
+    import {
+        queryAuthorityPage,
+        queryAuthorityGrantedIds,
+        addAuthority,
+        deleteAuthority,
+        updateAuthority,
+        setAuthority
+    } from 'apis/privilege/authority'
 
 
     import {queryOperationList} from 'apis/general/operation';
@@ -208,6 +219,7 @@
         data() {
 
             return {
+                operations: [],
                 treeData: [],
                 treeIsShow: false,
 
@@ -436,14 +448,38 @@
                 console.log('当前选中node节点:', nodeData);
                 // 不是根节点才能进行按钮操作
             },
+
+
+            handleCheckChange() {
+
+
+                let checkedNodes = this.$refs.tree.getCheckedNodes(false, true);
+
+                if (checkedNodes) {
+                    let filteredNodes = checkedNodes.filter(item => {
+                        // 过滤掉根菜单并删除children
+                        if (item.type) {
+                            delete item.children;
+                            return item;
+                        }
+                    });
+                    this.operations = filteredNodes;
+
+                } else {
+                    this.operations = [];
+                }
+            },
+
             handleCellClick(row, column, cell, event) {
                 console.log('点击单元格', row, column, cell, event);
-                console.error(this.$refs.tree);
                 let platId = row.platId;
                 let platName = row.platName;
+                let authorityId = row.id;
+
+                this.editForm.id = authorityId;
+
                 if (platId) {
                     this.treeIsShow = !!platId;
-                    // TODO: 根据平台 id 获取所有操作树信息
 
                     let param = {
                         content: {
@@ -465,6 +501,8 @@
                             };
 
                             this.treeData = [root];
+
+                            this.queryAuthorityGrantedIds(authorityId);
                         } else {
                             this.$message.error(data.message);
                         }
@@ -472,6 +510,44 @@
                 }
 
 
+            },
+
+            /**
+             * 查询权限树所有选中【菜单-操作】数组
+             * @param authorityId
+             */
+            queryAuthorityGrantedIds(authorityId) {
+                queryAuthorityGrantedIds({content: authorityId}).then(data => {
+                    if (200 === data.code) {
+                        let checkedKeys = data.content;
+                        this.$refs.tree.setCheckedKeys(checkedKeys)
+                    } else {
+                        this.$message.error(data.message)
+                    }
+                });
+            },
+            editAuthority() {
+
+                let authorityId = this.editForm.id;
+                let operations = this.operations;
+
+                if (authorityId) {
+                    let param = {
+                        content: {
+                            id: authorityId,
+                            operations: operations
+                        }
+                    };
+
+                    setAuthority(param).then(data => {
+                        console.log(data.message, data.content);
+                        if (200 === data.code) {
+                            this.$message.success(data.message);
+                        } else {
+                            this.$message.error(data.message)
+                        }
+                    })
+                }
             }
         },
 

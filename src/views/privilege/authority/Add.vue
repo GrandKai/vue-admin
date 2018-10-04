@@ -142,13 +142,13 @@
                 console.log("handleNodeClick:", checkedNodes);
             },
 
-            handleCheckChange(nodeData, selfChecked, childrenContainChecked) {
+            handleCheckChange() {
 
-                debugger;
+                ;
                 let checkedNodes = this.$refs.tree.getCheckedNodes(false, true);
 
                 if (checkedNodes) {
-                   let filteredNode = checkedNodes.filter(item => {
+                    this.form.operations = checkedNodes.filter(item => {
                        // 过滤掉根菜单并删除children
                        if (item.type) {
                            delete item.children;
@@ -156,7 +156,6 @@
                        }
                    });
 
-                   this.form.operations = filteredNode;
                 } else {
                     this.form.operations = [];
                 }

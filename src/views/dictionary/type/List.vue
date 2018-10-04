@@ -255,7 +255,7 @@
         let text = row.isEnabled === '1' ? '停用' : '启用';
         let isEnabled = row.isEnabled === '1' ? '0' : '1';
 
-        debugger
+
         common.confirm({
           message: `是否${text}【${row.name}】的账户？`,
         }).then(() => {

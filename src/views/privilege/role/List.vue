@@ -493,7 +493,7 @@
             submitRoleAuthority() {
                 let roleId = this.editForm.id;
                 let authorities = this.checkedAuthorities;
-                debugger
+
                 if (roleId && authorities) {
                     let param = {
                         content: {
