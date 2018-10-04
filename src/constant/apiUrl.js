@@ -70,4 +70,6 @@ export const role = {
     DELETE: '/role/delete',
     CHECK_EXIST: '/role/check/exist',
     CHECK_UPDATE_EXIST: '/role/check/update/exist',
+  QUERY_LIST: '/role/list',
+  QUERY_USER_ROLE: '/role/select/user'
 };
