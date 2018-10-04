@@ -18,4 +18,4 @@ export const checkUpdateExistRole = param => $http.post(role.CHECK_UPDATE_EXIST,
 export const queryAllPlatsAndRoles = param => $http.post(role.QUERY_ALL_PLATS_AND_ROLES, param);
 
 
-
+export const addUserRole = param => $http.post(role.ADD_USER_ROLE, param);

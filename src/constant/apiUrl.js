@@ -90,5 +90,6 @@ export const role = {
     CHECK_UPDATE_EXIST: '/role/check/update/exist',
     QUERY_ROLE_AUTHORITY_LIST: '/role/authority/list',
     QUERY_USER_ROLE: '/role/select/user',
-    QUERY_ALL_PLATS_AND_ROLES: '/role/plat/all'
+    QUERY_ALL_PLATS_AND_ROLES: '/role/plat/all',
+    ADD_USER_ROLE: '/role/add/user/role'
 };
