@@ -60,6 +60,7 @@ export const dictionaryType = {
   QUERY_PAGE: '/dictionary/type',
   UPDATE: '/dictionary/type/update',
   DELETE: '/dictionary/type/delete',
+  SET: '/dictionary/type/set',
   CHECK_EXIST: '/dictionary/type/check/exist',
   CHECK_UPDATE_EXIST: '/dictionary/type/check/update/exist',
 };
