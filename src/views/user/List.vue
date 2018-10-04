@@ -178,7 +178,7 @@
 <script>
   import CustomPage from 'components/listCustomPage/Index';
   import treeDialog from 'components/dialogCustomPage/Index';
-  import {queryRoleList, queryRoleUserList} from 'apis/privilege/role';
+  import {queryRoleList, queryRoleListUser} from 'apis/privilege/role';
 
   export default {
     data() {

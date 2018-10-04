@@ -87,14 +87,14 @@
     },
     computed: {
       // 保存按钮是否禁用
-      btnAbled: function() {
-        let vm = this;
-        if (!common.isEmpty(vm.form.userId)) {
-          return false;
-        } else {
-          return true;
-        }
-      }
+      // btnAbled: function() {
+      //   let vm = this;
+      //   if (!common.isEmpty(vm.form.userId)) {
+      //     return false;
+      //   } else {
+      //     return true;
+      //   }
+      // }
     },
   };
 </script>
