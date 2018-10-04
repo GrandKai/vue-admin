@@ -438,6 +438,7 @@
             },
             handleCellClick(row, column, cell, event) {
                 console.log('点击单元格', row, column, cell, event);
+                console.error(this.$refs.tree);
                 let platId = row.platId;
                 let platName = row.platName;
                 if (platId) {
