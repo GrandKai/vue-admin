@@ -138,36 +138,37 @@
 
                 <el-col :span="10">
 
-                    <tree>
+                    <div v-show="treeIsShow">
+                        <tree>
 
-                        <!-- 按钮区域 -->
-                        <template slot="buttonArea">
-                            <el-button type="primary" @click="editAuthority"><i class="el-icon-edit"></i> 保 存
-                            </el-button>
-                            <el-button @click="treeOpen"><i class="el-icon-arrow-down"></i> 展 开</el-button>
-                            <el-button @click="treeClose"><i class="el-icon-arrow-up"></i> 收 起</el-button>
-                        </template>
+                            <!-- 按钮区域 -->
+                            <template slot="buttonArea">
+                                <el-button type="primary" @click="editAuthority"><i class="el-icon-edit"></i> 保 存
+                                </el-button>
+                                <el-button @click="treeOpen"><i class="el-icon-arrow-down"></i> 展 开</el-button>
+                                <el-button @click="treeClose"><i class="el-icon-arrow-up"></i> 收 起</el-button>
+                            </template>
 
-                        <!-- 树区域 -->
-                        <template slot="treeArea">
+                            <!-- 树区域 -->
+                            <template slot="treeArea">
 
-                            <el-tree :data="treeData"
-                                     :props="defaultProps"
-                                     @node-click="handleNodeClick"
-                                     @check-change="handleCheckChange"
-                                     default-expand-all
-                                     highlight-current
-                                     :show-checkbox="true"
-                                     :expand-on-click-node="false"
-                                     check-on-click-node
-                                     node-key="id"
-                                     ref="tree" v-show="treeIsShow" style="max-height: 500px; overflow-y: auto">
-                            </el-tree>
+                                <el-tree :data="treeData"
+                                         :props="defaultProps"
+                                         @node-click="handleNodeClick"
+                                         @check-change="handleCheckChange"
+                                         default-expand-all
+                                         highlight-current
+                                         :show-checkbox="true"
+                                         :expand-on-click-node="false"
+                                         check-on-click-node
+                                         node-key="id"
+                                         ref="tree" style="max-height: 500px; overflow-y: auto">
+                                </el-tree>
 
-                        </template>
+                            </template>
 
-                    </tree>
-
+                        </tree>
+                    </div>
                 </el-col>
             </el-row>
         </div>
