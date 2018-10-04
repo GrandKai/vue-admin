@@ -9,6 +9,7 @@ import store from '@/store/store'
 
 import axios from '@/utils/axios'
 import common from '@/utils/common'
+import '@/utils/dialogDrag';
 
 Vue.config.productionTip = false;
 

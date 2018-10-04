@@ -1,15 +1,16 @@
 <template>
   <div>
-    <el-breadcrumb separator-class="el-icon-arrow-right" class="crumb">
-      <el-breadcrumb-item :to="{ path: '/' }">用户管理</el-breadcrumb-item>
-      <el-breadcrumb-item :to="{ path: '/system' }">用户管理</el-breadcrumb-item>
+    <el-breadcrumb class="crumb"
+                   separator-class="el-icon-arrow-right">
+      <el-breadcrumb-item :to="{ path : '/' }">用户管理</el-breadcrumb-item>
+      <el-breadcrumb-item :to="{ path : '/system' }">用户管理</el-breadcrumb-item>
     </el-breadcrumb>
     <custom-page>
       <template slot="buttonArea">
         <li>
           <el-button icon="el-icon-plus"
-                     @click="addUser"
-                     type="primary">添加用户
+                     type="primary"
+                     @click="addUser">添加用户
           </el-button>
           <el-button icon="el-icon-search"
                      type="primary"
@@ -23,16 +24,15 @@
       <template slot="queryArea">
         <li>
             <span>
-               创建时间： <el-date-picker v-model="param.content.startTime"
-                                     placeholder="开始时间"
-                                     style="width: 195px"
-                                     type="datetime"
-                                     value-format="yyyy-MM-dd HH:mm:ss"
-                                     @change="queryPage">
+               <el-date-picker v-model="param.content.startTime"
+                               placeholder="创建开始时间"
+                               style="width: 195px"
+                               type="datetime"
+                               value-format="yyyy-MM-dd HH:mm:ss"
+                               @change="queryPage">
           </el-date-picker>
-            至
             <el-date-picker v-model="param.content.endTime"
-                            placeholder="结束时间"
+                            placeholder="创建结束时间"
                             style="width: 195px"
                             type="datetime"
                             value-format="yyyy-MM-dd HH:mm:ss"
@@ -59,12 +59,12 @@
                   :row-class-name="tableRowClassName"
                   @selection-change="handleSelectionChange">
           <!-- 多选框 -->
-          <el-table-column align="center"
-                           header-align="center"
-                           type="selection"
-                           width="50"
-                           :reserve-selection="true">
-          </el-table-column>
+          <!--<el-table-column align="center"-->
+                           <!--header-align="center"-->
+                           <!--type="selection"-->
+                           <!--width="50"-->
+                           <!--:reserve-selection="true">-->
+          <!--</el-table-column>-->
 
           <!-- 显示索引 -->
           <el-table-column align="center"
@@ -142,6 +142,10 @@
                          @click="deleteEntity(scope.row)">
                 删除
               </el-button>
+              <el-button size="mini"
+                         type="text"
+                         @click="openDialog(scope.row.userId)">设置角色
+              </el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -160,11 +164,21 @@
         </el-pagination>
       </template>
     </custom-page>
+    <treeDialog
+                :dialogVisible="dialogVisible"
+                :rules="rules"
+                :title="title"
+                :treeData="treeData"
+                :userId="userId"
+                :checkData="checkData"
+                @closeDialog="closeDialog"></treeDialog>
   </div>
 </template>
 
 <script>
   import CustomPage from 'components/listCustomPage/Index';
+  import treeDialog from 'components/dialogCustomPage/Index';
+  import {queryRoleList, queryRoleUserList} from 'apis/privilege/role';
 
   export default {
     data() {
@@ -184,8 +198,13 @@
             pageSize: pageSizes[0]
           }
         },
-
-        tableData: []
+        rules: {},
+        tableData: [],
+        dialogVisible: false,//弹框是否显示
+        title: '用户角色设置',
+        userId: '',//用户编号
+        treeData: [],//角色集合
+        checkData: []//选中角色集合
       };
     },
 
@@ -225,12 +244,9 @@
        * @param param
        */
       queryPage() {
-        console.log('分页查询入参：', this.param);
-
         this.loading = true;
         this.$http.post('/user', this.param).then((resp) => {
 
-          console.log('..............查询分页结果：', resp);
           this.loading = false;
           this.paginationShow = true;
 
@@ -259,7 +275,6 @@
         this.$refs.multipleTable.clearSelection();
       },
       clearInput() {
-        console.log('........................');
       },
 
       /********************************* 业务逻辑处理 ************************************/
@@ -290,7 +305,6 @@
       },
 
       updateEntityEnabledStatus(row) {
-        console.info(row)
         let text = row.isEnabled === '1' ? '停用' : '启用';
         let isEnabled = row.isEnabled === '1' ? '0' : '1';
 
@@ -318,15 +332,53 @@
         });
       },
 
-      addUser(){//创建用户信息
-        this.$router.push("/user/add");
+      addUser() {//创建用户信息
+        this.$router.push('/user/add');
+      },
+
+      openDialog(userId) {//打开创建角色的弹框
+        let vm = this;
+        vm.dialogVisible = true;
+        vm.userId = userId;
+        console.info(vm.checkData)
+        queryRoleUserList({content: userId}).then(data => {//获取当前员工的角色信息
+          vm.checkData = [];
+          if (200 == data.code) {
+            let checks = data.content;
+            checks.forEach(item => {
+              vm.checkData.push(item.roleId);
+            });
+          }
+          console.info(vm.checkData)
+        });
+
+      },
+
+      // 关闭设置添加日志的dialog页面
+      closeDialog: function() {
+        let vm = this;
+        vm.dialogVisible = false;
+        vm.checkData = []
+      },
+
+      selectRole() {//获取全部的用户角色
+        let vm = this;
+        queryRoleList({}).then(data => {
+          if (200 === data.code) {
+            vm.treeData = common.toTree(data.content);
+          } else {
+            this.$message.error(data.message);
+          }
+        });
       }
     },
     mounted() {
       this.queryPage();
+      this.selectRole();
     },
     components: {
-      'custom-page': CustomPage
+      'custom-page': CustomPage,
+      'treeDialog': treeDialog
     }
   };
 </script>

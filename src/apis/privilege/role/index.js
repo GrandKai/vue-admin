@@ -5,6 +5,8 @@ export const queryRolePage = param => $http.post(role.QUERY_PAGE, param);
 export const queryRoleList = param => $http.post(role.QUERY_LIST, param);
 
 export const queryRoleAuthorityList = param => $http.post(role.QUERY_ROLE_AUTHORITY_LIST, param);
+export const queryRoleList = param => $http.post(role.QUERY_LIST, param);//获取用户角色的树形结构
+export const queryRoleUserList = param => $http.post(role.QUERY_USER_ROLE, param);
 export const addRole = param => $http.post(role.ADD, param);
 export const addRoleAuthority = param => $http.post(role.AUTHORITY_ADD, param);
 
