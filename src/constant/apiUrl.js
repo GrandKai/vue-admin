@@ -73,7 +73,7 @@ export const authority = {
     DELETE: '/authority/delete',
     CHECK_EXIST: '/authority/check/exist',
     CHECK_UPDATE_EXIST: '/authority/check/update/exist',
-    QUERY_ALL_MENU_AND_OPERATION_IDS: '/authority/select/menu/and/operation/ids',
+    QUERY_GRANTED_IDS: '/authority/granted/ids',
 };
 
 

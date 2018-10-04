@@ -197,7 +197,7 @@
     import {queryPlatList} from 'apis/general/plat';
     import {
         queryAuthorityPage,
-        queryAllMenuAndOperationIds,
+        queryAuthorityGrantedIds,
         addAuthority,
         deleteAuthority,
         updateAuthority,
@@ -451,16 +451,18 @@
 
             handleCheckChange() {
 
+
                 let checkedNodes = this.$refs.tree.getCheckedNodes(false, true);
 
                 if (checkedNodes) {
-                    this.operations = checkedNodes.filter(item => {
+                    let filteredNodes = checkedNodes.filter(item => {
                         // 过滤掉根菜单并删除children
                         if (item.type) {
                             delete item.children;
                             return item;
                         }
                     });
+                    this.operations = filteredNodes;
 
                 } else {
                     this.operations = [];
@@ -499,7 +501,7 @@
 
                             this.treeData = [root];
 
-                            this.queryAllMenuAndOperationIds(authorityId);
+                            this.queryAuthorityGrantedIds(authorityId);
                         } else {
                             this.$message.error(data.message);
                         }
@@ -513,8 +515,8 @@
              * 查询权限树所有选中【菜单-操作】数组
              * @param authorityId
              */
-            queryAllMenuAndOperationIds(authorityId) {
-                queryAllMenuAndOperationIds({content: authorityId}).then(data => {
+            queryAuthorityGrantedIds(authorityId) {
+                queryAuthorityGrantedIds({content: authorityId}).then(data => {
                     if (200 === data.code) {
                         let checkedKeys = data.content;
                         this.$refs.tree.setCheckedKeys(checkedKeys)
@@ -524,8 +526,9 @@
                 });
             },
             editAuthority() {
+
                 let authorityId = this.editForm.id;
-                let operations = this.options;
+                let operations = this.operations;
 
                 if (authorityId) {
                     let param = {

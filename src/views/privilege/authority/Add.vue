@@ -144,7 +144,7 @@
 
             handleCheckChange() {
 
-                debugger;
+                ;
                 let checkedNodes = this.$refs.tree.getCheckedNodes(false, true);
 
                 if (checkedNodes) {
