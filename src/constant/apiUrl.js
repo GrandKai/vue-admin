@@ -69,9 +69,11 @@ export const authority = {
     QUERY_LIST: '/authority/list',
     ADD: '/authority/add',
     UPDATE: '/authority/update',
+    SET: '/authority/set',
     DELETE: '/authority/delete',
     CHECK_EXIST: '/authority/check/exist',
     CHECK_UPDATE_EXIST: '/authority/check/update/exist',
+    QUERY_ALL_MENU_AND_OPERATION_IDS: '/authority/select/menu/and/operation/ids',
 };
 
 
