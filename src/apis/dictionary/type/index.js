@@ -8,4 +8,5 @@ export const updateDictionaryType = param => $http.post(dictionaryType.UPDATE, p
 export const deleteDictionaryType = param => $http.post(dictionaryType.DELETE, param);
 export const setDictionaryType = param => $http.post(dictionaryType.SET, param);
 export const checkStatus = param => $http.post(dictionaryType.CHECK_STATUS, param);
+export const checkExist = param => $http.post(dictionaryType.CHECK_EXIST, param);
 

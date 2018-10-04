@@ -292,10 +292,8 @@
         checkUpdateExistPlat(param).then(data => {
           if (200 === data.code) {
             callback();
-          } else if (4001 === data.code) {
-            callback(new Error("系统已存在，请修改后在提交"));
           } else {
-            this.$message.error(data.message);
+              callback(new Error(data.message));
           }
         });
       },

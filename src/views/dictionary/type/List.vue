@@ -271,7 +271,6 @@
                     case 'name': {
                         this.rules.content = [
                             {required: true, message: "请输入" + dlgTitle + "，长度在50个字符内", trigger: "blur", max: 50},
-                            // {validator: this.checkExist, trigger: "blur"}
                         ];
                         break;
                     }
@@ -300,11 +299,11 @@
             deleteEntity(row) {
                 this.checkStatus(row, () => {
                     common.confirm({
-                        message: `确认删除【${row.name}】？`,
+                        message: `确认删除数据类型【${row.name}】？`,
                     }).then(() => {
                         deleteDictionaryType({content: row.id}).then(data => {
                             if (200 === data.code) {
-                                this.$message.success(`【${row.name}】删除成功`);
+                                this.$message.success(`删除数据类型【${row.name}】成功`);
                                 this.queryPage();
                             } else {
                                 this.$message.error(data.message)
@@ -317,6 +316,7 @@
                     });
                 });
             },
+
             checkStatus(row, callBack) {
                 checkStatus({content: row.id}).then(data => {
                     if (200 === data.code) {
@@ -332,7 +332,7 @@
                 let isShow = row.isShow === '1' ? '0' : '1';
 
                 common.confirm({
-                    message: `是否${text}【${row.name}】的数据类型？`,
+                    message: `是否${text}数据类型【${row.name}】？`,
                 }).then(() => {
                     let param = {
                         content: {

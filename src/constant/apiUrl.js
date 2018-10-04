@@ -58,12 +58,12 @@ export const dictionaryItem = {
 
 export const dictionaryType = {
   QUERY_PAGE: '/dictionary/type',
+  ADD: '/dictionary/type/add',
   UPDATE: '/dictionary/type/update',
   DELETE: '/dictionary/type/delete',
   SET: '/dictionary/type/set',
+  CHECK_STATUS: 'dictionary/type/check/status',
   CHECK_EXIST: '/dictionary/type/check/exist',
-  CHECK_UPDATE_EXIST: '/dictionary/type/check/update/exist',
-  CHECK_STATUS: 'dictionary/type/check/status'
 };
 
 export const authority = {

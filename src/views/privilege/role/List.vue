@@ -361,10 +361,8 @@
                 checkUpdateExistRole(param).then(data => {
                     if (200 === data.code) {
                         callback();
-                    } else if (4001 === data.code) {
-                        callback(new Error(data.message));
                     } else {
-                        this.$message.error(data.message);
+                        callback(new Error(data.message));
                     }
                 });
             },

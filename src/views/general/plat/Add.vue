@@ -50,7 +50,7 @@
                 form: {
                     name: "",
                     description: "",
-                    sortNumber: "10",
+                    sortNumber: 10,
                     url: "",
                     version: ""
                 },
@@ -105,13 +105,7 @@
                         };
                         addPlat(param).then(data => {
                             if (200 === data.code) {
-                                this.form = {
-                                    name: "",
-                                    description: "",
-                                    sortNumber: "",
-                                    url: "",
-                                    version: ""
-                                };
+                                this.$refs.form.resetFields();
                                 this.$message.success(data.message);
                                 this.$router.push("/system");
                             } else {
@@ -131,7 +125,7 @@
             checkExist(rule, value, callback) {
                 checkExistPlat({content: value}).then(data => {
                     if (200 !== data.code) {
-                        callback(new Error("系统已存在，请修改后在提交"));
+                        callback(new Error(data.message));
                     } else {
                         callback();
                     }
