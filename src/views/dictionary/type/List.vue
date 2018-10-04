@@ -122,7 +122,13 @@
 
 <script>
     import CustomPage from 'components/listCustomPage/Index';
-    import {queryDictionaryTypePage, updateDictionaryType, setDictionaryType} from 'apis/dictionary/type';
+    import {
+        queryDictionaryTypePage,
+        updateDictionaryType,
+        setDictionaryType,
+        deleteDictionaryType,
+        checkStatus
+    } from 'apis/dictionary/type';
 
     export default {
         components: {
@@ -292,24 +298,33 @@
              * @param id
              */
             deleteEntity(row) {
-                // this.statusCheck(row, () => {
-                //   common.confirm({
-                //     message: `确认删除“${row.name}”？`,
-                //   }).then(() => {
-                //     deleteProduct({content: row.id}).then(resp => {
-                //       if (200 === resp.status) {
-                //         common.message({
-                //           message: `${row.name}删除成功`,
-                //         });
-                //
-                //         this.queryPage();
-                //       }
-                //     });
-                //   }).catch(() => {
-                //     // 取消按钮的回调
-                //     console.log('取消按钮的回调');
-                //   });
-                // });
+                this.checkStatus(row, () => {
+                    common.confirm({
+                        message: `确认删除【${row.name}】？`,
+                    }).then(() => {
+                        deleteDictionaryType({content: row.id}).then(data => {
+                            if (200 === data.code) {
+                                this.$message.success(`【${row.name}】删除成功`);
+                                this.queryPage();
+                            } else {
+                                this.$message.error(data.message)
+                            }
+
+                        });
+                    }).catch(() => {
+                        // 取消按钮的回调
+                        console.log('取消按钮的回调');
+                    });
+                });
+            },
+            checkStatus(row, callBack) {
+                checkStatus({content: row.id}).then(data => {
+                    if (200 === data.code) {
+                        callBack();
+                    } else {
+                        this.$message.error(data.message);
+                    }
+                });
             },
 
             updateEntityStatus(row) {
