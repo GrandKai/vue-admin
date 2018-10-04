@@ -171,14 +171,16 @@
                 :treeData="treeData"
                 :userId="userId"
                 :checkData="checkData"
-                @closeDialog="closeDialog"></treeDialog>
+                @closeDialog="closeDialog"
+                @addUserRole="addUserRole"
+    ></treeDialog>
   </div>
 </template>
 
 <script>
   import CustomPage from 'components/listCustomPage/Index';
   import treeDialog from 'components/dialogCustomPage/Index';
-  import {queryRoleList, queryRoleListUser} from 'apis/privilege/role';
+  import {queryRoleList, queryAllPlatsAndRoles,queryRoleUserList, addUserRole} from 'apis/privilege/role';
 
   export default {
     data() {
@@ -203,6 +205,7 @@
         dialogVisible: false,//弹框是否显示
         title: '用户角色设置',
         userId: '',//用户编号
+        roleList: [],//用户设置的角色信息
         treeData: [],//角色集合
         checkData: []//选中角色集合
       };
@@ -285,22 +288,21 @@
        */
       deleteEntity(row) {
         // this.statusCheck(row, () => {
-        //   common.confirm({
-        //     message: `确认删除“${row.name}”？`,
-        //   }).then(() => {
-        //     deleteProduct({content: row.id}).then(resp => {
-        //       if (200 === resp.status) {
-        //         common.message({
-        //           message: `${row.name}删除成功`,
-        //         });
-        //
-        //         this.queryPage();
-        //       }
-        //     });
-        //   }).catch(() => {
-        //     // 取消按钮的回调
-        //     console.log('取消按钮的回调');
-        //   });
+          common.confirm({
+            message: `确认删除【${row.nickName}】这个用户？`,
+          }).then(() => {
+            deleteRole({content: row.id}).then(resp => {
+              if (200 === resp.status) {
+                common.message({
+                  message: resp.message,
+                });
+                this.queryPage();
+              }
+            });
+          }).catch(() => {
+            // 取消按钮的回调
+            console.log('取消按钮的回调');
+          });
         // });
       },
 
@@ -338,7 +340,7 @@
 
       openDialog(userId) {//打开创建角色的弹框
         let vm = this;
-        vm.dialogVisible = true;
+
         vm.userId = userId;
         console.info(vm.checkData)
         queryRoleUserList({content: userId}).then(data => {//获取当前员工的角色信息
@@ -349,6 +351,7 @@
               vm.checkData.push(item.roleId);
             });
           }
+          vm.dialogVisible = true;
           console.info(vm.checkData)
         });
 
@@ -361,15 +364,32 @@
         vm.checkData = []
       },
 
-      selectRole() {//获取全部的用户角色
+      selectRole: function() {//获取全部的用户角色
         let vm = this;
-        queryRoleList({}).then(data => {
+        queryAllPlatsAndRoles({}).then(data => {
           if (200 === data.code) {
             vm.treeData = common.toTree(data.content);
           } else {
             this.$message.error(data.message);
           }
         });
+      },
+
+      addUserRole: function(param){//添加用户角色信息
+
+        let vm = this;
+        addUserRole({content : param}).then(data => {
+          if(2001 != data.code){
+            vm.$message.success(data.message)
+            vm.queryPage();
+          }else{
+            vm.$message.error(data.message);
+          }
+          vm.btnAbled = false;
+          vm.loading = false;
+          vm.dialogVisible = false;
+        })
+
       }
     },
     mounted() {

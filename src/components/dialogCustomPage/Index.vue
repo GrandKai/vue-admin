@@ -11,13 +11,13 @@
                  ref="form"
                  :model="form"
                  :rules="rules">
-          <el-input v-model="form.userId"
-                    style="display: none"
+          <el-input v-model="userId"
                     type="text"></el-input>
           <el-input v-model="filterText"
                     placeholder="输入关键字进行过滤" clearable>
           </el-input>
           <el-tree show-checkbox
+                   v-model="form.roleList"
                    class="filter-tree"
                    node-key="id"
                    :data="treeData"
@@ -35,7 +35,7 @@
                 <el-button type="primary"
                            :loading="isload"
                            :disabled="btnAbled"
-                           @click="">保 存</el-button>
+                           @click="add">保 存</el-button>
                 <el-button @click="closeDialog">取 消</el-button>
             </span>
     </el-dialog>
@@ -49,7 +49,7 @@
         // 修改的内容
         form: {
           userId: '',
-          checkData: [],
+          roleList: [],
         },
         isload: false,
         filterText: '',//关键字
@@ -83,6 +83,33 @@
       filterNode(value, data) {//根据关键字查询
         if (!value) return true;
         return data.label.indexOf(value) !== -1;
+      },
+
+      add(){//保存用户的角色信息
+
+        let vm = this;
+        vm.$refs.form.validate(valid => {
+          let keys = vm.$refs.tree.getCheckedNodes();
+          let roleList = []
+          keys.forEach(item => {
+            if(item.parentId){
+              roleList.push(item.id);
+            }
+          });
+
+          if (valid) {
+            let param = {
+              userId : vm.userId,
+              roleList : roleList
+            }
+            vm.$refs.form.resetFields();
+            vm.isload = true;
+            vm.$nextTick(function() {
+              vm.$emit('addUserRole', param); // 回调参数
+            });
+          }
+        })
+
       }
     },
     computed: {
