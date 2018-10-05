@@ -52,6 +52,7 @@
                         let refreshToken = content.refreshToken;
                         sessionStorage.setItem('accessToken', accessToken);
                         sessionStorage.setItem('refreshToken', refreshToken);
+                        sessionStorage.setItem('userName', user.name);
                     }
                 });
             },

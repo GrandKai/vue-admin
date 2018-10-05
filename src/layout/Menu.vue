@@ -1,9 +1,9 @@
 <template>
     <el-row class="tac">
-        <el-radio-group v-model="isCollapse" style="margin-bottom: 20px;">
+        <!--<el-radio-group v-model="isCollapse" style="margin-bottom: 20px;">
             <el-radio-button :label="false">展开</el-radio-button>
             <el-radio-button :label="true">收起</el-radio-button>
-        </el-radio-group>
+        </el-radio-group>-->
         <el-col :span="24">
             <!--<h5>自定义颜色</h5>-->
             <el-menu
