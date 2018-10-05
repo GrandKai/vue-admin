@@ -1,7 +1,6 @@
 //页面配置文件
 const About = () => import('views/About.vue');
 
-
 const UserList = () => import('views/user/List.vue');
 const UserAdd = () => import('views/user/Add.vue');
 
@@ -9,7 +8,6 @@ const SystemList = () => import('views/general/plat/List.vue');
 const SystemAdd = () => import('views/general/plat/Add.vue');
 
 const MenuList = () => import('views/general/menu/List.vue');
-// const MenuAdd = () => import('views/general/menu/Add.vue');
 
 const OperationList = () => import('views/general/operation/List.vue');
 const OperationAdd = () => import('views/general/operation/Add.vue');
@@ -49,21 +47,17 @@ let router = [
         component: UserAdd
     },
     {
-        path: 'system',
+        path: 'plat',
         component: SystemList
     },
     {
-        path: 'system/add',
+        path: 'plat/add',
         component: SystemAdd
     },
     {
         path: 'menu',
         component: MenuList
     },
-    // {
-    //   path: 'menu/add',
-    //   component: MenuAdd
-    // },
     {
         path: 'operation',
         component: OperationList

@@ -9,7 +9,7 @@
                     头部部分
                     <el-dropdown @command="handleCommand">
                       <span class="el-dropdown-link">
-                        {{platform.name}}
+                        {{platName}}
                           <i class="el-icon-arrow-down el-icon--right"></i>
                       </span>
                         <el-dropdown-menu slot="dropdown">
@@ -34,23 +34,20 @@
     import {queryGrantedMenus, queryGrantedPlats} from 'apis/auth'
 
     export default {
-        name: "LayoutIndex",
         data() {
             return {
                 options: [],
                 mainHeight: '',
                 asideWidth: '200px',
 
-                platform: {
-                    id: '',
-                    name: ''
-                }
+                platId: '',
+                platName: ''
+
             }
         },
         created() {
             this.getMainHeight();
 
-            this.queryGrantedMenus();
             this.queryGrantedPlats();
         },
         mounted() {
@@ -63,8 +60,8 @@
             },
 
             handleCommand(item) {
-                this.platform.id = item.id;
-                this.platform.name = item.name;
+                this.platId = item.id;
+                this.platName = item.name;
             },
 
             queryGrantedPlats() {
@@ -79,7 +76,11 @@
                         this.options = content;
 
                         if (content && 0 < content.length) {
-                            this.handleCommand(content[0])
+                            // 默认选中第一个系统
+                            this.handleCommand(content[0]);
+
+                            // 根据系统 id 获取菜单列表
+                            this.queryGrantedMenus();
                         }
                     } else {
                         this.$message.error(data.message);
@@ -91,7 +92,7 @@
             queryGrantedMenus() {
                 let param = {
                     accessToken: sessionStorage.getItem('accessToken'),
-                    content: '5bcae4a6036f43709877191f3bcb4283'
+                    content: this.platId
                 };
                 queryGrantedMenus(param).then(data => {
                     if (200 === data.code) {

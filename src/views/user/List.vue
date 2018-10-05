@@ -3,7 +3,7 @@
     <el-breadcrumb class="crumb"
                    separator-class="el-icon-arrow-right">
       <el-breadcrumb-item :to="{ path : '/' }">用户管理</el-breadcrumb-item>
-      <el-breadcrumb-item :to="{ path : '/system' }">用户管理</el-breadcrumb-item>
+      <el-breadcrumb-item :to="{ path : '/user' }">用户管理</el-breadcrumb-item>
     </el-breadcrumb>
     <custom-page>
       <template slot="buttonArea">

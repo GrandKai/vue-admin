@@ -2,7 +2,7 @@
     <div>
         <el-breadcrumb separator-class="el-icon-arrow-right" class="crumb">
             <el-breadcrumb-item :to="{ path: '/' }">通用管理</el-breadcrumb-item>
-            <el-breadcrumb-item :to="{ path: '/system' }">系统管理</el-breadcrumb-item>
+            <el-breadcrumb-item :to="{ path: '/plat' }">系统管理</el-breadcrumb-item>
         </el-breadcrumb>
 
         <custom-page>
@@ -216,7 +216,7 @@
       },
 
       addEntity: function () {
-        this.$router.push("/system/add");
+        this.$router.push("/plat/add");
       },
 
       /***************　打开修改系统对话框　*********************/

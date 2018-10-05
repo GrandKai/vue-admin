@@ -19,6 +19,12 @@
                 </li>
 
                 <li>
+                    <el-select v-model="param.content.typeId" placeholder="请选择数据类型" clearable @change="queryPage">
+                        <el-option v-for="item in options" :key="item.id" :label="item.name" :value="item.id"></el-option>
+                    </el-select>
+                </li>
+
+                <li>
                     <el-button type="primary" @click="queryPage()" icon="el-icon-search">查 询
                     </el-button>
                 </li>
@@ -129,6 +135,7 @@
 
 <script>
     import CustomPage from 'components/listCustomPage/Index';
+    import {queryDictionaryTypeList} from "apis/dictionary/type";
 
     import {queryDictionaryItemPage, updateDictionaryItem, deleteDictionaryItem, setDictionaryItem} from "apis/dictionary/item";
 
@@ -138,7 +145,7 @@
         },
         data() {
             return {
-
+                options: [],
                 loading: true,
                 paginationShow: false,
                 pageSizes: pageSizes,
@@ -146,6 +153,7 @@
                 param: {
                     content: {
                         name: '',
+                        typeId: '',
                     },
                     page: {
                         pageNum: 1,
@@ -177,6 +185,7 @@
 
         created() {
             this.queryPage();
+            this.queryDictionaryTypeList();
         },
         methods: {
 
@@ -369,6 +378,20 @@
                     }
                 });
             },
+            queryDictionaryTypeList() {
+                let param = {
+                    content: {
+                        isShow: '1'
+                    }
+                };
+                queryDictionaryTypeList(param).then(data => {
+                    if (200 === data.code) {
+                        this.options = data.content;
+                    } else {
+                        this.$message.error(data.message);
+                    }
+                });
+            }
         },
     }
 </script>
