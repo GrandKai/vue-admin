@@ -107,6 +107,7 @@
                         console.log(data.message, content);
 
                         this.treeData = common.toTree(content);
+                        // 使用 v-if 使得数据加载完成之后再传值给子组件
                         this.menuIsShow = true;
                     } else {
                         this.$message.error(data.message);
