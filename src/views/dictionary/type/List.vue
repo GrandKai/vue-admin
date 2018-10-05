@@ -143,8 +143,6 @@
                 param: {
                     content: {
                         name: '',
-                        startTime: '',
-                        endTime: '',
                     },
                     page: {
                         pageNum: 1,

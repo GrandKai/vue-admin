@@ -2,6 +2,7 @@ import {dictionaryType} from '@/constant/apiUrl';
 import $http from '@/utils/axios'
 
 export const queryDictionaryTypePage = param => $http.post(dictionaryType.QUERY_PAGE, param);
+export const queryDictionaryTypeList = param => $http.post(dictionaryType.QUERY_LIST, param);
 
 export const addDictionaryType = param => $http.post(dictionaryType.ADD, param);
 export const updateDictionaryType = param => $http.post(dictionaryType.UPDATE, param);

@@ -1,4 +1,3 @@
-
 //页面配置文件
 const About = () => import('views/About.vue');
 
@@ -27,72 +26,84 @@ const TestTree = () => import('components/business/tree/Test.vue');
 const DictionaryTypeList = () => import('views/dictionary/type/List.vue');
 const DictionaryTypeAdd = () => import('views/dictionary/type/Add.vue');
 
+const DictionaryItemList = () => import('views/dictionary/item/List.vue');
+const DictionaryItemAdd = () => import('views/dictionary/item/Add.vue');
+
 let router = [
 
-  {
-    path: 'test/menu',
-    component: TestTree
-  },
-  {
-    path: 'about',
-    name: 'about',
-    component: About
-  },
-  {
-    path: 'user',
-    component: UserList
-  },
-  {
-    path: 'user/add',
-    component: UserAdd
-  },
-  {
-    path: 'system',
-    component: SystemList
-  },
-  {
-    path: 'system/add',
-    component: SystemAdd
-  },
-  {
-    path: 'menu',
-    component: MenuList
-  },
-  // {
-  //   path: 'menu/add',
-  //   component: MenuAdd
-  // },
-  {
-    path: 'operation',
-    component: OperationList
-  },
-  {
-    path: 'operation/add',
-    component: OperationAdd
-  },
-  {
-    path: 'dictionary/type',
-    component: DictionaryTypeList
-  },
+    {
+        path: 'test/menu',
+        component: TestTree
+    },
+    {
+        path: 'about',
+        name: 'about',
+        component: About
+    },
+    {
+        path: 'user',
+        component: UserList
+    },
+    {
+        path: 'user/add',
+        component: UserAdd
+    },
+    {
+        path: 'system',
+        component: SystemList
+    },
+    {
+        path: 'system/add',
+        component: SystemAdd
+    },
+    {
+        path: 'menu',
+        component: MenuList
+    },
+    // {
+    //   path: 'menu/add',
+    //   component: MenuAdd
+    // },
+    {
+        path: 'operation',
+        component: OperationList
+    },
+    {
+        path: 'operation/add',
+        component: OperationAdd
+    },
+    {
+        path: 'dictionary/type',
+        component: DictionaryTypeList
+    },
 
     {
-      path: 'dictionary/type/add',
+        path: 'dictionary/type/add',
         component: DictionaryTypeAdd
     },
-  {
-      path: 'authority',
-      component: AuthorityList
-  },
+    {
+        path: 'dictionary/item',
+        component: DictionaryItemList
+    },
+
+    {
+        path: 'dictionary/item/add',
+        component: DictionaryItemAdd
+    },
+    {
+        path: 'authority',
+        component: AuthorityList
+    },
 
     {
         path: 'authority/add',
         component: AuthorityAdd
     },
 
-  {
-      path: 'role',
-      component: RoleList
-  },
+    {
+        path: 'role',
+        component: RoleList
+    },
 
     {
         path: 'role/add',

@@ -50,14 +50,16 @@ export const permission = {
 export const dictionaryItem = {
   QUERY_PAGE: '/dictionary/item',
   QUERY_LIST: '/dictionary/item/list',
+  ADD: '/dictionary/item/add',
   UPDATE: '/dictionary/item/update',
   DELETE: '/dictionary/item/delete',
+  SET: '/dictionary/item/set',
   CHECK_EXIST: '/dictionary/item/check/exist',
-  CHECK_UPDATE_EXIST: '/dictionary/item/check/update/exist',
 };
 
 export const dictionaryType = {
   QUERY_PAGE: '/dictionary/type',
+  QUERY_LIST: '/dictionary/type/list',
   ADD: '/dictionary/type/add',
   UPDATE: '/dictionary/type/update',
   DELETE: '/dictionary/type/delete',
