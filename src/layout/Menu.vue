@@ -14,54 +14,28 @@
                     active-text-color="#ffd04b"
                     @open="handleOpen"
                     @close="handleClose" :collapse="isCollapse" router>
-                <el-submenu index="test">
-                    <template slot="title">
-                        <i class="el-icon-location"></i>
-                        <span>导航一</span>
-                    </template>
-                    <el-menu-item index="/about">选项1</el-menu-item>
-                    <el-menu-item index="/home">选项2</el-menu-item>
-                </el-submenu>
-                <el-menu-item index="/login">
-                    <i class="el-icon-setting"></i>
+
+
+                <el-menu-item index="/login" v-if="'development' === nodeEnv">
+                    <i class="el-icon-loading"></i>
                     <span slot="title">登录</span>
                 </el-menu-item>
 
-                <el-submenu index="/1">
-                    <template slot="title">
-                        <i class="el-icon-location"></i>
-                        <span>用户管理</span>
-                    </template>
-                    <el-menu-item index="/user">用户信息</el-menu-item>
-                </el-submenu>
+                <div v-for="(item, index) in treeData">
+                    <el-menu-item :key="item.id" :index="String(index)" v-if="!item.children || 0 === item.children.length">
+                        <i :class="item.image"></i>
+                        <span slot="title">{{item.name}}</span>
+                    </el-menu-item>
 
-                <el-submenu index="/2">
-                    <template slot="title">
-                        <i class="el-icon-menu"></i>
-                        <span>通用管理</span>
-                    </template>
-                    <el-menu-item index="/plat">系统管理</el-menu-item>
-                    <el-menu-item index="/menu">菜单管理</el-menu-item>
-                    <el-menu-item index="/operation">操作管理</el-menu-item>
-                </el-submenu>
+                    <el-submenu :key="item.id" :index="String(index)" v-else>
+                        <template slot="title">
+                            <i :class="item.image"></i>
+                            <span>{{item.name}}</span>
+                        </template>
 
-                <el-submenu index="/3">
-                    <template slot="title">
-                        <i class="el-icon-menu"></i>
-                        <span>权限管理</span>
-                    </template>
-                    <el-menu-item index="/authority">权限管理</el-menu-item>
-                    <el-menu-item index="/role">角色管理</el-menu-item>
-                </el-submenu>
-
-                <el-submenu index="/4">
-                    <template slot="title">
-                        <i class="el-icon-menu"></i>
-                        <span>数据字典</span>
-                    </template>
-                    <el-menu-item index="/dictionary/type">数据类型</el-menu-item>
-                    <el-menu-item index="/dictionary/item">数据项目</el-menu-item>
-                </el-submenu>
+                        <el-menu-item :index="child.router" v-for="child in item['children']">{{child.name}}</el-menu-item>
+                    </el-submenu>
+                </div>
 
 
             </el-menu>
@@ -70,22 +44,31 @@
 </template>
 
 <script>
-  export default {
-    name: "Menu",
-    data() {
-      return {
-        isCollapse: false
-      };
-    },
-    methods: {
-      handleOpen(key, keyPath) {
-        console.log(key, keyPath);
-      },
-      handleClose(key, keyPath) {
-        console.log(key, keyPath);
-      }
+    export default {
+        data() {
+            return {
+                isCollapse: false,
+                nodeEnv: process.env.NODE_ENV
+            };
+        },
+        props: ['treeData'],
+
+        created() {
+            console.warn('2. 子组件 created', );
+        },
+        mounted() {
+            console.warn('2. 子组件 mounted');
+            console.error('父组件传到子组件的菜单数据树', this.treeData);
+        },
+        methods: {
+            handleOpen(key, keyPath) {
+                console.log(key, keyPath);
+            },
+            handleClose(key, keyPath) {
+                console.log(key, keyPath);
+            }
+        }
     }
-  }
 </script>
 
 <style lang="scss" scoped>

@@ -2,7 +2,7 @@
     <div>
         <el-container>
             <el-aside class="elAside" :width="asideWidth">
-                <Menu/>
+                <Menu :treeData="treeData" v-if="menuIsShow"/>
             </el-aside>
             <el-container>
                 <el-header>
@@ -34,6 +34,9 @@
     import {queryGrantedMenus, queryGrantedPlats} from 'apis/auth'
 
     export default {
+        components: {
+          Menu
+        },
         data() {
             return {
                 options: [],
@@ -41,7 +44,9 @@
                 asideWidth: '200px',
 
                 platId: '',
-                platName: ''
+                platName: '',
+                menuIsShow: false,
+                treeData: []
 
             }
         },
@@ -49,8 +54,10 @@
             this.getMainHeight();
 
             this.queryGrantedPlats();
+            console.warn('1. 父组件 created')
         },
         mounted() {
+            console.warn('2. 父组件 mounted');
             window.onresize = this.getMainHeight;
         },
         methods: {
@@ -98,6 +105,9 @@
                     if (200 === data.code) {
                         let content = data.content;
                         console.log(data.message, content);
+
+                        this.treeData = common.toTree(content);
+                        this.menuIsShow = true;
                     } else {
                         this.$message.error(data.message);
                     }
@@ -105,7 +115,6 @@
 
             },
         },
-        components: {Menu},
     }
 </script>
 
