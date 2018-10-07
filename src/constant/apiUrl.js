@@ -7,6 +7,14 @@ export const auth = {
     PLATS: '/auth/plat/list',
 };
 
+// 组织机构
+export const organization = {
+    QUERY_LIST: '/org/list',
+    ADD: '/org/add',
+    UPDATE: '/org/update',
+    DELETE: '/org/delete',
+};
+
 //后台方法配置
 export const plat = {
   QUERY_PAGE: '/plat',
