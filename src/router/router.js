@@ -8,6 +8,7 @@ const SystemList = () => import('views/general/plat/List.vue');
 const SystemAdd = () => import('views/general/plat/Add.vue');
 
 const MenuList = () => import('views/general/menu/List.vue');
+const OrganizationList = () => import('views/system/organization/List.vue');
 
 const OperationList = () => import('views/general/operation/List.vue');
 const OperationAdd = () => import('views/general/operation/Add.vue');
