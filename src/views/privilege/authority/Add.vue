@@ -209,13 +209,7 @@
                         };
                         addAuthority(param).then(data => {
                             if (200 === data.code) {
-                                this.form = {
-                                    platId: '',
-                                    name: '',
-                                    description: '',
-                                    sortNumber: 10,
-                                    operations: []
-                                };
+                                this.$refs.form.resetFields();;
                                 this.$message.success(data.message);
                                 this.$router.push("/authority");
                             } else {

@@ -2,7 +2,7 @@
     <div>
         <el-breadcrumb separator-class="el-icon-arrow-right" class="crumb">
             <el-breadcrumb-item :to="{ path: '/' }">通用管理</el-breadcrumb-item>
-            <el-breadcrumb-item :to="{ path: '/system' }">系统管理</el-breadcrumb-item>
+            <el-breadcrumb-item :to="{ path: '/plat' }">系统管理</el-breadcrumb-item>
             <el-breadcrumb-item>新建系统</el-breadcrumb-item>
         </el-breadcrumb>
         <el-row>
@@ -50,7 +50,7 @@
                 form: {
                     name: "",
                     description: "",
-                    sortNumber: "10",
+                    sortNumber: 10,
                     url: "",
                     version: ""
                 },
@@ -105,15 +105,9 @@
                         };
                         addPlat(param).then(data => {
                             if (200 === data.code) {
-                                this.form = {
-                                    name: "",
-                                    description: "",
-                                    sortNumber: "",
-                                    url: "",
-                                    version: ""
-                                };
+                                this.$refs.form.resetFields();
                                 this.$message.success(data.message);
-                                this.$router.push("/system");
+                                this.$router.push("/plat");
                             } else {
                                 this.$message.error(data.message);
                             }
@@ -131,7 +125,7 @@
             checkExist(rule, value, callback) {
                 checkExistPlat({content: value}).then(data => {
                     if (200 !== data.code) {
-                        callback(new Error("系统已存在，请修改后在提交"));
+                        callback(new Error(data.message));
                     } else {
                         callback();
                     }

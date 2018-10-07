@@ -1,7 +1,5 @@
-
 //页面配置文件
 const About = () => import('views/About.vue');
-
 
 const UserList = () => import('views/user/List.vue');
 const UserAdd = () => import('views/user/Add.vue');
@@ -10,7 +8,6 @@ const SystemList = () => import('views/general/plat/List.vue');
 const SystemAdd = () => import('views/general/plat/Add.vue');
 
 const MenuList = () => import('views/general/menu/List.vue');
-const MenuAdd = () => import('views/general/menu/Add.vue');
 
 const OperationList = () => import('views/general/operation/List.vue');
 const OperationAdd = () => import('views/general/operation/Add.vue');
@@ -27,72 +24,80 @@ const TestTree = () => import('components/business/tree/Test.vue');
 const DictionaryTypeList = () => import('views/dictionary/type/List.vue');
 const DictionaryTypeAdd = () => import('views/dictionary/type/Add.vue');
 
+const DictionaryItemList = () => import('views/dictionary/item/List.vue');
+const DictionaryItemAdd = () => import('views/dictionary/item/Add.vue');
+
 let router = [
 
-  {
-    path: 'test/menu',
-    component: TestTree
-  },
-  {
-    path: 'about',
-    name: 'about',
-    component: About
-  },
-  {
-    path: 'user',
-    component: UserList
-  },
-  {
-    path: 'user/add',
-    component: UserAdd
-  },
-  {
-    path: 'system',
-    component: SystemList
-  },
-  {
-    path: 'system/add',
-    component: SystemAdd
-  },
-  {
-    path: 'menu',
-    component: MenuList
-  },
-  {
-    path: 'menu/add',
-    component: MenuAdd
-  },
-  {
-    path: 'operation',
-    component: OperationList
-  },
-  {
-    path: 'operation/add',
-    component: OperationAdd
-  },
-  {
-    path: 'dictionary/type',
-    component: DictionaryTypeList
-  },
+    {
+        path: 'test/menu',
+        component: TestTree
+    },
+    {
+        path: 'about',
+        name: 'about',
+        component: About
+    },
+    {
+        path: 'user',
+        component: UserList
+    },
+    {
+        path: 'user/add',
+        component: UserAdd
+    },
+    {
+        path: 'plat',
+        component: SystemList
+    },
+    {
+        path: 'plat/add',
+        component: SystemAdd
+    },
+    {
+        path: 'menu',
+        component: MenuList
+    },
+    {
+        path: 'operation',
+        component: OperationList
+    },
+    {
+        path: 'operation/add',
+        component: OperationAdd
+    },
+    {
+        path: 'dictionary/type',
+        component: DictionaryTypeList
+    },
 
     {
-      path: 'dictionary/type/add',
+        path: 'dictionary/type/add',
         component: DictionaryTypeAdd
     },
-  {
-      path: 'authority',
-      component: AuthorityList
-  },
+    {
+        path: 'dictionary/item',
+        component: DictionaryItemList
+    },
+
+    {
+        path: 'dictionary/item/add',
+        component: DictionaryItemAdd
+    },
+    {
+        path: 'authority',
+        component: AuthorityList
+    },
 
     {
         path: 'authority/add',
         component: AuthorityAdd
     },
 
-  {
-      path: 'role',
-      component: RoleList
-  },
+    {
+        path: 'role',
+        component: RoleList
+    },
 
     {
         path: 'role/add',

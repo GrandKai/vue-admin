@@ -7,3 +7,5 @@ export const queryDictionaryItemList = param => $http.post(dictionaryItem.QUERY_
 export const addDictionaryItem = param => $http.post(dictionaryItem.ADD, param);
 export const updateDictionaryItem = param => $http.post(dictionaryItem.UPDATE, param);
 export const deleteDictionaryItem = param => $http.post(dictionaryItem.DELETE, param);
+export const setDictionaryItem = param => $http.post(dictionaryItem.SET, param);
+export const checkExist = param => $http.post(dictionaryItem.CHECK_EXIST, param);

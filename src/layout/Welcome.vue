@@ -1,7 +1,6 @@
 <template>
     <div class="welcome" :style='{minHeight, backgroundColor}'>
-        <!--<p>欢迎来到麟龙后台CRM系统1</p>-->
-        <span>欢迎来到麟龙后台CRM系统2</span>
+        <p>欢迎来到麟龙后台CRM系统1</p>
     </div>
 </template>
 

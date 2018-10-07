@@ -29,6 +29,8 @@ window.common = common;
 Vue.prototype.urlPrefix = process.env.urlPrefix;
 window.urlPrefix = process.env.urlPrefix;
 
+window.process = process;
+
 // 分页条目类型
 window.pageSizes = [10, 20, 50, 100 , 200 , 400];
 

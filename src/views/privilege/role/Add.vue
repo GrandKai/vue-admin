@@ -146,13 +146,7 @@
                         };
                         addRole(param).then(data => {
                             if (200 === data.code) {
-                                this.form = {
-                                    platId: '',
-                                    name: '',
-                                    description: '',
-                                    sortNumber: 10,
-                                    authorities: []
-                                };
+                                this.$refs.form.resetFields();;
                                 this.$message.success(data.message);
                                 this.$router.push("/role");
                             } else {
@@ -173,10 +167,8 @@
                 checkExistRole({content: value}).then(data => {
                     if (200 === data.code) {
                         callback();
-                    } else if (4001 === data.code) {
-                        callback(new Error(data.message));
                     } else {
-                        this.$message.error(data.message);
+                        callback(new Error(data.message));
                     }
                 });
             },

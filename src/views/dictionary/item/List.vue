@@ -1,18 +1,27 @@
 <template>
+
     <div>
+
         <!-- 面包屑区域 -->
         <el-breadcrumb separator-class="el-icon-arrow-right" class="crumb">
             <el-breadcrumb-item :to="{ path: '/' }">数据字典</el-breadcrumb-item>
-            <el-breadcrumb-item :to="{ path: '/dictionary/type' }">数据类型</el-breadcrumb-item>
+            <el-breadcrumb-item :to="{ path: '/dictionary/item' }">数据项目</el-breadcrumb-item>
         </el-breadcrumb>
+
 
         <custom-page>
             <template slot="queryArea">
 
                 <li>
-                    <el-input v-model="param.content.name" placeholder="数据类型名称/编码" @keyup.native.enter="queryPage"
+                    <el-input v-model="param.content.name" placeholder="数据项目名称/编码" @keyup.native.enter="queryPage"
                               style="width: 220px"
                               clearable @input="queryPage"></el-input>
+                </li>
+
+                <li>
+                    <el-select v-model="param.content.typeId" placeholder="请选择数据类型" clearable @change="queryPage">
+                        <el-option v-for="item in options" :key="item.id" :label="item.name" :value="item.id"></el-option>
+                    </el-select>
                 </li>
 
                 <li>
@@ -27,7 +36,7 @@
 
             <template slot="buttonArea">
                 <li>
-                    <el-button type="primary" @click="addEntity"><i class="el-icon-plus"></i> 新建数据类型</el-button>
+                    <el-button type="primary" @click="addEntity"><i class="el-icon-plus"></i> 新建数据项目</el-button>
                 </li>
             </template>
 
@@ -44,15 +53,18 @@
                             width="60" header-align="center" align="center">
                     </el-table-column>
 
-                    <el-table-column label="数据类型名称" prop="name" header-align="left" align="left">
+                    <el-table-column label="数据类型名称" prop="dicName" header-align="left" align="left">
+                    </el-table-column>
+
+                    <el-table-column label="数据项目名称" header-align="left" align="left">
                         <template slot-scope="scope">
-                            <div class="click-text" @click='updateEntity(scope.row , "name" , "数据类型名称")'>
+                            <div class="click-text" @click='updateEntity(scope.row , "name" , "数据项目名称")'>
                                 {{ scope.row.name }}
                             </div>
                         </template>
                     </el-table-column>
 
-                    <el-table-column prop="code" label="数据类型编码" align="left">
+                    <el-table-column prop="code" label="数据项目编码" align="left">
                     </el-table-column>
 
                     <el-table-column label="显示顺序" header-align="left" align="left" fixed="right">
@@ -118,17 +130,14 @@
 
         </el-dialog>
     </div>
+
 </template>
 
 <script>
     import CustomPage from 'components/listCustomPage/Index';
-    import {
-        queryDictionaryTypePage,
-        updateDictionaryType,
-        setDictionaryType,
-        deleteDictionaryType,
-        checkStatus
-    } from 'apis/dictionary/type';
+    import {queryDictionaryTypeList} from "apis/dictionary/type";
+
+    import {queryDictionaryItemPage, updateDictionaryItem, deleteDictionaryItem, setDictionaryItem} from "apis/dictionary/item";
 
     export default {
         components: {
@@ -136,6 +145,7 @@
         },
         data() {
             return {
+                options: [],
                 loading: true,
                 paginationShow: false,
                 pageSizes: pageSizes,
@@ -143,6 +153,7 @@
                 param: {
                     content: {
                         name: '',
+                        typeId: '',
                     },
                     page: {
                         pageNum: 1,
@@ -167,12 +178,14 @@
                     rowNum: 1 // 文本框行数
                 },
                 // 校验规则
+
                 rules: {}
             }
         },
 
         created() {
             this.queryPage();
+            this.queryDictionaryTypeList();
         },
         methods: {
 
@@ -204,7 +217,7 @@
             queryPage() {
 
                 this.loading = true;
-                queryDictionaryTypePage(this.param).then((data) => {
+                queryDictionaryItemPage(this.param).then((data) => {
 
                     console.log('..............查询分页结果：', data);
                     this.loading = false;
@@ -241,7 +254,7 @@
             /********************************* 业务逻辑处理 ************************************/
 
             addEntity() {
-                this.$router.push('/dictionary/type/add');
+                this.$router.push('/dictionary/item/add');
             },
 
 
@@ -295,33 +308,21 @@
              * @param id
              */
             deleteEntity(row) {
-                this.checkStatus(row, () => {
-                    common.confirm({
-                        message: `确认删除数据类型【${row.name}】？`,
-                    }).then(() => {
-                        deleteDictionaryType({content: row.id}).then(data => {
-                            if (200 === data.code) {
-                                this.$message.success(`删除数据类型【${row.name}】成功`);
-                                this.queryPage();
-                            } else {
-                                this.$message.error(data.message)
-                            }
+                common.confirm({
+                    message: `确认删除数据项目【${row.name}】？`,
+                }).then(() => {
+                    deleteDictionaryItem({content: row.id}).then(data => {
+                        if (200 === data.code) {
+                            this.$message.success(`删除数据项目【${row.name}】成功`);
+                            this.queryPage();
+                        } else {
+                            this.$message.error(data.message)
+                        }
 
-                        });
-                    }).catch(() => {
-                        // 取消按钮的回调
-                        console.log('取消按钮的回调');
                     });
-                });
-            },
-
-            checkStatus(row, callBack) {
-                checkStatus({content: row.id}).then(data => {
-                    if (200 === data.code) {
-                        callBack();
-                    } else {
-                        this.$message.error(data.message);
-                    }
+                }).catch(() => {
+                    // 取消按钮的回调
+                    console.log('取消按钮的回调');
                 });
             },
 
@@ -330,7 +331,7 @@
                 let isShow = row.isShow === '1' ? '0' : '1';
 
                 common.confirm({
-                    message: `是否${text}数据类型【${row.name}】？`,
+                    message: `是否${text}数据项目【${row.name}】？`,
                 }).then(() => {
                     let param = {
                         content: {
@@ -338,7 +339,7 @@
                             isShow: isShow
                         }
                     };
-                    setDictionaryType(param).then(data => {
+                    setDictionaryItem(param).then(data => {
                         if (200 === data.code) {
                             this.$message.success(data.message);
                             this.queryPage();
@@ -365,7 +366,7 @@
                         // 修改记录的属性和属性值
                         param.content[this.editForm.property] = this.editForm.content;
 
-                        updateDictionaryType(param).then(data => {
+                        updateDictionaryItem(param).then(data => {
                             this.dlgSettings.visible = false; // 对话框关闭
                             if (200 === data.code) {
                                 this.$message.success(data.message);
@@ -377,6 +378,20 @@
                     }
                 });
             },
+            queryDictionaryTypeList() {
+                let param = {
+                    content: {
+                        isShow: '1'
+                    }
+                };
+                queryDictionaryTypeList(param).then(data => {
+                    if (200 === data.code) {
+                        this.options = data.content;
+                    } else {
+                        this.$message.error(data.message);
+                    }
+                });
+            }
         },
     }
 </script>

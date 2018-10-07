@@ -8,48 +8,14 @@
 <script>
 
     import {queryGrantedOperationList} from 'apis/general/operation'
-    import {login, queryGrantedMenus, queryGrantedPlats} from 'apis/auth'
+    import {login} from 'apis/auth'
 
     export default {
         created: function () {
             this.login();
             this.queryGrantedOperationList();
-
-            this.queryGrantedMenus();
-            this.queryGrantedPlats()
         },
         methods: {
-            queryGrantedMenus() {
-                let param = {
-                    content: {
-                        userId: '1',
-                        platId: '5bcae4a6036f43709877191f3bcb4283'
-                    }
-                };
-                queryGrantedMenus(param).then(data => {
-                    if (200 === data.code) {
-                        let content = data.content;
-                        console.log(data.message, content);
-                    } else {
-                        this.$message.error(data.message);
-                    }
-                });
-
-            },
-            queryGrantedPlats() {
-                let param = {
-                    content: '1'
-                };
-                queryGrantedPlats(param).then(data => {
-                    if (200 === data.code) {
-                        let content = data.content;
-                        console.log(data.message, content);
-                    } else {
-                        this.$message.error(data.message);
-                    }
-
-                });
-            },
             queryGrantedOperationList() {
                 let param = {
                     content: {
@@ -86,9 +52,10 @@
                         let refreshToken = content.refreshToken;
                         sessionStorage.setItem('accessToken', accessToken);
                         sessionStorage.setItem('refreshToken', refreshToken);
+                        sessionStorage.setItem('userName', user.name);
                     }
                 });
-            }
+            },
         }
     }
 </script>
