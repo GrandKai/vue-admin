@@ -53,7 +53,7 @@
 <script>
 
   import CustomPage from 'components/formCustomPage/Index';
-  import {queryUserByUserName, addUserInfo} from 'apis/user';
+  import {queryUserByUserName, addUser} from 'apis/user';
 
   export default {
     components: {
@@ -142,8 +142,9 @@
           if (valid) {
             let param = {
               content : this.form
-            }
-            addUserInfo(param).then(data => {
+            };
+
+            addUser(param).then(data => {
               if (200 === data.code) {
                 this.$message.success(data.message);
                 this.$router.push("/user");

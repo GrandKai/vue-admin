@@ -24,7 +24,7 @@
                 <li>
                     <el-input v-model="param.content.name" placeholder="角色名称/角色描述" @keyup.native.enter="queryPage"
                               style="width: 220px"
-                              clearable @input="clearInput"></el-input>
+                              clearable @input="queryPage"></el-input>
                 </li>
 
                 <li>

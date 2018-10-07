@@ -32,7 +32,7 @@
                                 <el-input v-model="param.content.name" placeholder="权限名称/权限描述"
                                           @keyup.native.enter="queryPage"
                                           style="width: 220px"
-                                          clearable @input="clearInput"></el-input>
+                                          clearable @input="queryPage"></el-input>
                             </li>
 
                             <li>
@@ -433,10 +433,6 @@
                 this.queryPage();
                 this.$refs.multipleTable.clearSelection();
             },
-            clearInput() {
-                console.log("........................")
-            },
-
 
             treeOpen() {
 

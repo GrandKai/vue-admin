@@ -1,6 +1,6 @@
 <template>
     <div class="welcome" :style='{minHeight, backgroundColor}'>
-        <p>欢迎来到麟龙后台CRM系统1</p>
+        <p>欢迎来到权限管理系统</p>
     </div>
 </template>
 

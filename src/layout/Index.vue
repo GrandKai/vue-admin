@@ -6,6 +6,7 @@
             </el-aside>
             <el-container>
                 <el-header>
+
                     <!--<div class="custom_user">{{userName}}</div>-->
                     <div class="system_right">
                         <label style="font-size: 13px;margin-right: 10px">{{userName}}</label>
