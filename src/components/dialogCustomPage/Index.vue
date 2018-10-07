@@ -11,7 +11,7 @@
                  ref="form"
                  :model="form"
                  :rules="rules">
-          <el-input v-model="userId"
+          <el-input v-model="userId" style="display: none"
                     type="text"></el-input>
           <el-input v-model="filterText"
                     placeholder="输入关键字进行过滤" clearable>

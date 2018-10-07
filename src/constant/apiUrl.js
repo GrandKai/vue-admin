@@ -29,7 +29,8 @@ export const menu = {
 //用户管理
 export const user = {
   QUERY_USER_BY_USER_NAME: '/user/queryUserByUserName',
-  ADD_USER_INFO: '/user/addUserInfo'
+  ADD_USER_INFO: '/user/addUserInfo',
+  DELETE_USER: '/user/delete',//删除用户信息 置状态
 };
 
 export const operation = {

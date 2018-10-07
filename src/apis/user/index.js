@@ -5,4 +5,4 @@ export const queryUserByUserName = param => $http.post(user.QUERY_USER_BY_USER_N
 
 export const addUserInfo = param => $http.post(user.ADD_USER_INFO, param);
 // export const updateMenu = param => $http.post(menu.UPDATE, param);
-// export const deleteMenu = param => $http.post(menu.DELETE, param);
+export const deleteUser = param => $http.post(user.DELETE_USER, param);

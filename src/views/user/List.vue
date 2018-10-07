@@ -180,6 +180,7 @@
 <script>
   import CustomPage from 'components/listCustomPage/Index';
   import treeDialog from 'components/dialogCustomPage/Index';
+  import {deleteUser} from 'apis/user';
   import {queryRoleList, queryAllPlatsAndRoles,queryRoleUserList, addUserRole} from 'apis/privilege/role';
 
   export default {
@@ -291,8 +292,8 @@
           common.confirm({
             message: `确认删除【${row.nickName}】这个用户？`,
           }).then(() => {
-            deleteRole({content: row.id}).then(resp => {
-              if (200 === resp.status) {
+            deleteUser({content: row.userId}).then(resp => {
+              if (200 === resp.code) {
                 common.message({
                   message: resp.message,
                 });
