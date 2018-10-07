@@ -60,6 +60,10 @@ let router = [
         component: MenuList
     },
     {
+        path: 'organization',
+        component: OrganizationList
+    },
+    {
         path: 'operation',
         component: OperationList
     },
