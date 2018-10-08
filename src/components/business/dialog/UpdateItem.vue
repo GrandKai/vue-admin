@@ -9,8 +9,13 @@
         >
             <el-form :model="form" :rules="rules" ref="form" onsubmit="return false;">
                 <div class="clearfix">
-                    <slot name="contentArea"></slot>
+                    <el-form-item>
 
+                        <slot name="dialogContentArea"></slot>
+
+                        <el-button @click="closeDialog" class="left">取 消</el-button>
+                        <el-button type="primary" @click="save" class="left" :loading="isLoad">保 存</el-button>
+                    </el-form-item>
                 </div>
             </el-form>
         </el-dialog>
@@ -19,7 +24,6 @@
 
 <script>
   export default {
-    name: "PlatUpdate",
     data() {
       return {
 
@@ -54,10 +58,10 @@
 
         console.error('规则:', this.rules);
         console.error('表单信息:',this.form);
-        this.$emit('saveDialog');
 
         this.$refs.form.validate(valid => {
           if (valid) {
+            this.$emit('saveDialog');
             /*// 传入参数
             let param = {
               content: {
@@ -150,9 +154,9 @@
       },
 
       closeDialog() {
+        console.log('关闭对话框对话框');
         // 重置表单域
         this.resetFields();
-
         // 关闭对话框
         this.$emit("closeDialog");
       },

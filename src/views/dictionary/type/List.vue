@@ -100,7 +100,7 @@
 
 
         <!-- 编辑【角色】信息对话框 -->
-        <el-dialog :title="dlgSettings.title + '设置'"
+        <!--<el-dialog :title="dlgSettings.title + '设置'"
                    :visible.sync="dlgSettings.visible"
                    width="30%"
                    :close-on-click-modal="false">
@@ -116,269 +116,282 @@
                 </div>
             </el-form>
 
-        </el-dialog>
+        </el-dialog>-->
+        <update-item :rules="rules" :dialogVisible="dlgSettings.visible" :title="dlgSettings.title" @closeDialog="closeDialog" :saveDialog="onSubmit">
+            <template slot="dialogContentArea">
+                <el-input v-model.trim="editForm.content" placeholder="请输入内容" class="left role-input"
+                          :type="dlgSettings.inputType" :rows="dlgSettings.rowNum"
+                          @keyup.native.enter="onSubmit"></el-input>
+            </template>
+        </update-item>
     </div>
 </template>
 
 <script>
-    import CustomPage from 'components/listCustomPage/Index';
-    import {
-        queryDictionaryTypePage,
-        updateDictionaryType,
-        setDictionaryType,
-        deleteDictionaryType,
-        checkStatus
-    } from 'apis/dictionary/type';
+  import CustomPage from 'components/listCustomPage/Index';
+  import UpdateItem from 'components/business/dialog/UpdateItem';
+  import {
+    queryDictionaryTypePage,
+    updateDictionaryType,
+    setDictionaryType,
+    deleteDictionaryType,
+    checkStatus
+  } from 'apis/dictionary/type';
 
-    export default {
-        components: {
-            'custom-page': CustomPage
+  export default {
+    components: {
+      'custom-page': CustomPage,
+      'update-item': UpdateItem
+    },
+    data() {
+      return {
+        loading: true,
+        paginationShow: false,
+        pageSizes: pageSizes,
+        total: 0,
+        param: {
+          content: {
+            name: '',
+          },
+          page: {
+            pageNum: 1,
+            pageSize: pageSizes[0]
+          }
         },
-        data() {
-            return {
-                loading: true,
-                paginationShow: false,
-                pageSizes: pageSizes,
-                total: 0,
-                param: {
-                    content: {
-                        name: '',
-                    },
-                    page: {
-                        pageNum: 1,
-                        pageSize: pageSizes[0]
-                    }
-                },
 
-                tableData: [],
+        tableData: [],
 
-                // 修改的内容
-                editForm: {
-                    id: "",
-                    property: "",
-                    content: ""
-                },
+        // 修改的内容
+        editForm: {
+          id: "",
+          property: "",
+          content: ""
+        },
 
-                // 弹出框属性设置
-                dlgSettings: {
-                    title: "", // 弹窗标题
-                    visible: false, // 弹窗可见
-                    inputType: "text", // 弹窗内文本框类型
-                    rowNum: 1 // 文本框行数
-                },
-                // 校验规则
-                rules: {}
+        // 弹出框属性设置
+        dlgSettings: {
+          title: "", // 弹窗标题
+          visible: false, // 弹窗可见
+          inputType: "text", // 弹窗内文本框类型
+          rowNum: 1 // 文本框行数
+        },
+        // 校验规则
+        rules: {}
+      }
+    },
+
+    created() {
+      this.queryPage();
+    },
+    methods: {
+
+      tableRowClassName({row, rowIndex}) {
+        // 把每一行的索引放进row
+        row.rowIndex = rowIndex
+      },
+
+      formatter(row, column, cellValue, index) {
+        //放回索引值
+        return this.param.page.pageSize * (this.param.page.pageNum - 1) + 1 + row.rowIndex;
+      },
+
+      // 改变页码
+      handleCurrentChange(val) {
+        this.param.page.pageNum = val;
+        this.queryPage();
+      },
+      // 改变每页显示多少条
+      handleSizeChange(value) {
+        this.param.page.pageSize = value;
+        this.queryPage();
+      },
+
+      /**
+       * 分页查询
+       * @param param
+       */
+      queryPage() {
+
+        this.loading = true;
+        queryDictionaryTypePage(this.param).then((data) => {
+
+          console.log('..............查询分页结果：', data);
+          this.loading = false;
+          this.paginationShow = true;
+
+          if (data.content && data.content.list) {
+            this.tableData = data.content.list;
+            this.total = data.content.total;
+          }
+        }).catch(error => {
+          this.loading = false;
+        });
+      },
+
+      searchByCondition() {
+        this.param.page.pageNum = 1;
+        this.queryPage();
+      },
+
+      // 清空查询条件
+      clearQueryParam() {
+        this.param.content = {
+          name: '',
+          startTime: '',
+          endTime: '',
+        };
+        this.queryPage();
+        this.$refs.multipleTable.clearSelection();
+      },
+      clearInput() {
+        console.log("........................")
+      },
+
+      /********************************* 业务逻辑处理 ************************************/
+
+      addEntity() {
+        this.$router.push('/dictionary/type/add');
+      },
+
+
+      /***************　打开修改系统对话框　*********************/
+      updateEntity(row, rowName, dlgTitle) {
+
+        // 判断弹出框展示样式
+        switch (rowName) {
+          case 'sortNumber': {
+            this.dlgSettings = {title: dlgTitle, visible: true, inputType: "textarea", rowNum: 4};
+            break;
+          }
+          default: {
+            this.dlgSettings = {title: dlgTitle, visible: true, inputType: "text", rowNum: 1};
+            break;
+          }
+        }
+        // 根据列名添加校验规则
+        switch (rowName) {
+          case 'sortNumber': {
+            // 手动添加的数字校验
+            this.rules.content = [{validator: common.checkNumber, trigger: "blur"}];
+            break;
+          }
+          case 'name': {
+            this.rules.content = [
+              {required: true, message: "请输入" + dlgTitle + "，长度在50个字符内", trigger: "blur", max: 50},
+            ];
+            break;
+          }
+        }
+        // 清空表单
+        this.clearForm("editForm");
+        this.editForm = {
+          id: row.id,
+          property: rowName,
+          content: row[rowName]
+        };
+      },
+
+      /***************  清空Form　*********************/
+      clearForm(formName) {
+        // 修改框未初始化时，不清空表单
+        if (typeof this.$refs[formName] != "undefined") {
+          this.$refs[formName].resetFields();
+        }
+      },
+
+      /**
+       * 删除实体
+       * @param id
+       */
+      deleteEntity(row) {
+        this.checkStatus(row, () => {
+          common.confirm({
+            message: `确认删除数据类型【${row.name}】？`,
+          }).then(() => {
+            deleteDictionaryType({content: row.id}).then(data => {
+              if (200 === data.code) {
+                this.$message.success(`删除数据类型【${row.name}】成功`);
+                this.queryPage();
+              } else {
+                this.$message.error(data.message)
+              }
+
+            });
+          }).catch(() => {
+            // 取消按钮的回调
+            console.log('取消按钮的回调');
+          });
+        });
+      },
+
+      checkStatus(row, callBack) {
+        checkStatus({content: row.id}).then(data => {
+          if (200 === data.code) {
+            callBack();
+          } else {
+            this.$message.error(data.message);
+          }
+        });
+      },
+
+      updateEntityStatus(row) {
+        let text = row.isShow === '1' ? '隐藏' : '显示';
+        let isShow = row.isShow === '1' ? '0' : '1';
+
+        common.confirm({
+          message: `是否${text}数据类型【${row.name}】？`,
+        }).then(() => {
+          let param = {
+            content: {
+              id: row.id,
+              isShow: isShow
             }
-        },
+          };
+          setDictionaryType(param).then(data => {
+            if (200 === data.code) {
+              this.$message.success(data.message);
+              this.queryPage();
+            } else {
+              this.$message.error(data.message);
+            }
 
-        created() {
-            this.queryPage();
-        },
-        methods: {
+          });
 
-            tableRowClassName({row, rowIndex}) {
-                // 把每一行的索引放进row
-                row.rowIndex = rowIndex
-            },
+        }).catch(_ => {
+        });
+      },
 
-            formatter(row, column, cellValue, index) {
-                //放回索引值
-                return this.param.page.pageSize * (this.param.page.pageNum - 1) + 1 + row.rowIndex;
-            },
+      /***************　提交修改信息　*********************/
+      onSubmit() {
+        this.$refs.editForm.validate(valid => {
+          if (valid) {
+            // 传入参数
+            let param = {
+              content: {
+                id: this.editForm.id, // 修改记录的ID
+              }
+            };
+            // 修改记录的属性和属性值
+            param.content[this.editForm.property] = this.editForm.content;
 
-            // 改变页码
-            handleCurrentChange(val) {
-                this.param.page.pageNum = val;
+            updateDictionaryType(param).then(data => {
+              this.dlgSettings.visible = false; // 对话框关闭
+              if (200 === data.code) {
+                this.$message.success(data.message);
                 this.queryPage();
-            },
-            // 改变每页显示多少条
-            handleSizeChange(value) {
-                this.param.page.pageSize = value;
-                this.queryPage();
-            },
-
-            /**
-             * 分页查询
-             * @param param
-             */
-            queryPage() {
-
-                this.loading = true;
-                queryDictionaryTypePage(this.param).then((data) => {
-
-                    console.log('..............查询分页结果：', data);
-                    this.loading = false;
-                    this.paginationShow = true;
-
-                    if (data.content && data.content.list) {
-                        this.tableData = data.content.list;
-                        this.total = data.content.total;
-                    }
-                }).catch(error => {
-                    this.loading = false;
-                });
-            },
-
-            searchByCondition() {
-                this.param.page.pageNum = 1;
-                this.queryPage();
-            },
-
-            // 清空查询条件
-            clearQueryParam() {
-                this.param.content = {
-                    name: '',
-                    startTime: '',
-                    endTime: '',
-                };
-                this.queryPage();
-                this.$refs.multipleTable.clearSelection();
-            },
-            clearInput() {
-                console.log("........................")
-            },
-
-            /********************************* 业务逻辑处理 ************************************/
-
-            addEntity() {
-                this.$router.push('/dictionary/type/add');
-            },
-
-
-            /***************　打开修改系统对话框　*********************/
-            updateEntity(row, rowName, dlgTitle) {
-
-                // 判断弹出框展示样式
-                switch (rowName) {
-                    case 'description': {
-                        this.dlgSettings = {title: dlgTitle, visible: true, inputType: "textarea", rowNum: 4};
-                        break;
-                    }
-                    default: {
-                        this.dlgSettings = {title: dlgTitle, visible: true, inputType: "text", rowNum: 1};
-                        break;
-                    }
-                }
-                // 根据列名添加校验规则
-                switch (rowName) {
-                    case 'sortNumber': {
-                        // 手动添加的数字校验
-                        this.rules.content = [{validator: common.checkNumber, trigger: "blur"}];
-                        break;
-                    }
-                    case 'name': {
-                        this.rules.content = [
-                            {required: true, message: "请输入" + dlgTitle + "，长度在50个字符内", trigger: "blur", max: 50},
-                        ];
-                        break;
-                    }
-                }
-                // 清空表单
-                this.clearForm("editForm");
-                this.editForm = {
-                    id: row.id,
-                    property: rowName,
-                    content: row[rowName]
-                };
-            },
-
-            /***************  清空Form　*********************/
-            clearForm(formName) {
-                // 修改框未初始化时，不清空表单
-                if (typeof this.$refs[formName] != "undefined") {
-                    this.$refs[formName].resetFields();
-                }
-            },
-
-            /**
-             * 删除实体
-             * @param id
-             */
-            deleteEntity(row) {
-                this.checkStatus(row, () => {
-                    common.confirm({
-                        message: `确认删除数据类型【${row.name}】？`,
-                    }).then(() => {
-                        deleteDictionaryType({content: row.id}).then(data => {
-                            if (200 === data.code) {
-                                this.$message.success(`删除数据类型【${row.name}】成功`);
-                                this.queryPage();
-                            } else {
-                                this.$message.error(data.message)
-                            }
-
-                        });
-                    }).catch(() => {
-                        // 取消按钮的回调
-                        console.log('取消按钮的回调');
-                    });
-                });
-            },
-
-            checkStatus(row, callBack) {
-                checkStatus({content: row.id}).then(data => {
-                    if (200 === data.code) {
-                        callBack();
-                    } else {
-                        this.$message.error(data.message);
-                    }
-                });
-            },
-
-            updateEntityStatus(row) {
-                let text = row.isShow === '1' ? '隐藏' : '显示';
-                let isShow = row.isShow === '1' ? '0' : '1';
-
-                common.confirm({
-                    message: `是否${text}数据类型【${row.name}】？`,
-                }).then(() => {
-                    let param = {
-                        content: {
-                            id: row.id,
-                            isShow: isShow
-                        }
-                    };
-                    setDictionaryType(param).then(data => {
-                        if (200 === data.code) {
-                            this.$message.success(data.message);
-                            this.queryPage();
-                        } else {
-                            this.$message.error(data.message);
-                        }
-
-                    });
-
-                }).catch(_ => {
-                });
-            },
-
-            /***************　提交修改信息　*********************/
-            onSubmit() {
-                this.$refs.editForm.validate(valid => {
-                    if (valid) {
-                        // 传入参数
-                        let param = {
-                            content: {
-                                id: this.editForm.id, // 修改记录的ID
-                            }
-                        };
-                        // 修改记录的属性和属性值
-                        param.content[this.editForm.property] = this.editForm.content;
-
-                        updateDictionaryType(param).then(data => {
-                            this.dlgSettings.visible = false; // 对话框关闭
-                            if (200 === data.code) {
-                                this.$message.success(data.message);
-                                this.queryPage();
-                            } else {
-                                this.$message.error(data.message);
-                            }
-                        });
-                    }
-                });
-            },
-        },
-    }
+              } else {
+                this.$message.error(data.message);
+              }
+            });
+          }
+        });
+      },
+      closeDialog() {
+        console.error('父对话框关闭 dialog');
+        this.dlgSettings.visible = false;
+      }
+    },
+  }
 </script>
 <style scoped>
 
