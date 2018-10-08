@@ -1,18 +1,18 @@
-
 // 白名单
 export const auth = {
-    LOGIN: '/auth/login',
-    LOGOUT: '/auth/logout',
-    MENUS: '/auth/menu/list',
-    PLATS: '/auth/plat/list',
+  LOGIN: '/auth/login',
+  LOGOUT: '/auth/logout',
+  MENUS: '/auth/menu/list',
+  PLATS: '/auth/plat/list',
 };
 
 // 组织机构
 export const organization = {
-    QUERY_LIST: '/org/list',
-    ADD: '/org/add',
-    UPDATE: '/org/update',
-    DELETE: '/org/delete',
+  QUERY_LIST: '/org/list',
+  ADD: '/org/add',
+  UPDATE: '/org/update',
+  DELETE: '/org/delete',
+  CHECK_STATUS: '/org/check/status',
 };
 
 //后台方法配置
@@ -73,34 +73,34 @@ export const dictionaryType = {
   UPDATE: '/dictionary/type/update',
   DELETE: '/dictionary/type/delete',
   SET: '/dictionary/type/set',
-  CHECK_STATUS: 'dictionary/type/check/status',
+  CHECK_STATUS: '/dictionary/type/check/status',
   CHECK_EXIST: '/dictionary/type/check/exist',
 };
 
 export const authority = {
-    QUERY_PAGE: '/authority',
-    QUERY_LIST: '/authority/list',
-    ADD: '/authority/add',
-    UPDATE: '/authority/update',
-    SET: '/authority/set',
-    DELETE: '/authority/delete',
-    CHECK_EXIST: '/authority/check/exist',
-    CHECK_UPDATE_EXIST: '/authority/check/update/exist',
-    QUERY_GRANTED_IDS: '/authority/granted/ids',
+  QUERY_PAGE: '/authority',
+  QUERY_LIST: '/authority/list',
+  ADD: '/authority/add',
+  UPDATE: '/authority/update',
+  SET: '/authority/set',
+  DELETE: '/authority/delete',
+  CHECK_EXIST: '/authority/check/exist',
+  CHECK_UPDATE_EXIST: '/authority/check/update/exist',
+  QUERY_GRANTED_IDS: '/authority/granted/ids',
 };
 
 
 export const role = {
-    QUERY_PAGE: '/role',
-    QUERY_List: '/role/list',
-    ADD: '/role/add',
-    AUTHORITY_ADD: '/role/authority/add',
-    UPDATE: '/role/update',
-    DELETE: '/role/delete',
-    CHECK_EXIST: '/role/check/exist',
-    CHECK_UPDATE_EXIST: '/role/check/update/exist',
-    QUERY_ROLE_AUTHORITY_LIST: '/role/authority/list',
-    QUERY_USER_ROLE: '/role/select/user',
-    QUERY_ALL_PLATS_AND_ROLES: '/role/plat/all',
-    ADD_USER_ROLE: '/role/add/user/role'
+  QUERY_PAGE: '/role',
+  QUERY_List: '/role/list',
+  ADD: '/role/add',
+  AUTHORITY_ADD: '/role/authority/add',
+  UPDATE: '/role/update',
+  DELETE: '/role/delete',
+  CHECK_EXIST: '/role/check/exist',
+  CHECK_UPDATE_EXIST: '/role/check/update/exist',
+  QUERY_ROLE_AUTHORITY_LIST: '/role/authority/list',
+  QUERY_USER_ROLE: '/role/select/user',
+  QUERY_ALL_PLATS_AND_ROLES: '/role/plat/all',
+  ADD_USER_ROLE: '/role/add/user/role'
 };
