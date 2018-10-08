@@ -343,7 +343,6 @@
         let vm = this;
 
         vm.userId = userId;
-        console.info(vm.checkData)
         queryRoleUserList({content: userId}).then(data => {//获取当前员工的角色信息
           vm.checkData = [];
           if (200 == data.code) {
@@ -353,7 +352,6 @@
             });
           }
           vm.dialogVisible = true;
-          console.info(vm.checkData)
         });
 
       },
