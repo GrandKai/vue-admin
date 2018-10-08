@@ -11,7 +11,7 @@
                 <div class="clearfix">
                     <el-form-item>
 
-                        <slot name="dialogContentArea"></slot>
+                        <slot name="dialogContentArea" :entity></slot>
 
                         <el-button @click="closeDialog" class="left">取 消</el-button>
                         <el-button type="primary" @click="save" class="left" :loading="isLoad">保 存</el-button>
