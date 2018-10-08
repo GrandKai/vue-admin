@@ -117,11 +117,19 @@
             </el-form>
 
         </el-dialog>-->
-        <update-item :rules="rules" :dialogVisible="dlgSettings.visible" :title="dlgSettings.title" @closeDialog="closeDialog" :saveDialog="onSubmit">
+        <update-item
+                :dialogVisible="dlgSettings.visible"
+                :title="dlgSettings.title"
+                @closeDialog="closeDialog"
+                :saveDialog="onSubmit"
+                :editForm="editForm">
             <template slot="dialogContentArea" slot-scope="props">
-                <el-input v-model.trim="editForm.content" placeholder="请输入内容" class="left role-input"
-                          :type="dlgSettings.inputType" :rows="dlgSettings.rowNum"
-                          @keyup.native.enter="onSubmit"></el-input>
+
+                <el-form-item  :rules="rules">
+                    <el-input placeholder="请输入内容" class="left role-input"
+                              v-model.trim="props.entity.content"
+                              :type="dlgSettings.inputType" :rows="dlgSettings.rowNum" @keyup.native.enter="onSubmit"></el-input>
+                </el-form-item>
             </template>
         </update-item>
     </div>

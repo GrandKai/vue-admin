@@ -7,15 +7,12 @@
                    :close-on-click-modal="false"
                    :before-close="closeDialog"
         >
-            <el-form :model="form" :rules="rules" ref="form" onsubmit="return false;">
+            <el-form :model="form" ref="form" onsubmit="return false;">
                 <div class="clearfix">
-                    <el-form-item>
-
-                        <slot name="dialogContentArea" :entity></slot>
+                    <slot name="dialogContentArea" :entity="form" ></slot>
 
                         <el-button @click="closeDialog" class="left">取 消</el-button>
                         <el-button type="primary" @click="save" class="left" :loading="isLoad">保 存</el-button>
-                    </el-form-item>
                 </div>
             </el-form>
         </el-dialog>
@@ -34,10 +31,9 @@
           content: ""
         },
         isLoad: false,
-        content: '1111111111'
       }
     },
-    props: ['dialogVisible', 'title', 'rules'],
+    props: ['dialogVisible', 'title', 'rules', 'editForm'],
     watch: {
       'dialogVisible': function (newVal, oldVal) {
         console.log('watch dialogVisible default value is:', newVal);
@@ -46,8 +42,18 @@
         if (!newVal) { // 打开确定按钮
           vm.isLoad = false;
         }
-
-      }
+      },
+      'editForm.content': {
+        handler(val, oldVal) {
+          console.log('form.content', val);
+          if (!val) {
+            this.formDisabled = true;
+          } else {
+            this.form.content = val;
+          }
+        },
+        deep: true
+      },
     },
     created() {
 
@@ -60,6 +66,8 @@
         console.error('表单信息:',this.form);
 
         this.$refs.form.validate(valid => {
+
+          console.error('form 表单检验.................................', valid, this.form);
           if (valid) {
             this.$emit('saveDialog');
             /*// 传入参数
@@ -80,6 +88,9 @@
                 this.$message.error(data.message);
               }
             });*/
+          } else {
+            console.log('error submit!!');
+            return false;
           }
         });
       },
