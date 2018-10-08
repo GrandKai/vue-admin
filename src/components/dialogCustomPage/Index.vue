@@ -11,7 +11,8 @@
                  ref="form"
                  :model="form"
                  :rules="rules">
-          <el-input v-model="userId" style="display: none"
+          <el-input v-model="userId"
+                    style="display: none"
                     type="text"></el-input>
           <el-input v-model="filterText"
                     placeholder="输入关键字进行过滤" clearable>
@@ -24,7 +25,7 @@
                    :filter-node-method="filterNode"
                    :default-expand-all="true"
                    ref="tree"
-                   :default-checked-keys="checkData"
+                   :default-checked-keys="checkDatas"
           >
           </el-tree>
 
@@ -49,11 +50,12 @@
         // 修改的内容
         form: {
           userId: '',
-          roleList: [],
+          roleList: []
         },
         isload: false,
         filterText: '',//关键字
         btnAbled: false,
+        checkDatas: [],//树形结构选中数据
       };
     },
     props: ['dialogVisible', 'title', 'rules', 'treeData', 'userId', 'checkData'],
@@ -67,7 +69,13 @@
       },
       filterText(val) {
         this.$refs.tree.filter(val);
-      }
+      },
+      checkData : function(newVal, oldVal) {
+        let vm = this;
+        vm.checkDatas = newVal
+        vm.$refs.tree.setCheckedNodes(vm.checkDatas)
+
+      },
     },
     mounted() {
       let vm = this;
@@ -76,7 +84,7 @@
       // 关闭之前, 调用父组件的方法, 重置dialogVisibleLog
       closeDialog: function() {
         let vm = this;
-        vm.filterText = ''
+        vm.filterText = '';
         vm.$refs.form.resetFields();
         vm.$emit('closeDialog');
       },
@@ -90,7 +98,7 @@
         let vm = this;
         vm.$refs.form.validate(valid => {
           let keys = vm.$refs.tree.getCheckedNodes();
-          let roleList = []
+          let roleList = [];
           keys.forEach(item => {
             if(item.parentId){
               roleList.push(item.id);
@@ -101,14 +109,14 @@
             let param = {
               userId : vm.userId,
               roleList : roleList
-            }
+            };
             vm.$refs.form.resetFields();
             vm.isload = true;
             vm.$nextTick(function() {
               vm.$emit('addUserRole', param); // 回调参数
             });
           }
-        })
+        });
 
       }
     },
@@ -122,7 +130,7 @@
       //     return true;
       //   }
       // }
-    },
+    }
   };
 </script>
 
