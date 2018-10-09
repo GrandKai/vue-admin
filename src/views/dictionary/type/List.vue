@@ -46,7 +46,7 @@
 
                     <el-table-column label="数据类型名称" prop="name" header-align="left" align="left">
                         <template slot-scope="scope">
-                            <div class="click-text" @click='updateEntity(scope.row , "name" , "数据类型名称")'>
+                            <div class="click-text" @click='openDialog(scope.row , "name" , "数据类型名称")'>
                                 {{ scope.row.name }}
                             </div>
                         </template>
@@ -57,7 +57,8 @@
 
                     <el-table-column label="显示顺序" header-align="left" align="left" fixed="right">
                         <template slot-scope="scope">
-                            <div class="click-text" @click='updateEntity(scope.row , "sortNumber" , "显示顺序")'>
+                            <!--<div class="click-text" @click='updateEntity(scope.row , "sortNumber" , "显示顺序")'>-->
+                            <div class="click-text" @click='openDialog(scope.row ,"sortNumber", "显示顺序")'>
                                 {{ scope.row.sortNumber}}
                             </div>
                         </template>
@@ -132,11 +133,17 @@
                 </el-form-item>
             </template>
         </update-item>
+
+        <form-dialog :title="title" :dialogVisible="dialogVisible" :rules="rules" :label="label" :data="content" :type="type" @closeDialog="closeDialog">
+
+        </form-dialog>
+
     </div>
 </template>
 
 <script>
   import CustomPage from 'components/listCustomPage/Index';
+  import FormDialog from 'components/business/dialog/FormCustomDialog';
   import UpdateItem from 'components/business/dialog/UpdateItem';
   import {
     queryDictionaryTypePage,
@@ -149,7 +156,8 @@
   export default {
     components: {
       'custom-page': CustomPage,
-      'update-item': UpdateItem
+      'update-item': UpdateItem,
+      'form-dialog': FormDialog,
     },
     data() {
       return {
@@ -184,7 +192,12 @@
           rowNum: 1 // 文本框行数
         },
         // 校验规则
-        rules: {}
+        rules: {},
+        dialogVisible: false,//默认弹出框为隐藏
+        title: '',//
+        label: '',
+        content: '',
+        type: '',
       }
     },
 
@@ -394,9 +407,25 @@
           }
         });
       },
-      closeDialog() {
-        console.error('父对话框关闭 dialog');
-        this.dlgSettings.visible = false;
+      closeDialog: function() {
+        let vm = this;
+        vm.dialogVisible = false;
+      },
+      openDialog(data, name, title){//打开弹出框
+        let vm = this;
+        vm.title = "修改"+title
+        vm.label = title
+        vm.dialogVisible = true
+        vm.content = data[name];
+        vm.type = "textarea"
+        if('sortNumber' == name){
+          vm.rules = {
+            content :[
+                {validator: common.checkNumber, trigger: "blur"},
+            ]
+          }
+        }
+
       }
     },
   }
