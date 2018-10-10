@@ -2,12 +2,13 @@
     <div>
         <el-container>
             <el-aside class="elAside" :width="asideWidth">
-                <Menu :treeData="treeData" v-if="menuIsShow"/>
+                <Menu :treeData="treeData" v-if="menuIsShow" @updateAsideWidth="updateAsideWidth"/>
             </el-aside>
             <el-container>
                 <el-header>
 
                     <!--<div class="custom_user">{{userName}}</div>-->
+		            <img :src="expansrc" alt="伸展" class="expan" @click="expanSideMenu">
                     <div class="system_right">
                         <label style="font-size: 13px;margin-right: 10px">{{userName}}</label>
                         <el-dropdown @command="handleCommand">
@@ -21,7 +22,7 @@
                 </el-header>
 
                 <el-main>
-                    <div class="main-content" :style="{mainHeight}">
+                    <div class="main-content" :style="{minHeight}">
                         <router-view></router-view>
                     </div>
                 </el-main>
@@ -34,6 +35,8 @@
 <script>
     import Menu from './Menu'
     import {queryGrantedMenus, queryGrantedPlats} from 'apis/auth'
+    import expansrc from 'images/expan.jpg'
+    import {mapActions, mapGetters} from 'vuex'
 
     export default {
         components: {
@@ -41,8 +44,9 @@
         },
         data() {
             return {
+			    expansrc,
                 options: [],
-                mainHeight: '',
+                minHeight: '',
                 asideWidth: '200px',
 
                 platId: '',
@@ -53,6 +57,18 @@
 
             }
         },
+        computed: {
+            ...mapGetters(["expan"])
+        },
+        watch: {
+            expan: function(currentValue){
+                if(currentValue){
+                    this.updateAsideWidth('65px');
+                }else{
+                    this.updateAsideWidth('200px');
+                }
+            }
+        },
         created() {
             this.getMainHeight();
             this.queryGrantedPlats();
@@ -61,9 +77,14 @@
         },
         mounted() {
             console.warn('2. 父组件 mounted');
-            window.onresize = this.getMainHeight;
+            window.onresize = () => {
+                this.getMainHeight()
+            }
         },
         methods: {
+            ...mapActions([
+                'expanMenu'
+            ]),
             getMainHeight() {
                 this.minHeight = `${document.documentElement.clientHeight - 96}px`;
                 console.error('获取Index页面高度', this.minHeight);
@@ -117,6 +138,15 @@
                     }
                 });
 
+            },
+            expanSideMenu(){
+                this.expanMenu();
+            },
+            updateAsideWidth(width) {
+                let vm = this;
+                setTimeout(function() {
+                    vm.asideWidth = width;
+                }, 300)
             },
         },
     }
@@ -179,6 +209,12 @@
         padding-right: 20px;
         padding-top: 20px;
         padding-left: 10px;
+    }
+    .expan{
+        float: left;
+        margin-top: 20px;
+        margin-left: 18px;
+        cursor: pointer;
     }
 
 </style>

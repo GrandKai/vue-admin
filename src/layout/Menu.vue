@@ -13,7 +13,7 @@
                     text-color="#fff"
                     active-text-color="#ffd04b"
                     @open="handleOpen"
-                    @close="handleClose" :collapse="isCollapse" router>
+                    @close="handleClose" :collapse="expan" router>
 
 
                 <el-menu-item index="/login" v-if="'development' === nodeEnv">
@@ -21,7 +21,7 @@
                     <span slot="title">登录</span>
                 </el-menu-item>
 
-                <div v-for="(item, index) in treeData">
+                <template v-for="(item, index) in treeData">
                     <el-menu-item :key="item.id" :index="String(index)" v-if="!item.children || 0 === item.children.length">
                         <i :class="item.image"></i>
                         <span slot="title">{{item.name}}</span>
@@ -35,7 +35,7 @@
 
                         <el-menu-item :index="child.router" v-for="child in item['children']">{{child.name}}</el-menu-item>
                     </el-submenu>
-                </div>
+                </template>
 
 
             </el-menu>
@@ -44,6 +44,7 @@
 </template>
 
 <script>
+import { mapGetters } from "vuex";
     export default {
         data() {
             return {
@@ -53,6 +54,18 @@
         },
         props: ['treeData'],
 
+        computed: {
+            ...mapGetters(["expan"])
+        },
+        // watch: {
+        //     expan: function(currentValue){
+        //         if(currentValue){
+        //             this.updateAsideWidth('65px');
+        //         }else{
+        //             this.updateAsideWidth('200px');
+        //         }
+        //     }
+        // },
         created() {
             console.warn('2. 子组件 created', );
         },
@@ -66,7 +79,11 @@
             },
             handleClose(key, keyPath) {
                 console.log(key, keyPath);
-            }
+            },
+            updateAsideWidth(width) {
+                let vm = this;
+                vm.$emit("updateAsideWidth", width);
+            },
         }
     }
 </script>

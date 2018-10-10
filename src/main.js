@@ -5,7 +5,8 @@ import '@/assets/styles/element-variables.scss' // 皮肤 css
 
 import App from '@/App.vue'
 import router from '@/router'
-import store from '@/store/store'
+// import store from '@/store/store'
+import store from '@/store'
 
 import axios from '@/utils/axios'
 import common from '@/utils/common'
