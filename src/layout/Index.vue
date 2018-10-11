@@ -14,7 +14,7 @@
                                 <i class="ele-icon-third-account-setting2"></i>
                                 <span>{{userName}}</span>
                             </li>
-                            <li>
+                            <li @click="modifyPassword">
                                 <i class="ele-icon-third-password-modify"></i>
                                 <span>修改密码</span>
                             </li>
@@ -45,6 +45,27 @@
             </el-container>
         </el-container>
 
+        <el-dialog v-dialogDrag title="修改密码" :visible.sync="dialogFormVisible" width="25%"
+                   :close-on-click-modal="false" :close-on-press-escape="false">
+
+            <el-form ref="form" :model="form" label-width="110px" label-position="right" :rules="rules">
+                <el-form-item label="原密码：" prop="oldPassword">
+                    <el-input v-model="form.oldPassword"></el-input>
+                </el-form-item>
+                <el-form-item label="新密码：" prop="newPassword">
+                    <el-input v-model="form.newPassword" placeholder="密码必须为6-12位数字、符号或字母！"></el-input>
+                </el-form-item>
+                <el-form-item label="重复新密码：" prop="repeatPassword">
+                    <el-input v-model="form.repeatPassword" placeholder="密码必须为6-12位数字、符号或字母！"></el-input>
+                </el-form-item>
+            </el-form>
+
+            <div slot="footer" class="dialog-footer">
+                <el-button @click="dialogFormVisible = false">取 消</el-button>
+                <el-button type="primary" @click="onSubmit">确 定</el-button>
+            </div>
+        </el-dialog>
+
     </div>
 </template>
 
@@ -62,6 +83,28 @@
     data() {
       return {
         expansrc,
+        dialogFormVisible: false,
+        form: {
+          oldPassword: '',
+          newPassword: '',
+          repeatPassword: ''
+        },
+        rules: {
+          oldPassword: [
+            { required: true, message: "原密码不能为空！", trigger: "blur" }
+          ],
+          newPassword: [
+            { required: true, message: "新密码不能为空！", trigger: "blur" },
+            { pattern: /^[0-9a-zA-Z!@#$%^&*-=_+]{6,12}$/, message: "密码必须为6-12位数字、符号或字母", trigger: "blur" },
+            { required: true, validator:this.checkSecretOldSame, message: "新密码不能与原密码相同！",trigger: "blur" },
+            { required: true, validator:this.checkSecretSame, message: "两次输入密码不一致！",trigger: "blur" }
+          ],
+          repeatPassword: [
+            { required: true, message: "重复新密码不能为空！", trigger: "blur" },
+            { pattern: /^[0-9a-zA-Z!@#$%^&*-=_+]{6,12}$/, message: "密码必须为6-12位数字、符号或字母", trigger: "blur" },
+            { required: true, validator:this.checkSecretSame, message: "两次输入密码不一致！",trigger: "blur" }
+          ]
+        },
 
         options: [],
         minHeight: '',
@@ -169,7 +212,36 @@
       logout() {
         sessionStorage.clear();
         this.$router.push('/login');
-      }
+      },
+      modifyPassword() {
+        this.dialogFormVisible = true;
+      },
+
+      onSubmit() {
+        this.$refs["form"].validate(valid => {
+          console.log('修改密码验证结果', valid);
+          if (valid) {
+            let param = {
+              content: this.form,
+            };
+          }
+        })
+      },
+
+      checkSecretSame(rule, value, callback){
+        if (this.form.repeatPassword !== this.form.newPassword) {
+          callback(new Error('两次输入密码不一致!'));
+        } else {
+          callback();
+        }
+      },
+      checkSecretOldSame(rule, value, callback){
+        if (value === this.form.oldPassword) {
+          callback(new Error('新密码不能与原密码相同!'));
+        } else {
+          callback();
+        }
+      },
     },
   }
 </script>
