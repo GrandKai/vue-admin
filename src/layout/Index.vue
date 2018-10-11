@@ -210,8 +210,14 @@
         }, 300)
       },
       logout() {
-        sessionStorage.clear();
-        this.$router.push('/login');
+        common.confirm({message: '此操作将退出系统，请确认操作！'}).then(() => {
+
+          sessionStorage.clear();
+          this.$router.push('/login');
+        }).catch(() => {
+          // 取消按钮的回调
+          console.log('取消按钮的回调');
+        });;
       },
       modifyPassword() {
         this.dialogFormVisible = true;

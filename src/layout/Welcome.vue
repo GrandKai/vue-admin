@@ -1,5 +1,6 @@
 <template>
-    <div class="welcome" :style='{minHeight, backgroundColor}'>
+    <!--<div class="welcome" :style='{minHeight, backgroundColor}'>-->
+    <div class="welcome" :style='{minHeight}'>
         <p>欢迎来到权限管理系统</p>
     </div>
 </template>
