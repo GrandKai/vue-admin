@@ -11,15 +11,15 @@
                         <img :src="expansrc" alt="伸展" class="expan" @click="expanSideMenu">
                         <ul>
                             <li>
-                                <img :src="portrait"/>
+                                <i class="ele-icon-third-account-setting2"></i>
                                 <span>{{userName}}</span>
                             </li>
                             <li>
-                                <img :src="modifyPassword"/>
+                                <i class="ele-icon-third-password-modify"></i>
                                 <span>修改密码</span>
                             </li>
-                            <li>
-                                <img :src="closeSystem" />
+                            <li @click="logout">
+                                <i class="ele-icon-third-logout"></i>
                                 <span>退出</span>
                             </li>
                             <li>
@@ -28,8 +28,7 @@
                                     <el-dropdown @command="handleCommand">
                                         <span class="el-dropdown-link">{{platName}}<i class="el-icon-arrow-down el-icon--right"></i></span>
                                         <el-dropdown-menu slot="dropdown">
-                                            <el-dropdown-item v-for="item in options" :key="item.id" :command="item">{{item.name}}
-                                            </el-dropdown-item>
+                                            <el-dropdown-item v-for="item in options" :key="item.id" :command="item">{{item.name}}</el-dropdown-item>
                                         </el-dropdown-menu>
                                     </el-dropdown>
                                 </span>
@@ -53,9 +52,6 @@
   import Menu from './Menu'
   import {queryGrantedMenus, queryGrantedPlats} from 'apis/auth'
   import expansrc from 'images/expan.jpg'
-  import portrait from 'images/portrait.jpg'
-  import modifyPassword from 'images/modify.jpg'
-  import closeSystem from 'images/close.jpg'
 
   import {mapActions, mapGetters} from 'vuex'
 
@@ -65,11 +61,7 @@
     },
     data() {
       return {
-        // 导出图片
         expansrc,
-        portrait,
-        modifyPassword,
-        closeSystem,
 
         options: [],
         minHeight: '',
@@ -174,6 +166,10 @@
           vm.asideWidth = width;
         }, 300)
       },
+      logout() {
+        sessionStorage.clear();
+        this.$router.push('/login');
+      }
     },
   }
 </script>
@@ -185,11 +181,20 @@
         > ul {
             float: right;
             > li {
+                font-size: 12px;
                 float: left;
-                margin-right: 40px;
-                line-height: 58px;
+                margin-right: 30px;
+                line-height: 60px;
                 cursor: pointer;
 
+                i,
+                span {
+                    display: inline-block;
+                    vertical-align: middle;
+                }
+                i {
+                    margin-right: 6px;
+                }
             }
 
         }
@@ -228,6 +233,8 @@
 
     .el-dropdown-link {
         cursor: pointer;
+        font-size: 12px;
+        /* FIXME 为什么 在 ul > li 设置中不生效*/
         /*color: #409EFF;*/
     }
 
