@@ -5,7 +5,8 @@
             <el-radio-button :label="true">收起</el-radio-button>
         </el-radio-group>-->
         <el-col :span="24">
-            <!--<h5>自定义颜色</h5>-->
+            <img :src="logo" style="height: 60px;width: 200px;"/>
+            <!--<h5>权限管理系统</h5>-->
             <el-menu
                     default-active="2"
                     class="el-menu-vertical-demo"
@@ -16,10 +17,10 @@
                     @close="handleClose" :collapse="expan" router>
 
 
-                <el-menu-item index="/login" v-if="'development' === nodeEnv">
+                <!--<el-menu-item index="/login" v-if="'development' === nodeEnv">
                     <i class="el-icon-loading"></i>
                     <span slot="title">登录</span>
-                </el-menu-item>
+                </el-menu-item>-->
 
                 <template v-for="(item, index) in treeData">
                     <el-menu-item :key="item.id" :index="String(index)" v-if="!item.children || 0 === item.children.length">
@@ -46,48 +47,51 @@
 </template>
 
 <script>
-import { mapGetters } from "vuex";
-    export default {
-        data() {
-            return {
-                isCollapse: false,
-                nodeEnv: process.env.NODE_ENV
-            };
-        },
-        props: ['treeData'],
+  import {mapGetters} from "vuex";
+  import logo from 'images/system/logo.jpg'
 
-        computed: {
-            ...mapGetters(["expan"])
-        },
-        // watch: {
-        //     expan: function(currentValue){
-        //         if(currentValue){
-        //             this.updateAsideWidth('65px');
-        //         }else{
-        //             this.updateAsideWidth('200px');
-        //         }
-        //     }
-        // },
-        created() {
-            console.warn('2. 子组件 created', );
-        },
-        mounted() {
-            console.warn('2. 子组件 mounted');
-            console.error('父组件传到子组件的菜单数据树', this.treeData);
-        },
-        methods: {
-            handleOpen(key, keyPath) {
-                console.log(key, keyPath);
-            },
-            handleClose(key, keyPath) {
-                console.log(key, keyPath);
-            },
-            updateAsideWidth(width) {
-                let vm = this;
-                vm.$emit("updateAsideWidth", width);
-            },
-        }
+  export default {
+    data() {
+      return {
+        logo,
+        isCollapse: false,
+        nodeEnv: process.env.NODE_ENV
+      };
+    },
+    props: ['treeData'],
+
+    computed: {
+      ...mapGetters(["expan"])
+    },
+    // watch: {
+    //     expan: function(currentValue){
+    //         if(currentValue){
+    //             this.updateAsideWidth('65px');
+    //         }else{
+    //             this.updateAsideWidth('200px');
+    //         }
+    //     }
+    // },
+    created() {
+      console.warn('2. 子组件 created',);
+    },
+    mounted() {
+      console.warn('2. 子组件 mounted');
+      console.error('父组件传到子组件的菜单数据树', this.treeData);
+    },
+    methods: {
+      handleOpen(key, keyPath) {
+        console.log(key, keyPath);
+      },
+      handleClose(key, keyPath) {
+        console.log(key, keyPath);
+      },
+      updateAsideWidth(width) {
+        let vm = this;
+        vm.$emit("updateAsideWidth", width);
+      },
     }
+  }
 </script>
 
 <style lang="scss" scoped>
@@ -95,6 +99,7 @@ import { mapGetters } from "vuex";
         font-size: 18px;
         padding-right: 6px;
     }
+
     .el-col {
         width: 100%;
         float: none;

@@ -32,11 +32,15 @@
 <script>
   import {queryGrantedMenus, queryGrantedPlats} from 'apis/auth'
   import {mapActions, mapGetters} from 'vuex'
+  import expansrc from 'images/expan.jpg'
+  import logo from 'images/system/logo.jpg'
 
   export default {
 
     data() {
       return {
+        expansrc,
+        logo,
         options: [],
         asideWidth: '200px',
 
