@@ -6,11 +6,10 @@
 
 <script>
   export default {
-    name: "Welcome",
     data() {
       return {
         minHeight: '',
-        backgroundColor: "green"
+        // backgroundColor: "green"
       }
     },
     created() {

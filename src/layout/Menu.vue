@@ -29,11 +29,13 @@
 
                     <el-submenu :key="item.id" :index="String(index)" v-else>
                         <template slot="title">
-                            <i :class="item.image"></i>
+                            <i :class="item.image" style="font-size: 18px;padding-right: 6px;"></i>
                             <span>{{item.name}}</span>
                         </template>
 
-                        <el-menu-item :index="child.router" v-for="child in item['children']">{{child.name}}</el-menu-item>
+                        <el-menu-item :index="child.router" v-for="child in item['children']">
+                            <span style="margin-left: 32px">{{child.name}}</span>
+                        </el-menu-item>
                     </el-submenu>
                 </template>
 
@@ -89,6 +91,10 @@ import { mapGetters } from "vuex";
 </script>
 
 <style lang="scss" scoped>
+    .icon_class {
+        font-size: 18px;
+        padding-right: 6px;
+    }
     .el-col {
         width: 100%;
         float: none;

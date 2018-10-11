@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import ElementUI from 'element-ui'
+import '@/assets/icon/iconfont.css' // 自定义 icon
 import '@/assets/styles/element-variables.scss' // 皮肤 css
 // import 'element-ui/lib/theme-chalk/index.css'
 

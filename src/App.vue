@@ -16,4 +16,7 @@ body {
   margin: 0;
   min-height: 100%;
 }
+  .el-button {
+    margin-right: 5px;
+  }
 </style>

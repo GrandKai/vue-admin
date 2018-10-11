@@ -7,17 +7,34 @@
             <el-container>
                 <el-header>
 
-                    <!--<div class="custom_user">{{userName}}</div>-->
-		            <img :src="expansrc" alt="伸展" class="expan" @click="expanSideMenu">
-                    <div class="system_right">
-                        <label style="font-size: 13px;margin-right: 10px">{{userName}}</label>
-                        <el-dropdown @command="handleCommand">
-                            <span class="el-dropdown-link">{{platName}}<i class="el-icon-arrow-down el-icon--right"></i></span>
-                            <el-dropdown-menu slot="dropdown">
-                                <el-dropdown-item v-for="item in options" :key="item.id" :command="item">{{item.name}}
-                                </el-dropdown-item>
-                            </el-dropdown-menu>
-                        </el-dropdown>
+                    <div class="header_class">
+                        <img :src="expansrc" alt="伸展" class="expan" @click="expanSideMenu">
+                        <ul>
+                            <li>
+                                <img :src="portrait"/>
+                                <span>{{userName}}</span>
+                            </li>
+                            <li>
+                                <img :src="modifyPassword"/>
+                                <span>修改密码</span>
+                            </li>
+                            <li>
+                                <img :src="closeSystem" />
+                                <span>退出</span>
+                            </li>
+                            <li>
+
+                                <span>
+                                    <el-dropdown @command="handleCommand">
+                                        <span class="el-dropdown-link">{{platName}}<i class="el-icon-arrow-down el-icon--right"></i></span>
+                                        <el-dropdown-menu slot="dropdown">
+                                            <el-dropdown-item v-for="item in options" :key="item.id" :command="item">{{item.name}}
+                                            </el-dropdown-item>
+                                        </el-dropdown-menu>
+                                    </el-dropdown>
+                                </span>
+                            </li>
+                        </ul>
                     </div>
                 </el-header>
 
@@ -33,128 +50,150 @@
 </template>
 
 <script>
-    import Menu from './Menu'
-    import {queryGrantedMenus, queryGrantedPlats} from 'apis/auth'
-    import expansrc from 'images/expan.jpg'
-    import {mapActions, mapGetters} from 'vuex'
+  import Menu from './Menu'
+  import {queryGrantedMenus, queryGrantedPlats} from 'apis/auth'
+  import expansrc from 'images/expan.jpg'
+  import portrait from 'images/portrait.jpg'
+  import modifyPassword from 'images/modify.jpg'
+  import closeSystem from 'images/close.jpg'
 
-    export default {
-        components: {
-            Menu
-        },
-        data() {
-            return {
-			    expansrc,
-                options: [],
-                minHeight: '',
-                asideWidth: '200px',
+  import {mapActions, mapGetters} from 'vuex'
 
-                platId: '',
-                platName: '',
-                userName: '',
-                menuIsShow: false,
-                treeData: []
+  export default {
+    components: {
+      Menu
+    },
+    data() {
+      return {
+        // 导出图片
+        expansrc,
+        portrait,
+        modifyPassword,
+        closeSystem,
 
+        options: [],
+        minHeight: '',
+        asideWidth: '200px',
+
+        platId: '',
+        platName: '',
+        userName: '',
+        menuIsShow: false,
+        treeData: []
+
+      }
+    },
+    computed: {
+      ...mapGetters(["expan"])
+    },
+    watch: {
+      expan: function (currentValue) {
+        if (currentValue) {
+          this.updateAsideWidth('65px');
+        } else {
+          this.updateAsideWidth('200px');
+        }
+      }
+    },
+    created() {
+      this.getMainHeight();
+      this.queryGrantedPlats();
+      this.userName = sessionStorage.getItem('userName');
+      console.warn('1. 父组件 created')
+    },
+    mounted() {
+      console.warn('2. 父组件 mounted');
+      window.onresize = () => {
+        this.getMainHeight()
+      }
+    },
+    methods: {
+      ...mapActions([
+        'expanMenu'
+      ]),
+      getMainHeight() {
+        this.minHeight = `${document.documentElement.clientHeight - 96}px`;
+        console.error('获取Index页面高度', this.minHeight);
+      },
+
+      handleCommand(item) {
+        this.platId = item.id;
+        this.platName = item.name;
+
+        // 根据系统 id 获取菜单列表
+        this.queryGrantedMenus();
+      },
+
+      queryGrantedPlats() {
+        let param = {
+          accessToken: sessionStorage.getItem('accessToken')
+        };
+        queryGrantedPlats(param).then(data => {
+          if (200 === data.code) {
+            let content = data.content;
+            console.log(data.message, content);
+
+            this.options = content;
+
+            if (content && 0 < content.length) {
+              // 默认选中第一个系统
+              this.handleCommand(content[0]);
             }
-        },
-        computed: {
-            ...mapGetters(["expan"])
-        },
-        watch: {
-            expan: function(currentValue){
-                if(currentValue){
-                    this.updateAsideWidth('65px');
-                }else{
-                    this.updateAsideWidth('200px');
-                }
-            }
-        },
-        created() {
-            this.getMainHeight();
-            this.queryGrantedPlats();
-            this.userName = sessionStorage.getItem('userName');
-            console.warn('1. 父组件 created')
-        },
-        mounted() {
-            console.warn('2. 父组件 mounted');
-            window.onresize = () => {
-                this.getMainHeight()
-            }
-        },
-        methods: {
-            ...mapActions([
-                'expanMenu'
-            ]),
-            getMainHeight() {
-                this.minHeight = `${document.documentElement.clientHeight - 96}px`;
-                console.error('获取Index页面高度', this.minHeight);
-            },
+          } else {
+            this.$message.error(data.message);
+          }
 
-            handleCommand(item) {
-                this.platId = item.id;
-                this.platName = item.name;
+        });
+      },
 
-                // 根据系统 id 获取菜单列表
-                this.queryGrantedMenus();
-            },
+      queryGrantedMenus() {
+        let param = {
+          accessToken: sessionStorage.getItem('accessToken'),
+          content: this.platId
+        };
+        queryGrantedMenus(param).then(data => {
+          if (200 === data.code) {
+            let content = data.content;
+            console.log(data.message, content);
 
-            queryGrantedPlats() {
-                let param = {
-                    accessToken: sessionStorage.getItem('accessToken')
-                };
-                queryGrantedPlats(param).then(data => {
-                    if (200 === data.code) {
-                        let content = data.content;
-                        console.log(data.message, content);
+            this.treeData = common.toTree(content);
+            // 使用 v-if 使得数据加载完成之后再传值给子组件
+            this.menuIsShow = true;
+          } else {
+            this.$message.error(data.message);
+          }
+        });
 
-                        this.options = content;
-
-                        if (content && 0 < content.length) {
-                            // 默认选中第一个系统
-                            this.handleCommand(content[0]);
-                        }
-                    } else {
-                        this.$message.error(data.message);
-                    }
-
-                });
-            },
-
-            queryGrantedMenus() {
-                let param = {
-                    accessToken: sessionStorage.getItem('accessToken'),
-                    content: this.platId
-                };
-                queryGrantedMenus(param).then(data => {
-                    if (200 === data.code) {
-                        let content = data.content;
-                        console.log(data.message, content);
-
-                        this.treeData = common.toTree(content);
-                        // 使用 v-if 使得数据加载完成之后再传值给子组件
-                        this.menuIsShow = true;
-                    } else {
-                        this.$message.error(data.message);
-                    }
-                });
-
-            },
-            expanSideMenu(){
-                this.expanMenu();
-            },
-            updateAsideWidth(width) {
-                let vm = this;
-                setTimeout(function() {
-                    vm.asideWidth = width;
-                }, 300)
-            },
-        },
-    }
+      },
+      expanSideMenu() {
+        this.expanMenu();
+      },
+      updateAsideWidth(width) {
+        let vm = this;
+        setTimeout(function () {
+          vm.asideWidth = width;
+        }, 300)
+      },
+    },
+  }
 </script>
 
 <style lang="scss" scoped>
-    @import '~styles/variables';
 
+    .header_class {
+        height: 60px;
+        > ul {
+            float: right;
+            > li {
+                float: left;
+                margin-right: 40px;
+                line-height: 58px;
+                cursor: pointer;
+
+            }
+
+        }
+    }
     .elAside {
         /*transition: width .8s;*/
         /*width: 200px !important;*/
@@ -192,25 +231,7 @@
         /*color: #409EFF;*/
     }
 
-    .el-icon-arrow-down {
-        font-size: 12px;
-    }
-
-    .custom_user {
-        box-sizing: border-box;
-        float: right;
-        padding-top: 20px;
-        padding-left: 10px;
-    }
-
-    .system_right {
-        box-sizing: border-box;
-        float: right;
-        padding-right: 20px;
-        padding-top: 20px;
-        padding-left: 10px;
-    }
-    .expan{
+    .expan {
         float: left;
         margin-top: 20px;
         margin-left: 18px;
