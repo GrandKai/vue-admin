@@ -56,7 +56,6 @@ let $http = {
               // FIXME: 是否直接拒绝请求
               // return Promise.reject('请求数据异常');
 
-              router.push('/login');
               return Promise.resolve(data);
           }
         default:

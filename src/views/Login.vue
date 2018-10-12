@@ -64,9 +64,9 @@
             };
 
             login(param).then(data => {
-              this.$message.success(data.message);
 
               if (200 === data.code) {
+                this.$message.success(data.message);
                 let content = data.content;
                 let user = content.user;
                 let accessToken = content.accessToken;
@@ -77,6 +77,8 @@
 
                 // 登录成功后跳转到登录页面
                 this.$router.push("/");
+              } else {
+                this.$message.error(data.message);
               }
             });
           }

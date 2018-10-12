@@ -2,6 +2,7 @@
 export const auth = {
   LOGIN: '/auth/login',
   LOGOUT: '/auth/logout',
+  MODIFY_PASSWORD: '/auth/modify/password',
   MENUS: '/auth/menu/list',
   PLATS: '/auth/plat/list',
 };

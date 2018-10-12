@@ -14,7 +14,7 @@
                                 <i class="ele-icon-third-gerenzhongxin"></i>
                                 <span>{{userName}}</span>
                             </li>
-                            <li @click="modifyPassword">
+                            <li @click="dialogFormVisible = true">
                                 <i class="ele-icon-third-password-modify"></i>
                                 <span>修改密码</span>
                             </li>
@@ -50,13 +50,19 @@
 
             <el-form ref="form" :model="form" label-width="110px" label-position="right" :rules="rules">
                 <el-form-item label="原密码：" prop="oldPassword">
-                    <el-input v-model="form.oldPassword"></el-input>
+                    <el-input :type="type" v-model="form.oldPassword">
+                        <i slot="suffix" class="el-input__icon el-icon-view" @click="changeType"></i>
+                    </el-input>
                 </el-form-item>
                 <el-form-item label="新密码：" prop="newPassword">
-                    <el-input v-model="form.newPassword" placeholder="密码必须为6-12位数字、符号或字母！"></el-input>
+                    <el-input :type="type" v-model="form.newPassword" placeholder="密码必须为6-12位数字、符号或字母">
+                        <i slot="suffix" class="el-input__icon el-icon-view" @click="changeType"></i>
+                    </el-input>
                 </el-form-item>
                 <el-form-item label="重复新密码：" prop="repeatPassword">
-                    <el-input v-model="form.repeatPassword" placeholder="密码必须为6-12位数字、符号或字母！"></el-input>
+                    <el-input :type="type" v-model="form.repeatPassword" placeholder="密码必须为6-12位数字、符号或字母">
+                        <i slot="suffix" class="el-input__icon el-icon-view" @click="changeType"></i>
+                    </el-input>
                 </el-form-item>
             </el-form>
 
@@ -71,7 +77,7 @@
 
 <script>
   import Menu from './Menu'
-  import {queryGrantedMenus, queryGrantedPlats} from 'apis/auth'
+  import {queryGrantedMenus, queryGrantedPlats, modifyPassword} from 'apis/auth'
   import expansrc from 'images/expan.jpg'
 
   import {mapActions, mapGetters} from 'vuex'
@@ -82,6 +88,7 @@
     },
     data() {
       return {
+        type: 'password',
         expansrc,
         dialogFormVisible: false,
         form: {
@@ -97,7 +104,7 @@
             { required: true, message: "新密码不能为空！", trigger: "blur" },
             { pattern: /^[0-9a-zA-Z!@#$%^&*-=_+]{6,12}$/, message: "密码必须为6-12位数字、符号或字母", trigger: "blur" },
             { required: true, validator:this.checkSecretOldSame, message: "新密码不能与原密码相同！",trigger: "blur" },
-            { required: true, validator:this.checkSecretSame, message: "两次输入密码不一致！",trigger: "blur" }
+            // { required: true, validator:this.checkSecretSame, message: "两次输入密码不一致！",trigger: "blur" }
           ],
           repeatPassword: [
             { required: true, message: "重复新密码不能为空！", trigger: "blur" },
@@ -200,15 +207,18 @@
         });
 
       },
+
       expanSideMenu() {
         this.expanMenu();
       },
+
       updateAsideWidth(width) {
         let vm = this;
         setTimeout(function () {
           vm.asideWidth = width;
         }, 300)
       },
+
       logout() {
         common.confirm({message: '此操作将退出系统，请确认操作！'}).then(() => {
 
@@ -219,17 +229,30 @@
           console.log('取消按钮的回调');
         });
       },
-      modifyPassword() {
-        this.dialogFormVisible = true;
-      },
 
       onSubmit() {
         this.$refs["form"].validate(valid => {
           console.log('修改密码验证结果', valid);
           if (valid) {
             let param = {
+              accessToken: sessionStorage.getItem('accessToken'),
               content: this.form,
             };
+            modifyPassword(param).then(data => {
+              if (200 === data.code) {
+                this.$message.success(data.message);
+                // 重置表单
+                this.$refs.form.resetFields();
+                // 隐藏对话框
+                this.dialogFormVisible = false;
+                // 清空 session
+                sessionStorage.clear();
+                // 跳转到登陆页
+                this.$router.push('/login');
+              } else {
+                this.$message.error(data.message);
+              }
+            });
           }
         })
       },
@@ -248,6 +271,13 @@
           callback();
         }
       },
+      changeType() {
+        if ('password' === this.type) {
+          this.type = 'input';
+        } else {
+          this.type = 'password';
+        }
+      }
     },
   }
 </script>
