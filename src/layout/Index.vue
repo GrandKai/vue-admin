@@ -11,7 +11,7 @@
                         <img :src="expansrc" alt="伸展" class="expan" @click="expanSideMenu">
                         <ul>
                             <li>
-                                <i class="ele-icon-third-account-setting2"></i>
+                                <i class="ele-icon-third-gerenzhongxin"></i>
                                 <span>{{userName}}</span>
                             </li>
                             <li @click="modifyPassword">
@@ -217,7 +217,7 @@
         }).catch(() => {
           // 取消按钮的回调
           console.log('取消按钮的回调');
-        });;
+        });
       },
       modifyPassword() {
         this.dialogFormVisible = true;

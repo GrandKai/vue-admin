@@ -1,4 +1,5 @@
 import axios from './axios'
+import router from '@/router';
 
 let $http = {
   post: function (url, param) {
@@ -55,6 +56,7 @@ let $http = {
               // FIXME: 是否直接拒绝请求
               // return Promise.reject('请求数据异常');
 
+              router.push('/login');
               return Promise.resolve(data);
           }
         default:
@@ -79,6 +81,7 @@ function refreshToken(requestUrl, requestParam) {
         console.error('刷新token响应code异常', resp);
         console.error('TODO:刷新 accessToken 异常，应该直接跳转到登录页面，重新登录');
 
+        router.push('/login');
         //TODO: 如果刷新 accessToken 异常，直接跳转到登录页面，重新登录
         return Promise.resolve(resp.data);
       }
