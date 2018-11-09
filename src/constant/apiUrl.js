@@ -16,7 +16,7 @@ export const organization = {
   CHECK_STATUS: '/org/check/status',
 };
 
-//后台方法配置
+// 后台方法配置
 export const plat = {
   QUERY_PAGE: '/plat',
   QUERY_LIST: '/plat/list',
@@ -28,6 +28,7 @@ export const plat = {
   CHECK_UPDATE_EXIST: '/plat/check/update/exist',
 };
 
+// 菜单管理
 export const menu = {
   QUERY_LIST: '/menu/list',
   ADD: '/menu/add',
@@ -35,13 +36,14 @@ export const menu = {
   DELETE: '/menu/delete',
 };
 
-//用户管理
+// 用户管理
 export const user = {
   CHECK_EXIST: '/user/check/exist',
   ADD: '/user/add',
   DELETE: '/user/delete',//删除用户信息 置状态
 };
 
+// 操作管理
 export const operation = {
   QUERY_LIST: '/operation/list',
   QUERY_GRANTED_LIST: '/operation/granted/list',
@@ -50,6 +52,7 @@ export const operation = {
   DELETE: '/operation/delete',
 };
 
+// 子操作管理
 export const permission = {
   QUERY_LIST: '/permission/list',
   ADD: '/permission/add',
@@ -57,6 +60,7 @@ export const permission = {
   DELETE: '/permission/delete',
 };
 
+// 数据项目管理
 export const dictionaryItem = {
   QUERY_PAGE: '/dictionary/item',
   QUERY_LIST: '/dictionary/item/list',
@@ -67,6 +71,7 @@ export const dictionaryItem = {
   CHECK_EXIST: '/dictionary/item/check/exist',
 };
 
+// 数据类型管理
 export const dictionaryType = {
   QUERY_PAGE: '/dictionary/type',
   QUERY_LIST: '/dictionary/type/list',
@@ -78,6 +83,7 @@ export const dictionaryType = {
   CHECK_EXIST: '/dictionary/type/check/exist',
 };
 
+// 权限管理
 export const authority = {
   QUERY_PAGE: '/authority',
   QUERY_LIST: '/authority/list',
@@ -90,7 +96,7 @@ export const authority = {
   QUERY_GRANTED_IDS: '/authority/granted/ids',
 };
 
-
+// 角色管理
 export const role = {
   QUERY_PAGE: '/role',
   QUERY_List: '/role/list',
