@@ -21,10 +21,10 @@
             </template>
             <!-- 按钮区域 -->
             <template slot="buttonArea">
-                <el-button type="primary" @click="addEntity" :disabled="addDisabled"><i class="el-icon-plus"></i> 新建</el-button>
-                <el-button type="success" @click="treeOpen"><i class="el-icon-arrow-down"></i> 展开</el-button>
-                <el-button type="success" @click="treeClose"><i class="el-icon-arrow-up"></i> 收起</el-button>
-                <el-button type="danger" @click="deleteEntity" :disabled="deleteDisabled"><i class="el-icon-delete"></i> 删除</el-button>
+                <el-button type="primary" @click="addEntity" :disabled="addDisabled"><i class="el-icon-plus"></i> 新 建</el-button>
+                <el-button @click="treeOpen"><i class="el-icon-arrow-down"></i> 展 开</el-button>
+                <el-button @click="treeClose"><i class="el-icon-arrow-up"></i> 收 起</el-button>
+                <el-button type="danger" @click="deleteEntity" :disabled="deleteDisabled"><i class="el-icon-delete"></i> 删 除</el-button>
             </template>
 
             <!-- 树区域 -->

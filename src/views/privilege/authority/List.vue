@@ -143,8 +143,7 @@
 
                             <!-- 按钮区域 -->
                             <template slot="buttonArea">
-                                <el-button type="primary" @click="editAuthority"><i class="el-icon-edit"></i> 保 存
-                                </el-button>
+                                <el-button type="primary" @click="editAuthority"><i class="el-icon-edit"></i> 保 存</el-button>
                                 <el-button @click="treeOpen"><i class="el-icon-arrow-down"></i> 展 开</el-button>
                                 <el-button @click="treeClose"><i class="el-icon-arrow-up"></i> 收 起</el-button>
                             </template>

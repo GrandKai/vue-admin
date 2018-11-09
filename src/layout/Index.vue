@@ -141,10 +141,10 @@
       this.getMainHeight();
       this.queryGrantedPlats();
       this.userName = sessionStorage.getItem('userName');
-      console.warn('1. 父组件 created')
+      console.info('1. 父组件 created')
     },
     mounted() {
-      console.warn('2. 父组件 mounted');
+      console.info('2. 父组件 mounted');
       window.onresize = () => {
         this.getMainHeight()
       }
@@ -155,7 +155,7 @@
       ]),
       getMainHeight() {
         this.minHeight = `${document.documentElement.clientHeight - 96}px`;
-        console.error('获取Index页面高度', this.minHeight);
+        console.info('获取Index页面高度', this.minHeight);
       },
 
       handleCommand(item) {

@@ -335,15 +335,18 @@
         });
       },
 
-      addUser() {//创建用户信息
+      // 创建用户信息
+      addUser() {
         this.$router.push('/user/add');
       },
 
-      openDialog(userId) {//打开创建角色的弹框
+      // 打开创建角色的弹框
+      openDialog(userId) {
         let vm = this;
 
         vm.userId = userId;
-        queryRoleUserList({content: userId}).then(data => {//获取当前员工的角色信息
+        // 获取当前员工的角色信息
+        queryRoleUserList({content: userId}).then(data => {
           vm.checkData = [];
           if (200 == data.code) {
             let checks = data.content;
@@ -363,7 +366,8 @@
         vm.checkData = []
       },
 
-      selectRole: function() {//获取全部的用户角色
+      // 获取全部的用户角色
+      selectRole: function() {
         let vm = this;
         queryAllPlatsAndRoles({}).then(data => {
           if (200 === data.code) {
@@ -374,12 +378,13 @@
         });
       },
 
-      addUserRole: function(param){//添加用户角色信息
+      // 添加用户角色信息
+      addUserRole: function(param){
 
         let vm = this;
         addUserRole({content : param}).then(data => {
           if(2001 != data.code){
-            vm.$message.success(data.message)
+            vm.$message.success(data.message);
             vm.queryPage();
           }else{
             vm.$message.error(data.message);

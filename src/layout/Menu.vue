@@ -73,11 +73,11 @@
     //     }
     // },
     created() {
-      console.warn('2. 子组件 created',);
+      console.info('2. 子组件 created',);
     },
     mounted() {
-      console.warn('2. 子组件 mounted');
-      console.error('父组件传到子组件的菜单数据树', this.treeData);
+      console.info('2. 子组件 mounted');
+      console.info('父组件传到子组件的菜单数据树', this.treeData);
     },
     methods: {
       handleOpen(key, keyPath) {
