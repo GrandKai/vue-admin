@@ -12,7 +12,7 @@
                         <ul>
                             <li>
                                 <i class="ele-icon-third-gerenzhongxin"></i>
-                                <span>{{userName}}</span>
+                                <span>{{nickName}}</span>
                             </li>
                             <li @click="dialogFormVisible = true">
                                 <i class="ele-icon-third-password-modify"></i>
@@ -23,7 +23,6 @@
                                 <span>退出</span>
                             </li>
                             <li>
-
                                 <span>
                                     <el-dropdown @command="handleCommand">
                                         <span class="el-dropdown-link">{{platName}}<i class="el-icon-arrow-down el-icon--right"></i></span>
@@ -98,18 +97,18 @@
         },
         rules: {
           oldPassword: [
-            { required: true, message: "原密码不能为空！", trigger: "blur" }
+            {required: true, message: "原密码不能为空！", trigger: "blur"}
           ],
           newPassword: [
-            { required: true, message: "新密码不能为空！", trigger: "blur" },
-            { pattern: /^[0-9a-zA-Z!@#$%^&*-=_+]{6,12}$/, message: "密码必须为6-12位数字、符号或字母", trigger: "blur" },
-            { required: true, validator:this.checkSecretOldSame, message: "新密码不能与原密码相同！",trigger: "blur" },
+            {required: true, message: "新密码不能为空！", trigger: "blur"},
+            {pattern: /^[0-9a-zA-Z!@#$%^&*-=_+]{6,12}$/, message: "密码必须为6-12位数字、符号或字母", trigger: "blur"},
+            {required: true, validator: this.checkSecretOldSame, message: "新密码不能与原密码相同！", trigger: "blur"},
             // { required: true, validator:this.checkSecretSame, message: "两次输入密码不一致！",trigger: "blur" }
           ],
           repeatPassword: [
-            { required: true, message: "重复新密码不能为空！", trigger: "blur" },
-            { pattern: /^[0-9a-zA-Z!@#$%^&*-=_+]{6,12}$/, message: "密码必须为6-12位数字、符号或字母", trigger: "blur" },
-            { required: true, validator:this.checkSecretSame, message: "两次输入密码不一致！",trigger: "blur" }
+            {required: true, message: "重复新密码不能为空！", trigger: "blur"},
+            {pattern: /^[0-9a-zA-Z!@#$%^&*-=_+]{6,12}$/, message: "密码必须为6-12位数字、符号或字母", trigger: "blur"},
+            {required: true, validator: this.checkSecretSame, message: "两次输入密码不一致！", trigger: "blur"}
           ]
         },
 
@@ -120,6 +119,7 @@
         platId: '',
         platName: '',
         userName: '',
+        nickName: '',
         menuIsShow: false,
         treeData: []
 
@@ -141,10 +141,9 @@
       this.getMainHeight();
       this.queryGrantedPlats();
       this.userName = sessionStorage.getItem('userName');
-      console.info('1. 父组件 created')
+      this.nickName = sessionStorage.getItem('nickName');
     },
     mounted() {
-      console.info('2. 父组件 mounted');
       window.onresize = () => {
         this.getMainHeight()
       }
@@ -221,7 +220,6 @@
 
       logout() {
         common.confirm({message: '此操作将退出系统，请确认操作！'}).then(() => {
-
           sessionStorage.clear();
           this.$router.push('/login');
         }).catch(() => {
@@ -257,14 +255,14 @@
         })
       },
 
-      checkSecretSame(rule, value, callback){
+      checkSecretSame(rule, value, callback) {
         if (this.form.repeatPassword !== this.form.newPassword) {
           callback(new Error('两次输入密码不一致!'));
         } else {
           callback();
         }
       },
-      checkSecretOldSame(rule, value, callback){
+      checkSecretOldSame(rule, value, callback) {
         if (value === this.form.oldPassword) {
           callback(new Error('新密码不能与原密码相同!'));
         } else {
@@ -304,9 +302,9 @@
                     margin-right: 6px;
                 }
             }
-
         }
     }
+
     .elAside {
         /*transition: width .8s;*/
         /*width: 200px !important;*/

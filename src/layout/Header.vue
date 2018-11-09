@@ -4,7 +4,7 @@
         <ul>
             <li>
                 <i class="ele-icon-third-account-setting2"></i>
-                <span>{{userName}}</span>
+                <span>{{nickName}}</span>
             </li>
             <li>
                 <i class="ele-icon-third-password-modify"></i>
@@ -15,15 +15,14 @@
                 <span>退出</span>
             </li>
             <li>
-
-                                <span>
-                                    <el-dropdown @command="handleCommand">
-                                        <span class="el-dropdown-link">{{platName}}<i class="el-icon-arrow-down el-icon--right"></i></span>
-                                        <el-dropdown-menu slot="dropdown">
-                                            <el-dropdown-item v-for="item in options" :key="item.id" :command="item">{{item.name}}</el-dropdown-item>
-                                        </el-dropdown-menu>
-                                    </el-dropdown>
-                                </span>
+                <span>
+                    <el-dropdown @command="handleCommand">
+                        <span class="el-dropdown-link">{{platName}}<i class="el-icon-arrow-down el-icon--right"></i></span>
+                        <el-dropdown-menu slot="dropdown">
+                            <el-dropdown-item v-for="item in options" :key="item.id" :command="item">{{item.name}}</el-dropdown-item>
+                        </el-dropdown-menu>
+                    </el-dropdown>
+                </span>
             </li>
         </ul>
     </div>
@@ -35,8 +34,8 @@
   import expansrc from 'images/expan.jpg'
   import logo from 'images/system/logo.jpg'
 
+  // 暂未使用
   export default {
-
     data() {
       return {
         expansrc,
@@ -47,6 +46,7 @@
         platId: '',
         platName: '',
         userName: '',
+        nickName: '',
       }
     },
     computed: {
@@ -64,6 +64,7 @@
     created() {
       this.queryGrantedPlats();
       this.userName = sessionStorage.getItem('userName');
+      this.nickName = sessionStorage.getItem('nickName');
     },
     methods: {
       ...mapActions([

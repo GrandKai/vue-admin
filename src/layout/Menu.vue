@@ -34,13 +34,11 @@
                             <span>{{item.name}}</span>
                         </template>
 
-                        <el-menu-item :index="child.router" v-for="child in item['children']">
+                        <el-menu-item :key="child.id"  :index="child.router" v-for="child in item['children']">
                             <span style="margin-left: 32px">{{child.name}}</span>
                         </el-menu-item>
                     </el-submenu>
                 </template>
-
-
             </el-menu>
         </el-col>
     </el-row>
@@ -73,11 +71,8 @@
     //     }
     // },
     created() {
-      console.info('2. 子组件 created',);
     },
     mounted() {
-      console.info('2. 子组件 mounted');
-      console.info('父组件传到子组件的菜单数据树', this.treeData);
     },
     methods: {
       handleOpen(key, keyPath) {

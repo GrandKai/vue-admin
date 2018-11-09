@@ -66,14 +66,16 @@
             login(param).then(data => {
 
               if (200 === data.code) {
+
                 this.$message.success(data.message);
                 let content = data.content;
-                let user = content.user;
+                let userDto = content.userDto;
                 let accessToken = content.accessToken;
                 let refreshToken = content.refreshToken;
                 sessionStorage.setItem('accessToken', accessToken);
                 sessionStorage.setItem('refreshToken', refreshToken);
-                sessionStorage.setItem('userName', user.name);
+                sessionStorage.setItem('userName', userDto.name);
+                sessionStorage.setItem('nickName', userDto.nickName);
 
                 // 登录成功后跳转到登录页面
                 this.$router.push("/");
@@ -98,6 +100,7 @@
   }
 </script>
 <style lang="scss" scoped>
+    html,body{width:100%;height:100%;}
     .title_class {
         float: left;
         font-size: 14px;
@@ -105,10 +108,8 @@
         margin-bottom: 5px;
     }
     .login {
-        /*width: 100%;*/
-        /*height: 100%;*/
-        width: 1000px;
-        height: 1000px;
+        width: 100%;
+        height: 100%;
         background-image: url('../assets/images/system/login-bg.jpg');
         background-size: cover;
         background-position: center;
