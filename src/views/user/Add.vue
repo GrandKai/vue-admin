@@ -53,7 +53,7 @@
 <script>
 
   import CustomPage from 'components/formCustomPage/Index';
-  import {queryUserByUserName, addUser} from 'apis/user';
+  import {checkExist, addUser} from 'apis/user';
 
   export default {
     components: {
@@ -78,7 +78,7 @@
               trigger: 'blur'
             },
             {
-              validator: this.queryUserByUserName,
+              validator: this.checkExist,
               trigger: 'blur'
             }
           ],
@@ -124,11 +124,11 @@
           callback();
         }
       },
-      queryUserByUserName: function(rule, value, callback) {//判断该用户账号名是否存在
+      checkExist: function(rule, value, callback) {//判断该用户账号名是否存在
         let param = {
           content : value
         }
-        queryUserByUserName(param).then(data => {
+        checkExist(param).then(data => {
           if(data.code == 2001){
             callback(new Error(data.message))
           }else{

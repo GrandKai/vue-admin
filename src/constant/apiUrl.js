@@ -37,7 +37,7 @@ export const menu = {
 
 //用户管理
 export const user = {
-  QUERY_USER_BY_USER_NAME: '/user/queryUserByUserName',
+  CHECK_EXIST: '/user/check/exist',
   ADD: '/user/add',
   DELETE: '/user/delete',//删除用户信息 置状态
 };
