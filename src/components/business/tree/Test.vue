@@ -14,13 +14,13 @@
         <span>
           <el-button
                   type="text"
-                  size="mini"
+
                   @click="() => append(data)">
             Append
           </el-button>
           <el-button
                   type="text"
-                  size="mini"
+
                   @click="() => remove(node, data)">
             Delete
           </el-button>

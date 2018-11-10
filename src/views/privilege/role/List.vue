@@ -107,7 +107,7 @@
                     <el-table-column label="操作" header-align="center" align="center" fixed="right" min-width="210px">
                         <template slot-scope="scope">
 
-                            <el-button size="mini">
+                            <el-button >
                                 成员管理
                             </el-button>
 
