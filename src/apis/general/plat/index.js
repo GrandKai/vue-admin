@@ -11,3 +11,4 @@ export const deletePlat = param => $http.post(plat.DELETE, param);
 export const checkExistPlat = param => $http.post(plat.CHECK_EXIST, param);
 export const checkUpdateExistPlat = param => $http.post(plat.CHECK_UPDATE_EXIST, param);
 
+export const queryAllPlatsAndRoles = param => $http.post(plat.QUERY_ALL_PLATS_AND_ROLES, param);

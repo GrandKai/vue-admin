@@ -172,7 +172,7 @@
                 :userId="userId"
                 :checkData="checkData"
                 @closeDialog="closeDialog"
-                @addUserRole="addUserRole"
+                @addUserRoles="addUserRoles"
     ></treeDialog>
   </div>
 </template>
@@ -180,8 +180,9 @@
 <script>
   import CustomPage from 'components/listCustomPage/Index';
   import treeDialog from 'components/dialogCustomPage/Index';
-  import {deleteUser} from 'apis/user';
-  import {queryRoleList, queryAllPlatsAndRoles,queryRoleUserList, addUserRole} from 'apis/privilege/role';
+  import {queryUserRoleList, deleteUser} from 'apis/user';
+  import {queryAllPlatsAndRoles} from 'apis/general/plat';
+  import {queryRoleList, addUserRoles} from 'apis/privilege/role';
 
   export default {
     data() {
@@ -346,9 +347,9 @@
 
         vm.userId = userId;
         // 获取当前员工的角色信息
-        queryRoleUserList({content: userId}).then(data => {
+        queryUserRoleList({content: userId}).then(data => {
           vm.checkData = [];
-          if (200 == data.code) {
+          if (200 === data.code) {
             let checks = data.content;
             checks.forEach(item => {
               vm.checkData.push(item.roleId);
@@ -367,7 +368,7 @@
       },
 
       // 获取全部的用户角色
-      selectRole: function() {
+      queryAllPlatsAndRoles: function() {
         let vm = this;
         queryAllPlatsAndRoles({}).then(data => {
           if (200 === data.code) {
@@ -379,10 +380,11 @@
       },
 
       // 添加用户角色信息
-      addUserRole: function(param){
+      addUserRoles: function(param){
 
+        console.log('自组件调用父组件，保存用户角色信息', param);
         let vm = this;
-        addUserRole({content : param}).then(data => {
+        addUserRoles({content : param}).then(data => {
           if(2001 != data.code){
             vm.$message.success(data.message);
             vm.queryPage();
@@ -398,7 +400,7 @@
     },
     mounted() {
       this.queryPage();
-      this.selectRole();
+      this.queryAllPlatsAndRoles();
     },
     components: {
       'custom-page': CustomPage,

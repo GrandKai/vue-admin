@@ -24,7 +24,11 @@ let $http = {
         case 200:
           let code = data.code;
           switch (code) {
-            case 200, 2004:
+            case 200:
+              //  正常请求
+              return Promise.resolve(data);
+            case 2004:
+              //  无效密码
               return Promise.resolve(data);
             case 1001:
               // accessToken 是空，跳转到登录页面

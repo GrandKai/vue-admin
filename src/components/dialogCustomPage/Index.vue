@@ -72,8 +72,17 @@
       },
       checkData : function(newVal, oldVal) {
         let vm = this;
-        vm.checkDatas = newVal
-        vm.$refs.tree.setCheckedNodes(vm.checkDatas)
+        vm.checkDatas = newVal;
+
+        console.log('设置平台角色关系绑定', newVal, vm.$refs.tree);
+
+        /*vm.$nextTick(function() {
+          vm.$refs.tree.setCheckedNodes(vm.checkDatas);
+        });*/
+
+        if (vm.$refs.tree) {
+          vm.$refs.tree.setCheckedNodes(vm.checkDatas);
+        }
 
       },
     },
@@ -93,8 +102,8 @@
         return data.label.indexOf(value) !== -1;
       },
 
-      add(){//保存用户的角色信息
-
+      // 保存用户的角色信息
+      add(){
         let vm = this;
         vm.$refs.form.validate(valid => {
           let keys = vm.$refs.tree.getCheckedNodes();
@@ -113,7 +122,7 @@
             vm.$refs.form.resetFields();
             vm.isload = true;
             vm.$nextTick(function() {
-              vm.$emit('addUserRole', param); // 回调参数
+              vm.$emit('addUserRoles', param); // 回调参数
             });
           }
         });

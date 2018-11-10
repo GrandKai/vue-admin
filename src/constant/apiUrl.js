@@ -26,6 +26,7 @@ export const plat = {
   DELETE: '/plat/delete',
   CHECK_EXIST: '/plat/check/exist',
   CHECK_UPDATE_EXIST: '/plat/check/update/exist',
+  QUERY_ALL_PLATS_AND_ROLES: '/plat/role/list'
 };
 
 // 菜单管理
@@ -40,7 +41,9 @@ export const menu = {
 export const user = {
   CHECK_EXIST: '/user/check/exist',
   ADD: '/user/add',
-  DELETE: '/user/delete',//删除用户信息 置状态
+  DELETE: '/user/delete', // 删除用户信息 置状态
+  ADD_USER_ROLES: '/user/add/roles',
+  QUERY_USER_ROLES: '/user/select/roles',
 };
 
 // 操作管理
@@ -107,7 +110,4 @@ export const role = {
   CHECK_EXIST: '/role/check/exist',
   CHECK_UPDATE_EXIST: '/role/check/update/exist',
   QUERY_ROLE_AUTHORITY_LIST: '/role/authority/list',
-  QUERY_USER_ROLE: '/role/select/user',
-  QUERY_ALL_PLATS_AND_ROLES: '/role/plat/all',
-  ADD_USER_ROLE: '/role/add/user/role'
 };
