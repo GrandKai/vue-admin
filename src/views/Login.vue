@@ -18,6 +18,9 @@
 
                         <el-form-item prop="password">
                             <el-input type="password" v-model="form.password" prefix-icon="ele-icon-third-login-password"></el-input>
+                            <div class="el-form-item__error">
+                                {{errorMessage}}
+                            </div>
                         </el-form-item>
                     </el-form>
                     <!--<el-button type="primary" @click="jump2MainPage" style="width: 80%">登 录</el-button>-->
@@ -36,6 +39,7 @@
   export default {
     data() {
       return {
+        errorMessage: '',
         form: {
           username: '',
           password: ''
@@ -80,7 +84,7 @@
                 // 登录成功后跳转到登录页面
                 this.$router.push("/");
               } else {
-                this.$message.error(data.message);
+                this.errorMessage = data.message;
               }
             });
           }

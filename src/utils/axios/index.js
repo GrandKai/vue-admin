@@ -4,12 +4,12 @@ import router from '@/router';
 let $http = {
   post: function (url, param) {
 
-    console.debug('....................................', process.env);
+    console.info('....................................', process.env);
     let requestUrl = `${urlPrefix + url}`;
     let requestParam = Object.assign({}, param, {
       accessToken: sessionStorage.getItem('accessToken')
     });
-    console.debug('...........请求url接口地址：', requestUrl, '参数：', requestParam);
+    console.info('...........请求url接口地址：', requestUrl, '参数：', requestParam);
 
     // 返回 Promise 对象方便后续链式调用
     return axios.post(requestUrl, requestParam).then(resp => {
@@ -17,19 +17,25 @@ let $http = {
       let data = resp.data;
       let httpStatus = resp.status;
 
-      console.debug('...........请求url接口地址结果：', httpStatus, data);
+      console.info('...........请求url接口地址结果：', httpStatus, data);
 
       switch (httpStatus) {
         // 响应 http 状态码
         case 200:
           let code = data.code;
           switch (code) {
-            case 200:
+            case 200, 2004:
               return Promise.resolve(data);
+            case 1001:
+              // accessToken 是空，跳转到登录页面
+              console.warn('accessToken 是空，跳转到登录页面');
+              sessionStorage.clear();
+              router.push('/login');
+              return Promise.reject(data);
             case 1002:
             case 1003:
-              // 过期 token 需要重新刷新 token, 再发送请求
-              console.warn('过期 token 需要重新刷新 token');
+              console.warn('移除过期的 accessToken，用 refreshToken 发送请求刷新 accessToken');
+              sessionStorage.removeItem("accessToken");
 
               let refreshParam = {
                 refreshToken: sessionStorage.getItem('refreshToken')
@@ -44,18 +50,15 @@ let $http = {
                 }
                 // refresh 过期处理
                 if (1013 === data.code) {
-                  sessionStorage.removeItem("accessToken");
+                  console.warn('移除过期的 refreshToken, 并跳转到登录页面');
                   sessionStorage.removeItem("refreshToken");
-
-                  // TODO: 跳转到登录页面
+                  router.push('/login');
+                  return Promise.resolve(data);
                 }
               });
 
             default:
-              console.error('请求数据异常', code, data);
-              // FIXME: 是否直接拒绝请求
-              // return Promise.reject('请求数据异常');
-
+              console.error('请求数据异常，直接拒绝请求', code, data);
               return Promise.resolve(data);
           }
         default:
@@ -68,7 +71,7 @@ let $http = {
 
 function refreshToken(requestUrl, requestParam) {
   return axios.post(requestUrl, requestParam).then((resp) => {
-    console.warn('过期 token 需要重新刷新 token 结果', resp);
+    console.warn('用【refreshToken】刷新【accessToken】结果：', resp);
     if (200 === resp.status) {
       if (200 === resp.data.code) {
 
@@ -77,16 +80,12 @@ function refreshToken(requestUrl, requestParam) {
         sessionStorage.setItem('refreshToken', content.refreshToken);
         return Promise.resolve(resp.data);
       } else {
-        console.error('刷新token响应code异常', resp);
-        console.error('TODO:刷新 accessToken 异常，应该直接跳转到登录页面，重新登录');
-
+        console.error('用【refreshToken】刷新【accessToken】异常，即将跳转到登录页面，重新登录', resp);
         router.push('/login');
-        //TODO: 如果刷新 accessToken 异常，直接跳转到登录页面，重新登录
         return Promise.resolve(resp.data);
       }
     } else {
-      console.error("刷新 Token 响应状态码异常", resp);
-      return Promise.reject("刷新 Token 响应状态码异常");
+      return Promise.reject("用【refreshToken】刷新【accessToken】响应状态码异常");
     }
   });
 }
