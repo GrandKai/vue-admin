@@ -1,28 +1,28 @@
 <template>
-  <div>
-    <el-breadcrumb class="crumb"
-                   separator-class="el-icon-arrow-right">
-      <el-breadcrumb-item :to="{ path : '/' }">用户管理</el-breadcrumb-item>
-      <el-breadcrumb-item :to="{ path : '/user' }">用户管理</el-breadcrumb-item>
-    </el-breadcrumb>
-    <custom-page>
-      <template slot="buttonArea">
-        <li>
-          <el-button icon="el-icon-plus"
-                     type="primary"
-                     @click="addUser">添加用户
-          </el-button>
-          <el-button icon="el-icon-search"
-                     type="primary"
-                     @click="queryPage()">查 询
-          </el-button>
-          <el-button icon="el-icon-delete"
-                     @click="clearQueryParam">清 空
-          </el-button>
-        </li>
-      </template>
-      <template slot="queryArea">
-        <li>
+    <div>
+        <el-breadcrumb class="crumb"
+                       separator-class="el-icon-arrow-right">
+            <el-breadcrumb-item :to="{ path : '/' }">用户管理</el-breadcrumb-item>
+            <el-breadcrumb-item :to="{ path : '/user' }">用户管理</el-breadcrumb-item>
+        </el-breadcrumb>
+        <custom-page>
+            <template slot="buttonArea">
+                <li>
+                    <el-button icon="el-icon-plus"
+                               type="primary"
+                               @click="addUser">添加用户
+                    </el-button>
+                    <el-button icon="el-icon-search"
+                               type="primary"
+                               @click="queryPage()">查 询
+                    </el-button>
+                    <el-button icon="el-icon-delete"
+                               @click="clearQueryParam">清 空
+                    </el-button>
+                </li>
+            </template>
+            <template slot="queryArea">
+                <li>
             <span>
                <el-date-picker v-model="param.content.startTime"
                                placeholder="创建开始时间"
@@ -39,132 +39,132 @@
                             @change="queryPage">
             </el-date-picker>
             </span>
-        </li>
+                </li>
 
-        <li>
-          <el-input clearable
-                    v-model="param.content.name"
-                    placeholder="用户名/昵称"
-                    style="width: 220px"
-                    @input="clearInput"
-                    @keyup.native.enter="queryPage"></el-input>
-        </li>
-      </template>
-      <template slot="tableArea">
-        <el-table border highlight-current-row stripe
-                  v-loading="loading"
-                  ref="multipleTable"
-                  row-key="id"
-                  :data="tableData"
-                  :row-class-name="tableRowClassName"
-                  @selection-change="handleSelectionChange">
-          <!-- 多选框 -->
-          <!--<el-table-column align="center"-->
-                           <!--header-align="center"-->
-                           <!--type="selection"-->
-                           <!--width="50"-->
-                           <!--:reserve-selection="true">-->
-          <!--</el-table-column>-->
-
-          <!-- 显示索引 -->
-          <el-table-column align="center"
-                           header-align="center"
-                           label="序号"
-                           prop="module"
-                           width="60"
-                           :formatter="formatter">
-          </el-table-column>
-
-          <el-table-column align="left"
-                           label="姓名"
-                           prop="userName"
-                           width="180">
-          </el-table-column>
-
-          <el-table-column align="left"
-                           label="昵称"
-                           prop="nickName"
-                           width="180">
-          </el-table-column>
-
-          <el-table-column align="center"
-                           label="创建日期"
-                           prop="createTime"
-                           width="180">
-          </el-table-column>
-
-          <!--<el-table-column label="删除状态" header-align="center" align="center" fixed="right" width="80px">
-              <template slot-scope="scope">
-                  <el-tag :type="scope.row.isDeleted === 1 ? 'danger' : 'success'" disable-transitions>
-                      {{scope.row.isDeleted === 1 ? '已删除' : '有效'}}
-                  </el-tag>
-              </template>
-          </el-table-column>-->
-
-          <el-table-column align="center"
-                           fixed="right"
-                           header-align="center"
-                           label="状态"
-                           width="80px">
-            <template slot-scope="scope">
-              <el-tag disable-transitions
-                      :type="scope.row.isEnabled === '1' ? 'success' : 'danger'">
-                {{ scope.row.isEnabled == '1' ? '使用中' : '停用'}}
-              </el-tag>
+                <li>
+                    <el-input clearable
+                              v-model="param.content.name"
+                              placeholder="用户名/昵称"
+                              style="width: 220px"
+                              @input="clearInput"
+                              @keyup.native.enter="queryPage"></el-input>
+                </li>
             </template>
-          </el-table-column>
+            <template slot="tableArea">
+                <el-table border highlight-current-row stripe
+                          v-loading="loading"
+                          ref="multipleTable"
+                          row-key="id"
+                          :data="tableData"
+                          :row-class-name="tableRowClassName"
+                          @selection-change="handleSelectionChange">
+                    <!-- 多选框 -->
+                    <!--<el-table-column align="center"-->
+                    <!--header-align="center"-->
+                    <!--type="selection"-->
+                    <!--width="50"-->
+                    <!--:reserve-selection="true">-->
+                    <!--</el-table-column>-->
 
-          <el-table-column align="center"
-                           fixed="right"
-                           header-align="center"
-                           label="操作"
-                           min-width="210px">
-            <template slot-scope="scope">
+                    <!-- 显示索引 -->
+                    <el-table-column align="center"
+                                     header-align="center"
+                                     label="序号"
+                                     prop="module"
+                                     width="60"
+                                     :formatter="formatter">
+                    </el-table-column>
 
-              <!--<el-button type="text" @click='jump2Page("/product/update", scope.row.id)'-->
-              <!--v-if="common.buttonAuth(constant.UPDATE)">编辑-->
-              <!--</el-button>-->
+                    <el-table-column align="left"
+                                     label="姓名"
+                                     prop="userName"
+                                     width="180">
+                    </el-table-column>
 
-              <!--<el-button type="text" @click="updateEntityStatus(scope.row)" v-if="common.buttonAuth(constant.STOP)">-->
-              <!--<el-button type="text" @click="updateEntityStatus(scope.row)">
-                  {{scope.row.isDeleted === 0 ? '删除' : '有效'}}
-              </el-button>-->
+                    <el-table-column align="left"
+                                     label="昵称"
+                                     prop="nickName"
+                                     width="180">
+                    </el-table-column>
 
-              <!--<el-button type="text" @click="updateEntityIsShow(scope.row)" v-if="common.buttonAuth(constant.SET)">-->
-              <el-button size="mini"
-                         type="text"
-                         @click="updateEntityEnabledStatus(scope.row)">
-                {{scope.row.isEnabled === '0' ? '启用' : '停用'}}
-              </el-button>
-              <!--<el-button type="text" @click="deleteEntity(scope.row)" v-if="common.buttonAuth(constant.DELETE)">-->
-              <el-button size="mini"
-                         type="text"
-                         @click="deleteEntity(scope.row)">
-                删除
-              </el-button>
-              <el-button size="mini"
-                         type="text"
-                         @click="openDialog(scope.row.userId)">设置角色
-              </el-button>
+                    <el-table-column align="center"
+                                     label="创建日期"
+                                     prop="createTime"
+                                     width="180">
+                    </el-table-column>
+
+                    <!--<el-table-column label="删除状态" header-align="center" align="center" fixed="right" width="80px">
+                        <template slot-scope="scope">
+                            <el-tag :type="scope.row.isDeleted === 1 ? 'danger' : 'success'" disable-transitions>
+                                {{scope.row.isDeleted === 1 ? '已删除' : '有效'}}
+                            </el-tag>
+                        </template>
+                    </el-table-column>-->
+
+                    <el-table-column align="center"
+                                     fixed="right"
+                                     header-align="center"
+                                     label="状态"
+                                     width="80px">
+                        <template slot-scope="scope">
+                            <el-tag disable-transitions
+                                    :type="scope.row.isEnabled === '1' ? 'success' : 'danger'">
+                                {{ scope.row.isEnabled == '1' ? '使用中' : '停用'}}
+                            </el-tag>
+                        </template>
+                    </el-table-column>
+
+                    <el-table-column align="center"
+                                     fixed="right"
+                                     header-align="center"
+                                     label="操作"
+                                     min-width="210px">
+                        <template slot-scope="scope">
+
+                            <!--<el-button type="text" @click='jump2Page("/product/update", scope.row.id)'-->
+                            <!--v-if="common.buttonAuth(constant.UPDATE)">编辑-->
+                            <!--</el-button>-->
+
+                            <!--<el-button type="text" @click="updateEntityStatus(scope.row)" v-if="common.buttonAuth(constant.STOP)">-->
+                            <!--<el-button type="text" @click="updateEntityStatus(scope.row)">
+                                {{scope.row.isDeleted === 0 ? '删除' : '有效'}}
+                            </el-button>-->
+
+                            <!--<el-button type="text" @click="updateEntityIsShow(scope.row)" v-if="common.buttonAuth(constant.SET)">-->
+                            <el-button size="mini"
+                                       type="text"
+                                       @click="updateEntityEnabledStatus(scope.row)">
+                                {{scope.row.isEnabled === '0' ? '启用' : '停用'}}
+                            </el-button>
+                            <!--<el-button type="text" @click="deleteEntity(scope.row)" v-if="common.buttonAuth(constant.DELETE)">-->
+                            <el-button size="mini"
+                                       type="text"
+                                       @click="deleteEntity(scope.row)">
+                                删除
+                            </el-button>
+                            <el-button size="mini"
+                                       type="text"
+                                       @click="openDialog(scope.row.userId)">设置角色
+                            </el-button>
+                        </template>
+                    </el-table-column>
+                </el-table>
             </template>
-          </el-table-column>
-        </el-table>
-      </template>
 
-      <template slot="paginationArea">
-        <el-pagination background
-                       v-show="paginationShow"
-                       layout="total, sizes,prev, pager, next, jumper"
-                       :current-page.sync="param.page.pageNum"
-                       :page-size="param.page.pageSize"
-                       :page-sizes="pageSizes"
-                       :total="total"
-                       @current-change="handleCurrentChange"
-                       @size-change="handleSizeChange">
-        </el-pagination>
-      </template>
-    </custom-page>
-    <treeDialog
+            <template slot="paginationArea">
+                <el-pagination background
+                               v-show="paginationShow"
+                               layout="total, sizes,prev, pager, next, jumper"
+                               :current-page.sync="param.page.pageNum"
+                               :page-size="param.page.pageSize"
+                               :page-sizes="pageSizes"
+                               :total="total"
+                               @current-change="handleCurrentChange"
+                               @size-change="handleSizeChange">
+                </el-pagination>
+            </template>
+        </custom-page>
+        <treeDialog
                 :dialogVisible="dialogVisible"
                 :rules="rules"
                 :title="title"
@@ -173,18 +173,21 @@
                 :checkData="checkData"
                 @closeDialog="closeDialog"
                 @addUserRoles="addUserRoles"
-    ></treeDialog>
-  </div>
+        ></treeDialog>
+    </div>
 </template>
 
 <script>
   import CustomPage from 'components/listCustomPage/Index';
   import treeDialog from 'components/dialogCustomPage/Index';
-  import {queryUserRoleList, deleteUser} from 'apis/user';
+  import {queryUserRoleList, addUserRoles, deleteUser} from 'apis/user';
   import {queryAllPlatsAndRoles} from 'apis/general/plat';
-  import {queryRoleList, addUserRoles} from 'apis/privilege/role';
 
   export default {
+    components: {
+      'custom-page': CustomPage,
+      'treeDialog': treeDialog
+    },
     data() {
       return {
         loading: true,
@@ -290,21 +293,21 @@
        */
       deleteEntity(row) {
         // this.statusCheck(row, () => {
-          common.confirm({
-            message: `确认删除【${row.nickName}】这个用户？`,
-          }).then(() => {
-            deleteUser({content: row.userId}).then(resp => {
-              if (200 === resp.code) {
-                common.message({
-                  message: resp.message,
-                });
-                this.queryPage();
-              }
-            });
-          }).catch(() => {
-            // 取消按钮的回调
-            console.log('取消按钮的回调');
+        common.confirm({
+          message: `确认删除【${row.nickName}】这个用户？`,
+        }).then(() => {
+          deleteUser({content: row.userId}).then(resp => {
+            if (200 === resp.code) {
+              common.message({
+                message: resp.message,
+              });
+              this.queryPage();
+            }
           });
+        }).catch(() => {
+          // 取消按钮的回调
+          console.log('取消按钮的回调');
+        });
         // });
       },
 
@@ -361,14 +364,14 @@
       },
 
       // 关闭设置添加日志的dialog页面
-      closeDialog: function() {
+      closeDialog: function () {
         let vm = this;
         vm.dialogVisible = false;
         vm.checkData = []
       },
 
       // 获取全部的用户角色
-      queryAllPlatsAndRoles: function() {
+      queryAllPlatsAndRoles: function () {
         let vm = this;
         queryAllPlatsAndRoles({}).then(data => {
           if (200 === data.code) {
@@ -380,15 +383,14 @@
       },
 
       // 添加用户角色信息
-      addUserRoles: function(param){
+      addUserRoles: function (param) {
 
-        console.log('自组件调用父组件，保存用户角色信息', param);
         let vm = this;
-        addUserRoles({content : param}).then(data => {
-          if(2001 != data.code){
+        addUserRoles({content: param}).then(data => {
+          if (200 === data.code) {
             vm.$message.success(data.message);
             vm.queryPage();
-          }else{
+          } else {
             vm.$message.error(data.message);
           }
           vm.btnAbled = false;
@@ -401,10 +403,6 @@
     mounted() {
       this.queryPage();
       this.queryAllPlatsAndRoles();
-    },
-    components: {
-      'custom-page': CustomPage,
-      'treeDialog': treeDialog
     }
   };
 </script>
