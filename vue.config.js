@@ -47,8 +47,13 @@ let vueConfig = {
   // tweak internal webpack configuration.
   // see https://github.com/vuejs/vue-cli/blob/dev/docs/webpack.md
   chainWebpack: (config) => {
+    console.log("webpack配置信息：", config.externals);
+    config.externals({
+      CKEDITOR: 'window.CKEDITOR'
+    });
     config.resolve.alias
       .set('@', resolve('src'))
+      .set('static', resolve('static'))
       .set('apis', resolve('src/apis'))
       .set('assets', resolve('src/assets'))
       .set('styles', resolve('src/assets/styles'))

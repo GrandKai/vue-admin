@@ -1,8 +1,17 @@
 import axios from 'axios'
 
+const http = axios.create ({
+  baseURL: process.env.urlPrefix,
+  timeout: 5000,
+  headers: {'Content-Type': 'application/json'},
+});
+
 // Add a request interceptor
-axios.interceptors.request.use(function (config) {
+http.interceptors.request.use(function (config) {
   // Do something before request is sent
+  const token = sessionStorage.getItem('accessToken');
+  if (token) config.headers.Authorization = `Bearer ${token}`;
+
   return config;
 }, function (error) {
   // Do something with request error
@@ -10,7 +19,7 @@ axios.interceptors.request.use(function (config) {
 });
 
 // Add a response interceptor
-axios.interceptors.response.use(function (response) {
+http.interceptors.response.use(function (response) {
   // Do something with response data
 
   if (200 !== response.status) {
@@ -23,4 +32,4 @@ axios.interceptors.response.use(function (response) {
   return Promise.reject(error);
 });
 
-export default axios
+export default http

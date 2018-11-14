@@ -5,7 +5,7 @@ let $http = {
   post: function (url, param) {
 
     console.info('....................................', process.env);
-    let requestUrl = `${urlPrefix + url}`;
+    let requestUrl = `${url}`;
     let requestParam = Object.assign({}, param, {
       accessToken: sessionStorage.getItem('accessToken')
     });

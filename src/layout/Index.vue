@@ -142,6 +142,9 @@
       this.queryGrantedPlats();
       this.userName = sessionStorage.getItem('userName');
       this.nickName = sessionStorage.getItem('nickName');
+
+
+      // console.log('.CKEDITORCKEDITORCKEDITORCKEDITOR:', CKEDITOR)
     },
     mounted() {
       window.onresize = () => {
