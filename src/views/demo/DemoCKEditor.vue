@@ -15,7 +15,7 @@
 
 <script>
 
-    import CKEditor from '@/components/ckeditor/CKEditor';
+  import CKEditor from '@/components/ckeditor/CKEditor';
 
   let editor;
   export default {
@@ -38,22 +38,22 @@
     },
     mounted() {
       console.log("mounted");
-/*
-      editor = CKEDITOR.replace('editor1', {
-        height: '300px',
-        width: '100%',
-        filebrowserImageUploadUrl: process.env.urlPrefix + '/article/upload'
+      /*
+            editor = CKEDITOR.replace('editor1', {
+              height: '300px',
+              width: '100%',
+              filebrowserImageUploadUrl: process.env.urlPrefix + '/article/upload'
 
-      });
-      // The "change" event is fired whenever a change is made in the editor.
-      editor.on('change', function (evt) {
-        // getData() returns CKEditor's HTML content.
-        console.log('change event, Total bytes: ' + evt.editor.getData());
-      });
-      // The "blur" event is fired when a blur is made in the editor.
-      editor.on('blur', function (evt) {
-        console.log('blur event, Total bytes: ' + evt.editor.getData());
-      });*/
+            });
+            // The "change" event is fired whenever a change is made in the editor.
+            editor.on('change', function (evt) {
+              // getData() returns CKEditor's HTML content.
+              console.log('change event, Total bytes: ' + evt.editor.getData());
+            });
+            // The "blur" event is fired when a blur is made in the editor.
+            editor.on('blur', function (evt) {
+              console.log('blur event, Total bytes: ' + evt.editor.getData());
+            });*/
 
       /*editor.on('fileUploadRequest', function (evt) {
         let xhr = evt.data.fileLoader.xhr;
