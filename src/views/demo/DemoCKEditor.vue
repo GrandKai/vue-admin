@@ -27,7 +27,7 @@
         config: {
           height: '300px',
           width: '100%',
-          filebrowserImageUploadUrl: process.env.urlPrefix + '/article/upload'
+          filebrowserImageUploadUrl:  `${process.env.urlPrefix}/article/upload`
         }
       }
     },
