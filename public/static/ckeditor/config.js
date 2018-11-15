@@ -5,12 +5,18 @@
  */
 
 CKEDITOR.editorConfig = function (config) {
+  // 皮肤设置
+  config.skin = 'moono-lisa';
   // 去除图片预览
   config.image_previewText = ' ';
   // 添加行距
-  // config.extraPlugins += (config.extraPlugins ? ',lineheight' : 'lineheight');
+  // config.extraPlugins = 'lineheight';
+  config.extraPlugins += (config.extraPlugins ? ',lineheight' : 'lineheight');
+  // 去除左下角元素路径
+  config.removePlugins = 'elementspath';
 
   // Define changes to default configuration here. For example:
+  // config.language = 'en';
   config.language = 'zh-cn';
   // config.uiColor = '#F1F1F1';
   config.toolbar = 'Customer';
@@ -41,13 +47,13 @@ CKEDITOR.editorConfig = function (config) {
     {name: 'tools', groups: ['tools']},
     {name: 'others', groups: ['others']},
     // 关于功能
-    {name: 'about', groups: ['about']},
-    {name: 'lineheight', groups: ['lineheight']}
+    {name: 'about', groups: ['about']}
   ];
   // Remove some buttons provided by the standard plugins, which are not needed in the Standard(s) toolbar.
-  config.removeButtons = 'NewPage,Preview,Print,Save,Templates,Replace,Find,SelectAll,Scayt,Radio,Checkbox,TextField,Form,Textarea,Select,Button,ImageButton,HiddenField,Subscript,Superscript,NumberedList,BulletedList,Blockquote,CreateDiv,BidiLtr,BidiRtl,Language,Iframe,PageBreak,SpecialChar,Maximize,ShowBlocks,About,Smiley,Flash';
+  // config.removeButtons = 'NewPage,Preview,Print,Save,Templates,Scayt,Radio,Checkbox,TextField,Form,Textarea,Select,Button,ImageButton,HiddenField,Subscript,Superscript,NumberedList,BulletedList,Blockquote,CreateDiv,BidiLtr,BidiRtl,Language,Iframe,PageBreak,SpecialChar,Maximize,ShowBlocks,About,Smiley,Flash';
 
-  // Set the most common block elements.
+  config.removeButtons = 'NewPage,Preview,Print,Save,ImageButton,Language,Iframe,About,Flash';
+    // Set the most common block elements.
   config.format_tags = 'p;h1;h2;h3;pre';
 
   // Simplify the dialog windows.
@@ -68,14 +74,3 @@ CKEDITOR.editorConfig = function (config) {
   config.pasteFromWordRemoveStyles = false;
 
 };
-
-/*CKEDITOR.on('fileUploadRequest', function (evt) {
-  let xhr = evt.data.fileLoader.xhr;
-  console.log('文件上传请求：', evt);
-  xhr.setRequestHeader('Cache-Control', 'no-cache');
-  let accessToken = sessionStorage.getItem('accessToken');
-  if (accessToken) {
-    xhr.setRequestHeader('Authorization', `Bearer ${sessionStorage.getItem('accessToken')}`);
-  }
-  xhr.withCredentials = true;
-});*/
