@@ -12,7 +12,7 @@ CKEDITOR.editorConfig = function (config) {
 
   // Define changes to default configuration here. For example:
   config.language = 'zh-cn';
-  config.uiColor = '#AADC6E';
+  // config.uiColor = '#F1F1F1';
   config.toolbar = 'Customer';
   config.toolbarGroups = [
     // 1. 包括源码等

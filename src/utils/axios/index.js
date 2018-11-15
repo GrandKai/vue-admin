@@ -4,12 +4,12 @@ import router from '@/router';
 let $http = {
   post: function (url, param) {
 
-    console.info('....................................', process.env);
+    console.log('....................................', process.env);
     let requestUrl = `${url}`;
     let requestParam = Object.assign({}, param, {
       accessToken: sessionStorage.getItem('accessToken')
     });
-    console.info('...........请求url接口地址：', requestUrl, '参数：', requestParam);
+    console.log('...........请求url接口地址：', requestUrl, '参数：', requestParam);
 
     // 返回 Promise 对象方便后续链式调用
     return axios.post(requestUrl, requestParam).then(resp => {
@@ -17,7 +17,7 @@ let $http = {
       let data = resp.data;
       let httpStatus = resp.status;
 
-      console.info('...........请求url接口地址结果：', httpStatus, data);
+      console.log('...........请求url接口地址结果：', httpStatus, data);
 
       switch (httpStatus) {
         // 响应 http 状态码
@@ -99,7 +99,7 @@ function sendSecondRequest(requestUrl, requestParam) {
     console.warn('二次请求响应结果', resp);
     if (200 === resp.status) {
       if (200 === resp.data.code) {
-        console.info('二次请求成功', resp.data);
+        console.log('二次请求成功', resp.data);
         return Promise.resolve(resp.data);
       } else {
         console.error('二次请求响应响应code异常', resp);

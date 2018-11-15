@@ -142,9 +142,6 @@
       this.queryGrantedPlats();
       this.userName = sessionStorage.getItem('userName');
       this.nickName = sessionStorage.getItem('nickName');
-
-
-      // console.log('.CKEDITORCKEDITORCKEDITORCKEDITOR:', CKEDITOR)
     },
     mounted() {
       window.onresize = () => {
@@ -157,7 +154,7 @@
       ]),
       getMainHeight() {
         this.minHeight = `${document.documentElement.clientHeight - 96}px`;
-        console.info('获取Index页面高度', this.minHeight);
+        // console.log('获取Index页面高度', this.minHeight);
       },
 
       handleCommand(item) {

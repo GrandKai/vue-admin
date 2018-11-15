@@ -36,6 +36,12 @@ window.process = process;
 // 分页条目类型
 window.pageSizes = [10, 20, 50, 100 , 200 , 400];
 
+if ('development' !== process.env.NODE_ENV) {
+  console.log = function () {
+    return false;
+  };
+}
+
 let vue = new Vue({
   router,
   store,

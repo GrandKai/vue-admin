@@ -43,7 +43,7 @@
     },
     watch: {
       data: function(newVal) {
-        console.info(newVal);
+        console.log(newVal);
         let vm = this;
         vm.form.content = newVal;
       }
