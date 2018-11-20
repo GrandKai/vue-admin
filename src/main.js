@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import ElementUI from 'element-ui'
+import echarts from 'echarts'
 import '@/assets/icon/iconfont.css' // 自定义 icon
 import '@/assets/styles/element-variables.scss' // 皮肤 css
 // import 'element-ui/lib/theme-chalk/index.css'
@@ -16,6 +17,10 @@ import '@/utils/dialogDrag';
 Vue.config.productionTip = false;
 
 Vue.use(ElementUI, { size: 'small', zIndex: 3000 });
+
+// 将 echarts 注册成Vue的全局属性
+Vue.prototype.$echarts = echarts;
+window.$echarts = echarts;
 
 // axios 请求
 Vue.prototype.$http = axios;

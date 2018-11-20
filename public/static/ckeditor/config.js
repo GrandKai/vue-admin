@@ -10,8 +10,7 @@ CKEDITOR.editorConfig = function (config) {
   // 去除图片预览
   config.image_previewText = ' ';
   // 添加行距
-  // config.extraPlugins = 'lineheight';
-  config.extraPlugins += (config.extraPlugins ? ',lineheight' : 'lineheight');
+  config.extraPlugins = ['lineheight', 'emoji'].join(',');
   // 去除左下角元素路径
   config.removePlugins = 'elementspath';
 

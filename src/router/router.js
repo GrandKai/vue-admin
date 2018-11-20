@@ -28,8 +28,14 @@ const DictionaryTypeAdd = () => import('views/dictionary/type/Add.vue');
 const DictionaryItemList = () => import('views/dictionary/item/List.vue');
 const DictionaryItemAdd = () => import('views/dictionary/item/Add.vue');
 
+const DemoEcharts = () => import('views/demo/DemoEcharts.vue');
 const DemoCKEditor = () => import('views/demo/DemoCKEditor.vue');
 let router = [
+  {
+    path: 'echarts',
+    component: DemoEcharts
+
+  },
   {
     path: 'ckeditor',
     component: DemoCKEditor
