@@ -9,8 +9,9 @@ CKEDITOR.editorConfig = function (config) {
   config.skin = 'moono-lisa';
   // 去除图片预览
   config.image_previewText = ' ';
-  // 添加行距
-  config.extraPlugins = ['lineheight', 'emoji'].join(',');
+  // 添加行距，emoji 表情有问题
+  // config.extraPlugins = ['lineheight', 'emoji'].join(',');
+  config.extraPlugins = 'lineheight';
   // 去除左下角元素路径
   config.removePlugins = 'elementspath';
 
@@ -24,8 +25,9 @@ CKEDITOR.editorConfig = function (config) {
     {name: 'document', groups: ['mode', 'document', 'doctools']},
     // 2. 提供复制张贴等
     {name: 'clipboard', groups: ['clipboard', 'undo']},
-    // 3. 拼写检查等
-    {name: 'editing', groups: ['find', 'selection', 'spellchecker', 'editing']},
+    // 3. 查找、拼写检查等
+    // {name: 'editing', groups: ['find', 'selection', 'spellchecker', 'editing']},
+    {name: 'editing', groups: ['find', 'selection', 'editing']},
     // 4. 表单信息
     {name: 'forms', groups: ['forms']},
     // 5. 插入 包括图片，表格'Table'，水平线，特殊字符  表情'Smiley',分页符,'PageBreak
