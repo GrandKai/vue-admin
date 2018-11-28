@@ -116,9 +116,11 @@
                                     {{scope.row.isEnabled === '0' ? '启用' : '停用'}}
                                 </el-button>
                                 <el-button type="text" @click="deleteEntity(scope.row)">删除</el-button>
-                                <div slot="reference">
+                                <template slot="reference">
+                                <!--<div slot="reference">-->
                                     <el-button type="info" icon="el-icon-tickets"></el-button>
-                                </div>
+                                <!--</div>-->
+                                </template>
                             </el-popover>
                         </template>
                     </el-table-column>
