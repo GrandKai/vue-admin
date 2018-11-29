@@ -49,7 +49,7 @@
 </template>
 
 <script>
-  import VueCropper from 'vue-cropper'
+  import {VueCropper} from 'vue-cropper'
   // import Api from '@/js/api.js' //接口url配置文件
 
   export default {
@@ -110,7 +110,7 @@
             this.model = true;
             this.modelSrc = img;
             formData.append("file", data, this.fileName);
-            this.$http.post('Api.uploadSysHeadImg.url', formData, {contentType: false, processData: false, headers:{'Content-Type': 'application/x-www-form-urlencoded'}})
+            this.$http.post(Api.uploadSysHeadImg.url, formData, {contentType: false, processData: false, headers:{'Content-Type': 'application/x-www-form-urlencoded'}})
               .then((response)=>{
                 var res = response.data;
                 if(res.success == 1){
@@ -198,7 +198,7 @@
   }
 </script>
 
-<style lang="less">
+<style lang="scss">
     .info {
         width: 720px;
         margin: 0 auto;
