@@ -37,8 +37,9 @@
 <script type="text/javascript">
   window.init = function(){
     var map = new AMap.Map('container', {
+      resizeEnable: true,
       center:[123.459308,41.6861],
-      zoom:11
+      zoom: 13
     });
 
     // 创建一个 Marker 实例：
@@ -70,11 +71,11 @@
           marker.setTitle(address);
           // 设置label标签
           // label默认蓝框白底左上角显示，样式className为：amap-marker-label
-          /*marker.setLabel({
+          marker.setLabel({
             //修改label相对于maker的位置
             offset: new AMap.Pixel(20, 20),
             content: "<div class='info'>" + address + "</div>"
-          });*/
+          });
         }
       })
     })
