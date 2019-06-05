@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
-    <title>Title</title>
+    <title>高德地图</title>
     <script type="text/javascript" src="https://webapi.amap.com/maps?v=1.4.13&key=df93ea12e3568868d6a488c68dd7695a	"></script>
 
     <link rel="stylesheet" href="https://a.amap.com/jsapi_demos/static/demo-center/css/demo-center.css"/>
@@ -36,9 +36,11 @@
 
 <script type="text/javascript">
   window.init = function(){
+    var lnglat = [123.459308,41.6861];
+
     var map = new AMap.Map('container', {
       resizeEnable: true,
-      center:[123.459308,41.6861],
+      center: lnglat,
       zoom: 13
     });
 
@@ -49,7 +51,7 @@
       offset: new AMap.Pixel(-13, -30)
     });
 
-// 将创建的点标记添加到已有的地图实例：
+    // 将创建的点标记添加到已有的地图实例：
     map.add(marker);
 
 
@@ -57,15 +59,13 @@
       var geocoder = new AMap.Geocoder({
         // city 指定进行编码查询的城市，支持传入城市名、adcode 和 citycode
         city: '010'
-      })
-
-      var lnglat = [123.459308,41.6861]
+      });
 
       geocoder.getAddress(lnglat, function(status, result) {
         if (status === 'complete' && result.info === 'OK') {
           // result为对应的地理位置详细信息
           var address = result.regeocode.formattedAddress;
-          console.log(`地址：`, address)
+          console.log(`地址：`, address);
 
           // 设置鼠标划过点标记显示的文字提示
           marker.setTitle(address);
