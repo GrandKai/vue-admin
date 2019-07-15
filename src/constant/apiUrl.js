@@ -39,11 +39,13 @@ export const menu = {
 
 // 用户管理
 export const user = {
+  QUERY_PAGE: '/user',
   CHECK_EXIST: '/user/check/exist',
   CHECK_UPDATE_EXIST: '/user/check/update/exist',
   ADD: '/user/add',
   UPDATE: '/user/update',
   DELETE: '/user/delete', // 删除用户信息 置状态
+  STOP: '/user/stop', // 停用 置状态
   RESET: '/user/reset/password',
   ADD_USER_ROLES: '/user/add/roles',
   QUERY_USER_ROLES: '/user/select/roles',

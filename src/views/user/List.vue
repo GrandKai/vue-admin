@@ -6,6 +6,32 @@
             <el-breadcrumb-item :to="{ path : '/user' }">用户管理</el-breadcrumb-item>
         </el-breadcrumb>
         <custom-page>
+
+            <template slot="treeArea">
+                <div class="line" :style="{minHeight}"></div>
+                <div>
+                    <div class="btn-groups">
+                        <el-button @click="treeOpen"><i class="el-icon-arrow-down"></i> 展 开</el-button>
+                        <el-button @click="treeClose"><i class="el-icon-arrow-up"></i> 收 起</el-button>
+                    </div>
+
+                    <div class="tree">
+                        <el-tree
+                                v-if="treeIsShow"
+                                class="filter-tree"
+                                :data="treeDataOrg"
+                                node-key="id"
+                                :default-expand-all="isExpand"
+                                :default-expanded-keys="defaultExpandKeys"
+                                :expand-on-click-node="false"
+                                highlight-current
+                                @node-click="handleNodeClick"
+                                style="max-height: 700px;overflow-y: auto" ref="tree">
+                        </el-tree>
+                    </div>
+
+                </div>
+            </template>
             <template slot="buttonArea">
                 <li>
                     <el-button icon="el-icon-plus" type="primary" @click="addUser">添加用户</el-button>
@@ -14,24 +40,6 @@
                 </li>
             </template>
             <template slot="queryArea">
-                <li>
-            <span>
-               <el-date-picker v-model="param.content.startTime"
-                               placeholder="创建开始时间"
-                               style="width: 195px"
-                               type="datetime"
-                               value-format="yyyy-MM-dd HH:mm:ss"
-                               @change="queryPage">
-                </el-date-picker>
-                <el-date-picker v-model="param.content.endTime"
-                                placeholder="创建结束时间"
-                                style="width: 195px"
-                                type="datetime"
-                                value-format="yyyy-MM-dd HH:mm:ss"
-                                @change="queryPage">
-                </el-date-picker>
-            </span>
-                </li>
 
                 <li>
                     <el-input clearable
@@ -40,6 +48,24 @@
                               style="width: 220px"
                               @input="clearInput"
                               @keyup.native.enter="queryPage"></el-input>
+                </li>
+                <li>
+                    <span>
+                       <el-date-picker v-model="param.content.startTime"
+                                       placeholder="创建开始时间"
+                                       style="width: 195px"
+                                       type="datetime"
+                                       value-format="yyyy-MM-dd HH:mm:ss"
+                                       @change="queryPage">
+                        </el-date-picker> ~
+                        <el-date-picker v-model="param.content.endTime"
+                                        placeholder="创建结束时间"
+                                        style="width: 195px"
+                                        type="datetime"
+                                        value-format="yyyy-MM-dd HH:mm:ss"
+                                        @change="queryPage">
+                        </el-date-picker>
+                    </span>
                 </li>
             </template>
             <template slot="tableArea">
@@ -112,14 +138,14 @@
 
                             <el-popover trigger="hover" placement="bottom">
                                 <el-button type="text" @click="resetUser(scope.row)">恢复默认密码</el-button>
-                                <el-button  type="text" @click="updateEntityEnabledStatus(scope.row)">
+                                <el-button type="text" @click="updateEntityEnabledStatus(scope.row)">
                                     {{scope.row.isEnabled === '0' ? '启用' : '停用'}}
                                 </el-button>
                                 <el-button type="text" @click="deleteEntity(scope.row)">删除</el-button>
                                 <template slot="reference">
-                                <!--<div slot="reference">-->
+                                    <!--<div slot="reference">-->
                                     <el-button type="info" icon="el-icon-tickets"></el-button>
-                                <!--</div>-->
+                                    <!--</div>-->
                                 </template>
                             </el-popover>
                         </template>
@@ -171,371 +197,449 @@
 </template>
 
 <script>
-  import CustomPage from 'components/listCustomPage/Index';
-  import treeDialog from 'components/dialogCustomPage/Index';
-  import {queryUserRoleList, addUserRoles, updateUser, deleteUser, resetUser, checkUpdateExist} from 'apis/user';
-  import {queryAllPlatsAndRoles} from 'apis/general/plat';
+    import CustomPage from 'components/treeCustomPage/Index';
+    import treeDialog from 'components/dialogCustomPage/Index';
+    import {queryUserPage, updateUserStopStatus, queryUserRoleList, addUserRoles, updateUser, deleteUser, resetUser, checkUpdateExist} from 'apis/user';
+    import {queryAllPlatsAndRoles} from 'apis/general/plat';
+    import { queryOrganizationList } from 'apis/system/organization';
 
-  export default {
-    components: {
-      'custom-page': CustomPage,
-      'treeDialog': treeDialog
-    },
-    data() {
-      return {
-        // 修改的内容
-        editForm: {
-          id: "",
-          property: "",
-          content: ""
+
+    export default {
+        components: {
+            'custom-page': CustomPage,
+            'treeDialog': treeDialog
         },
+        data() {
+            return {
 
-        loading: true,
-        paginationShow: false,
-        pageSizes: pageSizes,
-        total: 0,
-        param: {
-          content: {
-            userName: '',
-            startTime: '',
-            endTime: ''
-          },
-          page: {
-            pageNum: 1,
-            pageSize: pageSizes[0]
-          }
-        },
-        rules: {},
-        tableData: [],
-        defaultPassword: 123456,
+                minHeight: "",
+                treeDataOrg: [],
+                treeIsShow: true,
+                defaultChecked: [],
+                // 默认展开
+                isExpand: true,
+                defaultExpandKeys: [],
+                // 当前选中的组织机构结点
+                selectedItem: {},
 
-        // 弹出框属性设置
-        dlgSettings: {
-          title: "", //  弹窗标题
-          visible: false, //  弹窗可见
-          inputType: "text", //  弹窗内文本框类型
-          rowNum: 1 //  文本框行数
-        },
+                // 修改的内容
+                editForm: {
+                    id: "",
+                    property: "",
+                    content: ""
+                },
 
-        dialogVisible: false,// 弹框是否显示
-        title: '用户角色设置',
-        userId: '',// 用户编号
-        roleList: [],// 用户设置的角色信息
-        treeData: [],// 角色集合
-        checkData: []// 选中角色集合
-      };
-    },
+                loading: true,
+                paginationShow: false,
+                pageSizes: pageSizes,
+                total: 0,
+                param: {
+                    content: {
+                        userName: '',
+                        startTime: '',
+                        endTime: '',
+                        organizationId: '',
+                        isLeaf: '',
+                    },
+                    page: {
+                        pageNum: 1,
+                        pageSize: pageSizes[0]
+                    }
+                },
+                rules: {},
+                tableData: [],
+                defaultPassword: 123456,
 
-    methods: {
+                // 弹出框属性设置
+                dlgSettings: {
+                    title: "", //  弹窗标题
+                    visible: false, //  弹窗可见
+                    inputType: "text", //  弹窗内文本框类型
+                    rowNum: 1 //  文本框行数
+                },
 
-      tableRowClassName({row, rowIndex}) {
-        // 把每一行的索引放进row
-        row.rowIndex = rowIndex;
-      },
-
-      formatter(row, column, cellValue, index) {
-        //放回索引值
-        return this.param.page.pageSize * (this.param.page.pageNum - 1) + 1 + row.rowIndex;
-      },
-
-      // 改变页码
-      handleCurrentChange(val) {
-        this.param.page.pageNum = val;
-        this.queryPage();
-      },
-      // 改变每页显示多少条
-      handleSizeChange(value) {
-        this.param.page.pageSize = value;
-        this.queryPage();
-      },
-
-      handleSelectionChange(val) {
-        console.log('多选', val);
-        // if (val) {
-        //   this.multipleSelection = val;
-        //   this.multipleSelectionLength = val.length;
-        // }
-      },
-
-      /**
-       * 分页查询
-       * @param param
-       */
-      queryPage() {
-        this.loading = true;
-        this.$http.post('/user', this.param).then((resp) => {
-
-          this.loading = false;
-          this.paginationShow = true;
-
-          if (resp.content && resp.content.list) {
-            this.tableData = resp.content.list;
-            this.total = resp.content.total;
-          }
-        }).catch(error => {
-          this.loading = false;
-        });
-      },
-
-      searchByCondition() {
-        this.param.page.pageNum = 1;
-        this.queryPage();
-      },
-
-      // 清空查询条件
-      clearQueryParam() {
-        this.param.content = {
-          userName: '',
-          startTime: '',
-          endTime: ''
-        };
-        this.queryPage();
-        this.$refs.multipleTable.clearSelection();
-      },
-      clearInput() {
-      },
-
-      /********************************* 业务逻辑处理 ************************************/
-
-      /**
-       * 删除实体
-       * @param id
-       */
-      deleteEntity(row) {
-        // this.statusCheck(row, () => {
-        common.confirm({
-          message: `确认删除【${row.nickName}】这个用户？`,
-        }).then(() => {
-          deleteUser({content: row.userId}).then(resp => {
-            if (200 === resp.code) {
-              common.message({
-                message: resp.message,
-              });
-              this.queryPage();
-            }
-          });
-        }).catch(() => {
-          // 取消按钮的回调
-          console.log('取消按钮的回调');
-        });
-        // });
-      },
-      resetUser(row) {
-        common.confirm({
-          message: `是否将【${row.userName}】的密码恢复为${this.defaultPassword}？`,
-        }).then(() => {
-          let param = {
-            content: {
-              userId: row.userId,
-              password: this.defaultPassword
-            }
-          };
-
-          resetUser(param).then(data => {
-            if (200 === data.code) {
-              this.$message.success(data.message);
-              this.queryPage();
-            } else {
-              this.$message.error(data.message);
-            }
-          });
-        }).catch(() => {
-          // 取消按钮的回调
-          console.log('取消按钮的回调');
-        });
-      },
-
-      updateEntityEnabledStatus(row) {
-        let text = row.isEnabled === '1' ? '停用' : '启用';
-        let isEnabled = row.isEnabled === '1' ? '0' : '1';
-
-        common.confirm({
-          message: `是否${text}【${row.userName}】的账户？`
-        }).then(() => {
-          let param = {
-            content: {
-              userId: row.userId,
-              isEnabled: isEnabled
-            }
-          };
-
-          this.$http.post('/user/stop', param).then(data => {
-            if (200 === data.code) {
-              this.$message.success(data.message);
-              this.queryPage();
-            } else {
-              this.$message.error(data.message);
-            }
-
-          });
-
-        }).catch(_ => {
-        });
-      },
-
-      // 创建用户信息
-      addUser() {
-        this.$router.push('/user/add');
-      },
-
-      /***************　打开修改系统对话框　*********************/
-      updateEntity(row, rowName, dlgTitle) {
-        console.log('修改的记录信息：', row);
-        // 判断弹出框展示样式
-        switch (rowName) {
-          default: {
-            this.dlgSettings = {title: dlgTitle, visible: true, inputType: "text", rowNum: 1};
-            break;
-          }
-        }
-        // 根据列名添加校验规则
-        switch (rowName) {
-          case 'userName': {
-            this.rules.content = [
-              {required: true, message: "请输入" + dlgTitle + "，长度在50个字符内", trigger: "blur", max: 50},
-              {validator: this.checkUpdateExist, trigger: "blur"}
-            ];
-            break;
-          }
-          case 'url': {
-            this.rules.content = [
-              {required: true, message: "请输入" + dlgTitle + "，长度在500个字符内", trigger: "blur", max: 500},
-            ];
-            break;
-          }
-          default: {
-            this.rules.content = [
-              {required: true, message: "请输入" + dlgTitle + "，长度在50个字符内", trigger: "blur", max: 50},
-            ];
-            break;
-          }
-        }
-        // 清空表单
-        this.clearForm("editForm");
-        this.editForm = {
-          id: row.userId,
-          property: rowName,
-          content: row[rowName]
-        };
-      },
-
-      /**
-       * 校验用户名是否存在
-       * @param rule
-       * @param value 用户名
-       * @param callback
-       */
-      checkUpdateExist(rule, value, callback) {
-        let param = {
-          content: {
-            userId: this.editForm.id,
-            userName: value
-          }
-        };
-        checkUpdateExist(param).then(data => {
-          if (200 === data.code) {
-            callback();
-          } else {
-            callback(new Error(data.message));
-          }
-        });
-      },
-
-      /***************　提交修改信息　*********************/
-      onSubmit() {
-        this.$refs.editForm.validate(valid => {
-          if (valid) {
-            // 传入参数
-            let param = {
-              content: {
-                userId: this.editForm.id, // 修改记录的ID
-              }
+                dialogVisible: false,// 弹框是否显示
+                title: '用户角色设置',
+                userId: '',// 用户编号
+                roleList: [],// 用户设置的角色信息
+                treeData: [],// 角色集合
+                checkData: []// 选中角色集合
             };
-            // 修改记录的属性和属性值
-            param.content[this.editForm.property] = this.editForm.content;
+        },
 
-            updateUser(param).then(data => {
-              this.dlgSettings.visible = false; // 对话框关闭
-              if (200 === data.code) {
-                this.$message.success(data.message);
+        methods: {
+
+            queryOrganizationList() {
+                queryOrganizationList().then(data => {
+                    console.log('查询组织机构列表：', data.message, data.content);
+                    if (200 === data.code) {
+                        let content = data.content;
+
+                        this.treeDataOrg = common.toTree(content);
+                    } else {
+                        this.$message.error(data.message);
+                    }
+                });
+            },
+
+            /****************** 展开树 **********************/
+            treeOpen() {
+                this.selected = this.$refs.tree.getCheckedKeys();
+                if (this.selected.length > 0) {
+                    this.defaultChecked = this.$refs.tree.getCheckedKeys();
+                }
+                this.isExpand = true;
+                this.treeIsShow = false;
+                setTimeout(() => {
+                    this.treeIsShow = true;
+                }, 10)
+
+            },
+            /****************** 合并树 **********************/
+            treeClose() {
+                this.selected = this.$refs.tree.getCheckedKeys();
+                if(this.selected.length > 0){
+                    this.defaultChecked = this.$refs.tree.getCheckedKeys();
+                }
+                this.isExpand = false;
+                this.treeIsShow = false;
+                setTimeout(()=>{
+                    this.treeIsShow = true
+                }, 10)
+            },
+
+            handleNodeClick(data, currentNode, component) {
+                console.log('当前选中node节点:', data);
+
+                if (data) {
+
+                    //  点击的结点不是已经选择过的结点
+                    if (this.selectedItem.id !== data.id) {
+                        this.selectedItem = data;
+
+                        this.param.content.organizationId = this.selectedItem.id;
+                        this.param.content.isLeaf = this.selectedItem.isLeaf;
+                        this.param.page.pageNum = 1;
+                        this.searchByCondition();
+                    }
+
+                }
+
+            },
+
+            tableRowClassName({row, rowIndex}) {
+                // 把每一行的索引放进row
+                row.rowIndex = rowIndex;
+            },
+
+            formatter(row, column, cellValue, index) {
+                //放回索引值
+                return this.param.page.pageSize * (this.param.page.pageNum - 1) + 1 + row.rowIndex;
+            },
+
+            // 改变页码
+            handleCurrentChange(val) {
+                this.param.page.pageNum = val;
                 this.queryPage();
-              } else {
-                this.$message.error(data.message);
-              }
-            });
-          }
-        });
-      },
+            },
+            // 改变每页显示多少条
+            handleSizeChange(value) {
+                this.param.page.pageSize = value;
+                this.queryPage();
+            },
 
-      /***************  清空Form　*********************/
-      clearForm(formName) {
-        // 修改框未初始化时，不清空表单
-        if (typeof this.$refs[formName] != "undefined") {
-          this.$refs[formName].resetFields();
+            handleSelectionChange(val) {
+                console.log('多选', val);
+                // if (val) {
+                //   this.multipleSelection = val;
+                //   this.multipleSelectionLength = val.length;
+                // }
+            },
+
+            /**
+             * 分页查询
+             * @param param
+             */
+            queryPage() {
+                this.loading = true;
+                queryUserPage(this.param).then((resp) => {
+
+                    this.loading = false;
+                    this.paginationShow = true;
+
+                    if (resp.content && resp.content.list) {
+                        this.tableData = resp.content.list;
+                        this.total = resp.content.total;
+                    }
+                }).catch(error => {
+                    this.loading = false;
+                });
+            },
+
+            searchByCondition() {
+                this.param.page.pageNum = 1;
+                this.queryPage();
+            },
+
+            // 清空查询条件
+            clearQueryParam() {
+                this.param.content = {
+                    userName: '',
+                    startTime: '',
+                    endTime: ''
+                };
+                this.queryPage();
+                this.$refs.multipleTable.clearSelection();
+            },
+            clearInput() {
+            },
+
+            /********************************* 业务逻辑处理 ************************************/
+
+            /**
+             * 删除实体
+             * @param id
+             */
+            deleteEntity(row) {
+                // this.statusCheck(row, () => {
+                common.confirm({
+                    message: `确认删除【${row.nickName}】这个用户？`,
+                }).then(() => {
+                    deleteUser({content: row.userId}).then(resp => {
+                        if (200 === resp.code) {
+                            common.message({
+                                message: resp.message,
+                            });
+                            this.queryPage();
+                        }
+                    });
+                }).catch(() => {
+                    // 取消按钮的回调
+                    console.log('取消按钮的回调');
+                });
+                // });
+            },
+            resetUser(row) {
+                common.confirm({
+                    message: `是否将【${row.userName}】的密码恢复为${this.defaultPassword}？`,
+                }).then(() => {
+                    let param = {
+                        content: {
+                            userId: row.userId,
+                            password: this.defaultPassword
+                        }
+                    };
+
+                    resetUser(param).then(data => {
+                        if (200 === data.code) {
+                            this.$message.success(data.message);
+                            this.queryPage();
+                        } else {
+                            this.$message.error(data.message);
+                        }
+                    });
+                }).catch(() => {
+                    // 取消按钮的回调
+                    console.log('取消按钮的回调');
+                });
+            },
+
+            updateEntityEnabledStatus(row) {
+                let text = row.isEnabled === '1' ? '停用' : '启用';
+                let isEnabled = row.isEnabled === '1' ? '0' : '1';
+
+                common.confirm({
+                    message: `是否${text}【${row.userName}】的账户？`
+                }).then(() => {
+                    let param = {
+                        content: {
+                            userId: row.userId,
+                            isEnabled: isEnabled
+                        }
+                    };
+
+                    updateUserStopStatus(param).then(data => {
+                        if (200 === data.code) {
+                            this.$message.success(data.message);
+                            this.queryPage();
+                        } else {
+                            this.$message.error(data.message);
+                        }
+
+                    });
+
+                }).catch(_ => {
+                });
+            },
+
+            // 创建用户信息
+            addUser() {
+                this.$router.push('/user/add');
+            },
+
+            /***************　打开修改系统对话框　*********************/
+            updateEntity(row, rowName, dlgTitle) {
+                console.log('修改的记录信息：', row);
+                // 判断弹出框展示样式
+                switch (rowName) {
+                    default: {
+                        this.dlgSettings = {title: dlgTitle, visible: true, inputType: "text", rowNum: 1};
+                        break;
+                    }
+                }
+                // 根据列名添加校验规则
+                switch (rowName) {
+                    case 'userName': {
+                        this.rules.content = [
+                            {required: true, message: "请输入" + dlgTitle + "，长度在50个字符内", trigger: "blur", max: 50},
+                            {validator: this.checkUpdateExist, trigger: "blur"}
+                        ];
+                        break;
+                    }
+                    case 'url': {
+                        this.rules.content = [
+                            {required: true, message: "请输入" + dlgTitle + "，长度在500个字符内", trigger: "blur", max: 500},
+                        ];
+                        break;
+                    }
+                    default: {
+                        this.rules.content = [
+                            {required: true, message: "请输入" + dlgTitle + "，长度在50个字符内", trigger: "blur", max: 50},
+                        ];
+                        break;
+                    }
+                }
+                // 清空表单
+                this.clearForm("editForm");
+                this.editForm = {
+                    id: row.userId,
+                    property: rowName,
+                    content: row[rowName]
+                };
+            },
+
+            /**
+             * 校验用户名是否存在
+             * @param rule
+             * @param value 用户名
+             * @param callback
+             */
+            checkUpdateExist(rule, value, callback) {
+                let param = {
+                    content: {
+                        userId: this.editForm.id,
+                        userName: value
+                    }
+                };
+                checkUpdateExist(param).then(data => {
+                    if (200 === data.code) {
+                        callback();
+                    } else {
+                        callback(new Error(data.message));
+                    }
+                });
+            },
+
+            /***************　提交修改信息　*********************/
+            onSubmit() {
+                this.$refs.editForm.validate(valid => {
+                    if (valid) {
+                        // 传入参数
+                        let param = {
+                            content: {
+                                userId: this.editForm.id, // 修改记录的ID
+                            }
+                        };
+                        // 修改记录的属性和属性值
+                        param.content[this.editForm.property] = this.editForm.content;
+
+                        updateUser(param).then(data => {
+                            this.dlgSettings.visible = false; // 对话框关闭
+                            if (200 === data.code) {
+                                this.$message.success(data.message);
+                                this.queryPage();
+                            } else {
+                                this.$message.error(data.message);
+                            }
+                        });
+                    }
+                });
+            },
+
+            /***************  清空Form　*********************/
+            clearForm(formName) {
+                // 修改框未初始化时，不清空表单
+                if (typeof this.$refs[formName] != "undefined") {
+                    this.$refs[formName].resetFields();
+                }
+            },
+
+            // 打开创建角色的弹框
+            openDialog(userId) {
+                let vm = this;
+
+                vm.userId = userId;
+                // 获取当前员工的角色信息
+                queryUserRoleList({content: userId}).then(data => {
+                    vm.checkData = [];
+                    if (200 === data.code) {
+                        let checks = data.content;
+                        checks.forEach(item => {
+                            vm.checkData.push(item.roleId);
+                        });
+                    }
+                    vm.dialogVisible = true;
+                });
+
+            },
+
+            // 关闭设置添加日志的dialog页面
+            closeDialog: function () {
+                let vm = this;
+                vm.dialogVisible = false;
+                vm.checkData = []
+            },
+
+            // 获取全部的用户角色
+            queryAllPlatsAndRoles: function () {
+                let vm = this;
+                queryAllPlatsAndRoles({}).then(data => {
+                    if (200 === data.code) {
+                        vm.treeData = common.toTree(data.content);
+                    } else {
+                        this.$message.error(data.message);
+                    }
+                });
+            },
+
+            // 添加用户角色信息
+            addUserRoles: function (param) {
+
+                let vm = this;
+                addUserRoles({content: param}).then(data => {
+                    if (200 === data.code) {
+                        vm.$message.success(data.message);
+                        vm.queryPage();
+                    } else {
+                        vm.$message.error(data.message);
+                    }
+                    vm.btnAbled = false;
+                    vm.loading = false;
+                    vm.dialogVisible = false;
+                })
+
+            }
+        },
+        created() {
+            this.minHeight = common.getLineHeight();
+        },
+        mounted() {
+            this.queryPage();
+            this.queryAllPlatsAndRoles();
+
+            this.queryOrganizationList();
         }
-      },
-
-      // 打开创建角色的弹框
-      openDialog(userId) {
-        let vm = this;
-
-        vm.userId = userId;
-        // 获取当前员工的角色信息
-        queryUserRoleList({content: userId}).then(data => {
-          vm.checkData = [];
-          if (200 === data.code) {
-            let checks = data.content;
-            checks.forEach(item => {
-              vm.checkData.push(item.roleId);
-            });
-          }
-          vm.dialogVisible = true;
-        });
-
-      },
-
-      // 关闭设置添加日志的dialog页面
-      closeDialog: function () {
-        let vm = this;
-        vm.dialogVisible = false;
-        vm.checkData = []
-      },
-
-      // 获取全部的用户角色
-      queryAllPlatsAndRoles: function () {
-        let vm = this;
-        queryAllPlatsAndRoles({}).then(data => {
-          if (200 === data.code) {
-            vm.treeData = common.toTree(data.content);
-          } else {
-            this.$message.error(data.message);
-          }
-        });
-      },
-
-      // 添加用户角色信息
-      addUserRoles: function (param) {
-
-        let vm = this;
-        addUserRoles({content: param}).then(data => {
-          if (200 === data.code) {
-            vm.$message.success(data.message);
-            vm.queryPage();
-          } else {
-            vm.$message.error(data.message);
-          }
-          vm.btnAbled = false;
-          vm.loading = false;
-          vm.dialogVisible = false;
-        })
-
-      }
-    },
-    mounted() {
-      this.queryPage();
-      this.queryAllPlatsAndRoles();
-    }
-  };
+    };
 </script>
 
 
@@ -544,6 +648,9 @@
     .click-text {
         color: #409eff;
         cursor: pointer;
+    }
+    .line {
+        float: right;
     }
 </style>
 

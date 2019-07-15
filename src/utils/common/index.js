@@ -588,5 +588,14 @@ export default {
       }
     }
   },
+
+  getLineHeight: function () {
+    let height = `${document.documentElement.clientHeight-185}px`;
+    console.log("获取高度", height);
+    return height;
+  }
+
+
 };
+
 

@@ -1,6 +1,9 @@
 import {user} from '@/constant/apiUrl';
 import $http from '@/utils/axios'
 
+export const queryUserPage = param => $http.post(user.QUERY_PAGE, param);
+export const updateUserStopStatus = param => $http.post(user.STOP, param);
+
 export const checkExist = param => $http.post(user.CHECK_EXIST, param);
 export const checkUpdateExist = param => $http.post(user.CHECK_UPDATE_EXIST, param);
 export const queryUserRoleList = param => $http.post(user.QUERY_USER_ROLES, param);
