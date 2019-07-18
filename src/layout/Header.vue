@@ -82,7 +82,7 @@
         queryGrantedPlats(param).then(data => {
           if (200 === data.code) {
             let content = data.content;
-            console.log(data.message, content);
+            // console.log(data.message, content);
 
             this.options = content;
 

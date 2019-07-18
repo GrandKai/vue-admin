@@ -4,12 +4,12 @@ import router from '@/router';
 let $http = {
   post: function (url, param) {
 
-    console.log('....................................', process.env);
+    // console.log('....................................', process.env);
     let requestUrl = `${url}`;
     let requestParam = Object.assign({}, param, {
       accessToken: sessionStorage.getItem('accessToken')
     });
-    console.log('...........请求url接口地址：', requestUrl, '参数：', requestParam);
+    // console.log('...........请求url接口地址：', requestUrl, '参数：', requestParam);
 
     // 返回 Promise 对象方便后续链式调用
     return axios.post(requestUrl, requestParam).then(resp => {
@@ -17,7 +17,7 @@ let $http = {
       let data = resp.data;
       let httpStatus = resp.status;
 
-      console.log('...........请求url接口地址结果：', httpStatus, data);
+      // console.log('...........请求url接口地址结果：', httpStatus, data);
 
       switch (httpStatus) {
         // 响应 http 状态码

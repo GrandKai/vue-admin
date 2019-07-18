@@ -29,6 +29,14 @@ export const plat = {
   QUERY_ALL_PLATS_AND_ROLES: '/plat/role/list'
 };
 
+// 栏目管理
+export const catalog = {
+  QUERY_LIST: '/catalog/list',
+  ADD: '/catalog/add',
+  UPDATE: '/catalog/update',
+  DELETE: '/catalog/delete',
+};
+
 // 菜单管理
 export const menu = {
   QUERY_LIST: '/menu/list',

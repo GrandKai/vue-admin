@@ -31,7 +31,13 @@ const DictionaryItemAdd = () => import('views/dictionary/item/Add.vue');
 const DemoEcharts = () => import('views/demo/DemoEcharts.vue');
 const DemoCKEditor = () => import('views/demo/DemoCKEditor.vue');
 const DemoAvater = () => import('views/demo/DemoAvater.vue');
+
+const CatalogList = () => import('views/catalog/List.vue');
 let router = [
+    {
+        path: 'catalog',
+        component: CatalogList
+    },
   {
     path: 'avater',
     component: DemoAvater
