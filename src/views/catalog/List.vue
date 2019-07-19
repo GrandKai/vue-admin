@@ -65,17 +65,15 @@
                                 ref="upload"
                                 class="avatar-uploader"
                                 action=""
+                                :show-file-list="false"
                                 :http-request="uploadRequest"
-                                :auto-upload="true"
-                                :show-file-list="true"
-                                :on-success="handleAvatarSuccess"
                                 :on-exceed="handleExceed"
                                 :before-upload="beforeAvatarUpload">
                             <img v-if="form.image" :src="form.image" class="avatar">
 
                             <i v-else class="el-icon-plus avatar-uploader-icon"></i>
 <!--                            <div slot="tip" class="el-upload__tip">请上传400宽400高的图片，仅限一张图片</div>-->
-                            <!--<div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过2MB,仅限一张图片</div>-->
+                            <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过2MB,仅限一张图片</div>
                         </el-upload>
                     </el-form-item>
 
@@ -93,7 +91,6 @@
 </template>
 
 <script>
-    import axios from 'axios'
     import TreeForm from 'components/business/treeForm/Index';
     import {queryCatalogList, addCatalog, updateCatalog, deleteCatalog, uploadCatalogImage} from 'apis/catalog';
 
@@ -109,7 +106,6 @@
         data() {
             return {
                 accessToken: sessionStorage.getItem('accessToken'),
-                uploadImageUrl: "/api/catalog/uploadImage",
                 // 所有系统信息
                 options: [],
 
@@ -146,9 +142,9 @@
                         {required: true, message: '请输入栏目描述', trigger: 'blur'},
                         {min: 1, max: 500, message: '长度在 1 到 500 个字符', trigger: 'blur'}
                     ],
-                    image: [
-                        {max: 500, message: '长度小于 500 个字符', trigger: 'blur'}
-                    ],
+                    // image: [
+                    //     {required: false, message: '', trigger: 'blur'}
+                    // ],
                     sortNumber: [
                         {required: true, validator: common.checkNumber, trigger: "blur"}
                     ],
@@ -186,38 +182,36 @@
                 // 添加form表单中其他数据
                 formData.append('fileName', fileName);
 
-                // uploadCatalogImage(formData).then(data => {
-                //     console.log("catalog 上传图片结果：", data);
-                // })
-                const token = sessionStorage.getItem('accessToken');
-                let config = {
-                    headers: {
-                        'Content-Type': 'multipart/form-data',
-                        'Authorization': `Bearer ${token}`
+                uploadCatalogImage(formData).then(data => {
+                    if (200 === data.code) {
+                        let content = data.content;
+                        this.form.image = content.url;
+                        console.log("catalog 上传图片结果：", content);
+                    } else {
+                        this.$message.error(data.message);
                     }
-                };
-                axios.post('/api/catalog/uploadImage', formData, config).then(data => {
-                    console.log("catalog 上传图片结果：", data);
+
+                    // 验证上传的图片
+                    this.$refs["form"].validateField("image");
                 })
             },
-            handleAvatarSuccess(res, file) {
-                this.form.image = URL.createObjectURL(file.raw);
-            },
+
             // 上传文件个数超过定义的数量
             handleExceed (files, fileList) {
                 this.$message.warning(`当前限制选择 1 个文件，请删除后继续上传`)
             },
             beforeAvatarUpload(file) {
                 const isJPG = file.type === 'image/jpeg';
+                const isPNG = file.type === 'image/png';
                 const isLt2M = file.size / 1024 / 1024 < 2;
 
-                if (!isJPG) {
-                    this.$message.error('上传头像图片只能是 JPG 格式!');
+                if (!isJPG && !isPNG) {
+                    this.$message.error('上传的图片只能是 JPG/PNG 格式!');
                 }
                 if (!isLt2M) {
-                    this.$message.error('上传头像图片大小不能超过 2MB!');
+                    this.$message.error('上传的图片大小不能超过 2MB!');
                 }
-                return isJPG && isLt2M;
+                return (isJPG || isPNG) && isLt2M;
             },
 
             /**
