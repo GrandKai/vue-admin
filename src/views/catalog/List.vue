@@ -37,7 +37,7 @@
 
             <!-- 表单区域 -->
             <template slot="formArea">
-                <el-form :model="form" :rules="rules" ref="form" label-width="100px" :disabled="formDisabled" status-icon>
+                <el-form :model="form" :rules="rules" ref="form" label-width="100px" :disabled="formDisabled" enctype="multipart/form-data">
 
                     <el-form-item label="栏目名称" prop="name">
                         <el-input v-model="form.name"></el-input>
@@ -60,13 +60,16 @@
                     <el-form-item label="栏目图标" prop="image">
 <!--                        <el-input v-model="form.image"></el-input>-->
 
+<!--                        :action="uploadImageUrl"-->
                         <el-upload
                                 ref="upload"
                                 class="avatar-uploader"
+                                action=""
+                                :http-request="uploadRequest"
                                 :auto-upload="true"
-                                :action="uploadImageUrl"
                                 :show-file-list="true"
                                 :on-success="handleAvatarSuccess"
+                                :on-exceed="handleExceed"
                                 :before-upload="beforeAvatarUpload">
                             <img v-if="form.image" :src="form.image" class="avatar">
 
@@ -90,8 +93,9 @@
 </template>
 
 <script>
+    import axios from 'axios'
     import TreeForm from 'components/business/treeForm/Index';
-    import {queryCatalogList, addCatalog, updateCatalog, deleteCatalog} from 'apis/catalog';
+    import {queryCatalogList, addCatalog, updateCatalog, deleteCatalog, uploadCatalogImage} from 'apis/catalog';
 
     const sortNumber = 10;
     const isShow = '1';
@@ -104,6 +108,7 @@
 
         data() {
             return {
+                accessToken: sessionStorage.getItem('accessToken'),
                 uploadImageUrl: "/api/catalog/uploadImage",
                 // 所有系统信息
                 options: [],
@@ -158,8 +163,49 @@
         },
         methods: {
 
+
+            uploadRequest(param) {
+                console.log("上传参数：", param);
+                //创建临时的路径来展示图片
+                let windowURL = window.URL || window.webkitURL;
+                this.form.image = windowURL.createObjectURL(param.file);
+
+                let file = param.file;
+                let fileName = param.file.name;
+                let fileType = fileName.split(".")[fileName.split('.').length - 1];
+
+                console.log('.........................',file.row)
+                let formData = new FormData();
+
+                // 通过append向form对象添加数据
+                formData.append('file', file);
+                // 通过append向form对象添加数据
+                formData.append('fileType', fileType);
+                // 通过append向form对象添加数据
+                // formData.append('fileId', fileId);
+                // 添加form表单中其他数据
+                formData.append('fileName', fileName);
+
+                // uploadCatalogImage(formData).then(data => {
+                //     console.log("catalog 上传图片结果：", data);
+                // })
+                const token = sessionStorage.getItem('accessToken');
+                let config = {
+                    headers: {
+                        'Content-Type': 'multipart/form-data',
+                        'Authorization': `Bearer ${token}`
+                    }
+                };
+                axios.post('/api/catalog/uploadImage', formData, config).then(data => {
+                    console.log("catalog 上传图片结果：", data);
+                })
+            },
             handleAvatarSuccess(res, file) {
                 this.form.image = URL.createObjectURL(file.raw);
+            },
+            // 上传文件个数超过定义的数量
+            handleExceed (files, fileList) {
+                this.$message.warning(`当前限制选择 1 个文件，请删除后继续上传`)
             },
             beforeAvatarUpload(file) {
                 const isJPG = file.type === 'image/jpeg';

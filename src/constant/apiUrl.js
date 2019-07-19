@@ -35,6 +35,7 @@ export const catalog = {
   ADD: '/catalog/add',
   UPDATE: '/catalog/update',
   DELETE: '/catalog/delete',
+  UPLOAD: '/catalog/uploadImage',
 };
 
 // 菜单管理
