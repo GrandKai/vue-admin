@@ -10,19 +10,14 @@
         <div>
             <el-row>
 
-
                 <el-col :span="13">
 
                     <custom-page>
                         <template slot="queryArea">
 
                             <li>
-                                <span class="sysSpan">所属系统 </span>
-                                <el-select v-model="param.content.platId" placeholder="请选择操作系统" clearable
-                                           @change="queryPage"
-                                           ref="select">
-                                    <el-option v-for="item in options" :key="item.id" :label="item.name"
-                                               :value="item.id"></el-option>
+                                <el-select v-model="param.content.platId" placeholder="请选择操作系统" clearable @change="selectChange" ref="select">
+                                    <el-option v-for="item in options" :key="item.id" :label="item.name" :value="item.id"></el-option>
                                 </el-select>
                                 <br/>
                                 <!--platId: <input v-model="form.platId" width="500"/>-->
@@ -53,7 +48,6 @@
                         </template>
 
                         <template slot="tableArea">
-
 
                             <el-table :data="tableData" border stripe highlight-current-row
                                       row-key="id" ref="multipleTable"
@@ -154,8 +148,6 @@
 
                                 <el-tree :data="treeData"
                                          :props="defaultProps"
-                                         @node-click="handleNodeClick"
-                                         @check-change="handleCheckChange"
                                          highlight-current
                                          :show-checkbox="true"
                                          :expand-on-click-node="false"
@@ -200,7 +192,6 @@
     import {
         queryAuthorityPage,
         queryAuthorityGrantedIds,
-        addAuthority,
         deleteAuthority,
         updateAuthority,
         setAuthority
@@ -220,15 +211,13 @@
         data() {
 
             return {
-                operations: [],
-
                 defaultProps: {
                     children: 'children',
                     label: 'label'
                 },
                 treeData: [],
                 treeIsShow: false,
-                defaultChecked : [],
+                defaultChecked: [],
                 // 默认展开
                 isExpand: true,
                 // 树的选中节点
@@ -272,12 +261,14 @@
             }
         },
         created() {
-            this.queryPage();
             this.queryAllPlat();
+            this.selectChange();
         },
         methods: {
 
-
+            /**
+             *  查询所有平台
+             **/
             queryAllPlat() {
                 queryPlatList().then(data => {
                     console.log('查询所有平台', data);
@@ -286,7 +277,20 @@
                     }
                 });
             },
-
+            selectChange() {
+                console.log("系统改变");
+                this.param.page.pageNum = 1;
+                this.queryPage(item => {
+                    if (item) {
+                        this.$refs.multipleTable.setCurrentRow(item);
+                        this.handleCellClick(item);
+                    } else {
+                        // 表格没有数据的话，将树数据置为空
+                        this.treeData = [];
+                        this.treeIsShow = false;
+                    }
+                });
+            },
 
             tableRowClassName({row, rowIndex}) {
                 // 把每一行的索引放进row
@@ -301,16 +305,24 @@
              * 分页查询
              * @param param
              */
-            queryPage() {
+            queryPage(callBack) {
+                console.log("权限分页查询");
                 this.loading = true;
                 queryAuthorityPage(this.param).then((data) => {
                     this.loading = false;
                     this.paginationShow = true;
 
-                    if (data.content && data.content.list) {
+                    let containData = data.content && data.content.list;
+                    if (containData) {
                         this.tableData = data.content.list;
                         this.total = data.content.total;
+
+                        // 只有表格中包含数据，才初始化权限树
+                        if (callBack instanceof Function) {
+                            callBack(this.tableData[0]);
+                        }
                     }
+
                 }).catch(error => {
                     this.loading = false;
                 });
@@ -437,31 +449,7 @@
                 common.treeOpen(this, 'tree');
             },
             treeClose() {
-                common.treeClose(this, 'tree')
-            },
-            handleNodeClick(nodeData) {
-                console.log('当前选中node节点:', nodeData);
-                // 不是根节点才能进行按钮操作
-            },
-
-
-            handleCheckChange() {
-
-                let checkedNodes = this.$refs.tree.getCheckedNodes(false, true);
-
-                if (checkedNodes) {
-                    let filteredNodes = checkedNodes.filter(item => {
-                        // 过滤掉根菜单并删除children
-                        if (item.type) {
-                            delete item.children;
-                            return item;
-                        }
-                    });
-                    this.operations = filteredNodes;
-
-                } else {
-                    this.operations = [];
-                }
+                common.treeClose(this, 'tree');
             },
 
             handleCellClick(row, column, cell, event) {
@@ -514,6 +502,8 @@
                 queryAuthorityGrantedIds({content: authorityId}).then(data => {
                     if (200 === data.code) {
                         let checkedKeys = data.content;
+                        this.defaultChecked = checkedKeys;
+                        // this.treeOpen();
                         this.$refs.tree.setCheckedKeys(checkedKeys)
                     } else {
                         this.$message.error(data.message)
@@ -521,10 +511,15 @@
                 });
             },
             editAuthority() {
-
                 let authorityId = this.editForm.id;
-                let operations = this.operations;
+                let operations = this.$refs.tree.getCheckedNodes(false, true);
 
+                console.log('编辑权限：', authorityId, operations);
+
+                if (!operations || operations.length <= 1) {
+                    this.$message.error("请选则要操作的节点！");
+                    return false;
+                }
                 if (authorityId) {
                     let param = {
                         content: {
@@ -540,7 +535,7 @@
                         } else {
                             this.$message.error(data.message)
                         }
-                    })
+                    });
                 }
             }
         },
