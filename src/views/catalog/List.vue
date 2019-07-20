@@ -26,12 +26,13 @@
                 <el-tree :data="treeData"
                          :props="defaultProps"
                          @node-click="handleNodeClick"
-                         default-expand-all
                          highlight-current
                          :show-checkbox="false"
                          :expand-on-click-node="false"
                          node-key="id"
-                         ref="tree" v-if="treeIsShow">
+                         :default-expand-all="isExpand"
+                         :default-checked-keys="defaultChecked"
+                         ref="tree" v-if="treeIsShow" style="overflow-y: auto;max-height: 500px">
                 </el-tree>
             </template>
 
@@ -120,6 +121,11 @@
                 },
                 treeData: [],
                 treeIsShow: true,
+                defaultChecked : [],
+                // 默认展开
+                isExpand: true,
+                // 树的选中节点
+                currentTreeKey: "",
 
                 // 表单信息
                 form: {
@@ -383,23 +389,16 @@
 
             },
             treeOpen() {
-
+                common.treeOpen(this, 'tree');
             },
             treeClose() {
-
-            },
-
-            // 【清除表单验证】
-            clearFormValidate(formName) {
-                if (typeof(this.$refs[formName]) != 'undefined') {
-                    this.$refs[formName].clearValidate();
-                }
+                common.treeClose(this, 'tree');
             },
 
             handleNodeClick(item) {
                 console.log('当前选中node节点:', item);
 
-                this.clearFormValidate('form');
+                common.clearForm(this, 'form');
                 this.addDisabled = false;
                 // 根目录无法删除
                 if ('2034515a43434d6f9a6dbd8970cf536a' === item.id) {
@@ -439,9 +438,6 @@
                             this.updateEntity();
                         }).catch(() => {
                         });
-                    } else {
-                        console.error('error submit!!');
-                        return false;
                     }
                 });
             }

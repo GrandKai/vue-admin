@@ -242,6 +242,7 @@
                         endTime: '',
                         organizationId: '',
                         isLeaf: '',
+                        level: ''
                     },
                     page: {
                         pageNum: 1,
@@ -277,13 +278,8 @@
                     if (200 === data.code) {
                         let content = data.content;
 
-                        let root = {
-                            id: -1,
-                            label: '根节点',
-                            children: common.toTree(content)
-                        };
-
-                        this.treeDataOrg = [root];
+                        this.treeDataOrg = common.toTree(content);
+                        let root = this.treeDataOrg[0];
 
                         // 请求结束后执行选中首节点
                         this.$nextTick(() => {
@@ -303,51 +299,26 @@
 
             /****************** 展开树 **********************/
             treeOpen() {
-                this.currentTreeKey = this.$refs.tree.getCurrentKey();
-                this.isExpand = true;
-                this.treeIsShow = false;
-
-                setTimeout(() => {
-                    this.treeIsShow = true;
-                    if (this.currentTreeKey != null) {
-                        this.$nextTick(() => {
-                            this.$refs.tree.setCurrentKey(this.currentTreeKey);
-                        });
-                    }
-                }, 10)
-
+                common.treeOpen(this, 'tree');
             },
             /****************** 合并树 **********************/
             treeClose() {
-                this.currentTreeKey = this.$refs.tree.getCurrentKey();
-                this.isExpand = false;
-                this.treeIsShow = false;
-
-                setTimeout(()=>{
-                    this.treeIsShow = true;
-                    if (this.currentTreeKey != null) {
-                        this.$nextTick(() => {
-                            this.$refs.tree.setCurrentKey(this.currentTreeKey);
-                        });
-                    }
-                }, 10)
+                common.treeClose(this, 'tree');
             },
 
-            handleNodeClick(data, currentNode, component) {
-                console.log('当前选中node节点:', data);
+            handleNodeClick(item) {
+                console.log('当前选中node节点:', item);
 
-                if (data) {
+                //  点击的结点不是已经选择过的结点
+                if (this.selectedItem.id !== item.id) {
+                    this.selectedItem = item;
 
-                    //  点击的结点不是已经选择过的结点
-                    if (this.selectedItem.id !== data.id) {
-                        this.selectedItem = data;
+                    this.param.content.organizationId = this.selectedItem.id;
+                    this.param.content.isLeaf = this.selectedItem.isLeaf;
+                    this.param.content.level = this.selectedItem.level;
 
-                        this.param.content.organizationId = this.selectedItem.id;
-                        this.param.content.isLeaf = this.selectedItem.isLeaf;
-                        this.param.page.pageNum = 1;
-                        this.searchByCondition();
-                    }
-
+                    this.param.page.pageNum = 1;
+                    this.searchByCondition();
                 }
 
             },
@@ -535,7 +506,7 @@
                     }
                 }
                 // 清空表单
-                this.clearForm("editForm");
+                common.clearForm(this, "editForm");
                 this.editForm = {
                     id: row.userId,
                     property: rowName,
@@ -589,14 +560,6 @@
                         });
                     }
                 });
-            },
-
-            /***************  清空Form　*********************/
-            clearForm(formName) {
-                // 修改框未初始化时，不清空表单
-                if (typeof this.$refs[formName] != "undefined") {
-                    this.$refs[formName].resetFields();
-                }
             },
 
             // 打开创建角色的弹框

@@ -267,7 +267,7 @@
           }
         }
         // 清空表单
-        this.clearForm("editForm");
+        common.clearForm(this, "editForm");
         this.editForm = {
           id: row.id,
           property: rowName,
@@ -322,14 +322,6 @@
             });
           }
         });
-      },
-
-      /***************  清空Form　*********************/
-      clearForm(formName) {
-        // 修改框未初始化时，不清空表单
-        if (typeof this.$refs[formName] != "undefined") {
-          this.$refs[formName].resetFields();
-        }
       },
 
       /**

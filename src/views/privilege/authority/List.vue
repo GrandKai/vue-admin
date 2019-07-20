@@ -143,7 +143,8 @@
 
                             <!-- 按钮区域 -->
                             <template slot="buttonArea">
-                                <el-button type="primary" @click="editAuthority"><i class="el-icon-edit"></i> 保 存</el-button>
+                                <el-button type="primary" @click="editAuthority"><i class="el-icon-edit"></i> 保 存
+                                </el-button>
                                 <el-button @click="treeOpen"><i class="el-icon-arrow-down"></i> 展 开</el-button>
                                 <el-button @click="treeClose"><i class="el-icon-arrow-up"></i> 收 起</el-button>
                             </template>
@@ -155,13 +156,14 @@
                                          :props="defaultProps"
                                          @node-click="handleNodeClick"
                                          @check-change="handleCheckChange"
-                                         default-expand-all
                                          highlight-current
                                          :show-checkbox="true"
                                          :expand-on-click-node="false"
                                          check-on-click-node
                                          node-key="id"
-                                         ref="tree" style="max-height: 500px; overflow-y: auto">
+                                         :default-expand-all="isExpand"
+                                         :default-checked-keys="defaultChecked"
+                                         ref="tree" v-if="treeIsShow" style="overflow-y: auto;max-height: 500px">
                                 </el-tree>
 
                             </template>
@@ -219,13 +221,18 @@
 
             return {
                 operations: [],
-                treeData: [],
-                treeIsShow: false,
 
                 defaultProps: {
                     children: 'children',
                     label: 'label'
                 },
+                treeData: [],
+                treeIsShow: false,
+                defaultChecked : [],
+                // 默认展开
+                isExpand: true,
+                // 树的选中节点
+                currentTreeKey: "",
 
                 // 所有系统信息
                 options: [],
@@ -361,7 +368,8 @@
                     }
                 }
                 // 清空表单
-                this.clearForm("editForm");
+
+                common.clearForm(this, "editForm");
                 this.editForm = {
                     id: row.id,
                     property: rowName,
@@ -395,14 +403,6 @@
                 });
             },
 
-            /***************  清空Form　*********************/
-            clearForm(formName) {
-                // 修改框未初始化时，不清空表单
-                if (typeof this.$refs[formName] != "undefined") {
-                    this.$refs[formName].resetFields();
-                }
-            },
-
             /**
              * 删除实体
              * @param id
@@ -434,10 +434,10 @@
             },
 
             treeOpen() {
-
+                common.treeOpen(this, 'tree');
             },
             treeClose() {
-
+                common.treeClose(this, 'tree')
             },
             handleNodeClick(nodeData) {
                 console.log('当前选中node节点:', nodeData);
@@ -446,7 +446,6 @@
 
 
             handleCheckChange() {
-
 
                 let checkedNodes = this.$refs.tree.getCheckedNodes(false, true);
 

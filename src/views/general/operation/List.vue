@@ -446,38 +446,12 @@
 
             /****************** 展开树 **********************/
             treeOpen() {
-                console.log('树展开');
-                this.currentTreeKey = this.$refs.tree.getCurrentKey();
-                this.isExpand = true;
-                this.treeIsShow = false;
-
-                setTimeout(() => {
-                    this.treeIsShow = true;
-                    if (this.currentTreeKey != null) {
-                        this.$nextTick(() => {
-                            this.$refs.tree.setCurrentKey(this.currentTreeKey);
-                        });
-                    }
-                }, 10)
-
+                common.treeOpen(this, 'tree');
             },
 
             /****************** 合并树 **********************/
             treeClose() {
-                console.log('树合并');
-                this.currentTreeKey = this.$refs.tree.getCurrentKey();
-                this.isExpand = false;
-                this.treeIsShow = false;
-
-                setTimeout(() => {
-                    this.treeIsShow = true;
-                    if (this.currentTreeKey != null) {
-                        this.$nextTick(() => {
-                            this.$refs.tree.setCurrentKey(this.currentTreeKey);
-                        });
-                    }
-                }, 10)
-
+                common.treeClose(this, 'tree');
             },
             handleNodeClick(nodeData) {
                 console.log('当前选中node节点:', nodeData);
@@ -617,9 +591,6 @@
                             }
                         }).catch(() => {
                         });
-                    } else {
-                        console.error('error submit!!');
-                        return false;
                     }
                 });
             }

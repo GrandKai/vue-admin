@@ -50,7 +50,7 @@ let $http = {
                             let refreshParam = {
                                 refreshToken: sessionStorage.getItem('refreshToken')
                             };
-                            let refreshUrl = `${urlPrefix}/auth/refresh/token`;
+                            let refreshUrl = `/auth/refresh/token`;
 
                             return refreshToken(refreshUrl, refreshParam).then(data => {
                                 console.warn('refreshToken刷新结果', data);

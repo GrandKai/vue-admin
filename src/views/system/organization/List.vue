@@ -366,35 +366,12 @@
 
             /****************** 展开树 **********************/
             treeOpen() {
-                this.currentTreeKey = this.$refs.tree.getCurrentKey();
-                this.isExpand = true;
-                this.treeIsShow = false;
-
-                setTimeout(() => {
-                    this.treeIsShow = true;
-                    if (this.currentTreeKey != null) {
-                        this.$nextTick(() => {
-                            this.$refs.tree.setCurrentKey(this.currentTreeKey);
-                        });
-                    }
-                }, 10)
-
+                common.treeOpen(this, 'tree');
             },
 
             /****************** 合并树 **********************/
             treeClose() {
-                this.currentTreeKey = this.$refs.tree.getCurrentKey();
-                this.isExpand = false;
-                this.treeIsShow = false;
-
-                setTimeout(()=>{
-                    this.treeIsShow = true;
-                    if (this.currentTreeKey != null) {
-                        this.$nextTick(() => {
-                            this.$refs.tree.setCurrentKey(this.currentTreeKey);
-                        });
-                    }
-                }, 10)
+                common.treeClose(this, 'tree');
             },
 
             handleNodeClick(item) {
@@ -428,9 +405,6 @@
                             this.updateEntity();
                         }).catch(() => {
                         });
-                    } else {
-                        console.error('error submit!!');
-                        return false;
                     }
                 });
             }

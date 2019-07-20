@@ -366,6 +366,7 @@ export default {
   sortTree() {
 
   },
+
   /****************** 展开树 **********************/
   /** 需要定义的变量如下：
    * treeShow: true, // 树的显示状态
@@ -374,18 +375,20 @@ export default {
    *
    * 建议增加参数：引用树的ref
    */
-  treeOpen() {
-    this.currentTreeKey = this.$refs.departmentTree.getCurrentKey();
-    this.isExpand = true;
-    this.treeShow = false;
+  treeOpen(vm, ref) {
+    console.log('树打开：', vm);
+    vm.currentTreeKey = vm.$refs[ref].getCurrentKey();
+    vm.isExpand = true;
+    vm.treeIsShow = false;
+
     setTimeout(() => {
-      this.treeShow = true;
-      if (this.currentTreeKey != null) {
-        this.$nextTick(() => {
-          this.$refs.departmentTree.setCurrentKey(this.currentTreeKey);
+      vm.treeIsShow = true;
+      if (vm.currentTreeKey != null) {
+        vm.$nextTick(() => {
+          vm.$refs[ref].setCurrentKey(vm.currentTreeKey);
         });
       }
-    }, 10);
+    }, 10)
   },
 
   /****************** 合并树 **********************/
@@ -396,18 +399,20 @@ export default {
    *
    * 建议增加参数：引用树的ref
    */
-  treeClose() {
-    this.currentTreeKey = this.$refs.departmentTree.getCurrentKey();
-    this.isExpand = false;
-    this.treeShow = false;
-    setTimeout(() => {
-      this.treeShow = true;
-      if (this.currentTreeKey != null) {
-        this.$nextTick(() => {
-          this.$refs.departmentTree.setCurrentKey(this.currentTreeKey);
+  treeClose(vm, ref) {
+    console.log('树关闭：', vm);
+    vm.currentTreeKey = vm.$refs[ref].getCurrentKey();
+    vm.isExpand = false;
+    vm.treeIsShow = false;
+
+    setTimeout(()=>{
+      vm.treeIsShow = true;
+      if (vm.currentTreeKey != null) {
+        vm.$nextTick(() => {
+          vm.$refs[ref].setCurrentKey(vm.currentTreeKey);
         });
       }
-    }, 10);
+    }, 10)
   },
 
   // 列表中空数据的显示形式
@@ -593,9 +598,19 @@ export default {
     let height = `${document.documentElement.clientHeight-185}px`;
     console.log("获取高度", height);
     return height;
-  }
+  },
 
-
+  /**
+   * 清空Form
+   * @param vm        vm 对象
+   * @param formName 表单名称
+   */
+  clearForm(vm, formName) {
+    // 修改框未初始化时，不清空表单
+    if (typeof vm.$refs[formName] != "undefined") {
+      vm.$refs[formName].resetFields();
+    }
+  },
 };
 
 
