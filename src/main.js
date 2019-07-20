@@ -4,6 +4,7 @@ import echarts from 'echarts'
 import '@/assets/icon/iconfont.css' // 自定义 icon
 import '@/assets/styles/element-variables.scss' // 皮肤 css
 // import 'element-ui/lib/theme-chalk/index.css'
+import * as constant from '@/constant/index.js'
 
 import App from '@/App.vue'
 import router from '@/router'
@@ -46,6 +47,9 @@ if ('development' !== process.env.NODE_ENV) {
     return false;
   };
 }
+// 常量设置
+Vue.prototype.constant = constant;
+window.constant = constant;
 
 let vue = new Vue({
   router,

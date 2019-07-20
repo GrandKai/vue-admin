@@ -85,19 +85,9 @@
                     <!--</el-table-column>-->
 
                     <!-- 显示索引 -->
-                    <el-table-column align="center"
-                                     header-align="center"
-                                     label="序号"
-                                     prop="module"
-                                     width="60"
-                                     :formatter="formatter">
-                    </el-table-column>
+                    <el-table-column align="center" header-align="center" label="序号" prop="module" width="60" :formatter="formatter"></el-table-column>
 
-                    <el-table-column align="left"
-                                     label="姓名"
-                                     prop="nickName"
-                                     width="180">
-                    </el-table-column>
+                    <el-table-column align="left" label="姓名" prop="nickName"></el-table-column>
 
 
                     <el-table-column label="账号" header-align="left" align="left">
@@ -109,11 +99,15 @@
                     </el-table-column>
 
 
-                    <el-table-column align="center"
-                                     label="创建日期"
-                                     prop="createTime"
-                                     width="180">
+                    <el-table-column label="所属部门" prop="organizationName" header-align="left" align="left" :formatter="common.emptyFormat"></el-table-column>
+
+                    <el-table-column label="角色" header-align="left" align="left" show-overflow-tooltip>
+                        <template slot-scope="scope">
+                            <span>{{ scope.row.roles | filterRoleNames }}</span>
+                        </template>
                     </el-table-column>
+
+                    <el-table-column label="创建日期" prop="createTime" width="180" header-align="left"  align="left" :formatter="common.emptyFormat" ></el-table-column>
 
                     <!--<el-table-column label="删除状态" header-align="center" align="center" fixed="right" width="80px">
                         <template slot-scope="scope">
@@ -268,6 +262,16 @@
                 treeData: [],// 角色集合
                 checkData: []// 选中角色集合
             };
+        },
+
+        filters: {
+            filterRoleNames(val) {
+                if (val && 0 < val.length) {
+                    return val.toString();
+                } else {
+                    return "--";
+                }
+            }
         },
 
         methods: {

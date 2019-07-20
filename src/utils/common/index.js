@@ -425,6 +425,7 @@ export default {
 
   // 列表中空数据的显示形式
   emptyFormat: function (row, column) {
+    console.log("表格列格式化设置");
     var val = row[column.property];
     if (common.isEmpty(val)) {
       return constant.EMPTY;

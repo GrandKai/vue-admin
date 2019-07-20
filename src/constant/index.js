@@ -1,0 +1,10 @@
+export const ADD = 'ADD'; // 新增
+export const DELETE = 'DELETE'; // 删除
+export const UPDATE = 'UPDATE'; // 修改
+export const SELECT = 'SELECT'; // 查询
+export const SET = 'SET'; // 设置
+export const UPLOAD = 'UPLOAD'; // 上传
+export const RESET = 'RESET'; // 重置
+export const DOWNLOAD = 'DOWNLOAD'; // 下载
+export const STOP = 'STOP'; // 停用
+export const EMPTY = '--'; // 空列数据的显示
