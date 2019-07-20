@@ -97,6 +97,8 @@
                 defaultChecked : [],
                 // 默认展开
                 isExpand: true,
+                // 树的选中节点
+                currentTreeKey: "",
 
                 addDisabled: true,
                 deleteDisabled: true,
@@ -116,9 +118,7 @@
                     name: '',
                     sortNumber: 10,
                     isLeaf: '',
-                    // code: '',
-                    // remark: '',
-                    // isShow: '1',
+                    level: '',
                 },
                 rules: {
                     name: [
@@ -168,6 +168,7 @@
                     let currentNodeKey = this.$refs.tree.getCurrentKey();
                     let parentId = currentNodeKey ? currentNodeKey : '';
 
+                    let level = Number(this.form.level) + Number(1);
                     let param = {
                         content: {
                             // 所选系统id
@@ -176,9 +177,7 @@
                             name: '默认组织机构',
                             sortNumber: 10,
                             isLeaf: '',
-                            // code: '/',
-                            // remark: '',
-                            // isShow: '1',
+                            level: level
                         }
                     };
 
@@ -364,36 +363,48 @@
                 });
 
             },
+
             /****************** 展开树 **********************/
             treeOpen() {
-                this.selected = this.$refs.tree.getCheckedKeys();
-                if (this.selected.length > 0) {
-                    this.defaultChecked = this.$refs.tree.getCheckedKeys();
-                }
+                this.currentTreeKey = this.$refs.tree.getCurrentKey();
                 this.isExpand = true;
                 this.treeIsShow = false;
+
                 setTimeout(() => {
                     this.treeIsShow = true;
+                    if (this.currentTreeKey != null) {
+                        this.$nextTick(() => {
+                            this.$refs.tree.setCurrentKey(this.currentTreeKey);
+                        });
+                    }
                 }, 10)
 
             },
+
             /****************** 合并树 **********************/
             treeClose() {
-                this.selected = this.$refs.tree.getCheckedKeys();
-                if(this.selected.length > 0){
-                    this.defaultChecked = this.$refs.tree.getCheckedKeys();
-                }
+                this.currentTreeKey = this.$refs.tree.getCurrentKey();
                 this.isExpand = false;
                 this.treeIsShow = false;
+
                 setTimeout(()=>{
-                    this.treeIsShow = true
+                    this.treeIsShow = true;
+                    if (this.currentTreeKey != null) {
+                        this.$nextTick(() => {
+                            this.$refs.tree.setCurrentKey(this.currentTreeKey);
+                        });
+                    }
                 }, 10)
             },
 
             handleNodeClick(item) {
                 console.log('当前选中node节点:', item);
+                if ('0' === item.level) {
+                    this.deleteDisabled = true;
+                } else {
+                    this.deleteDisabled = false;
+                }
                 this.addDisabled = false;
-                this.deleteDisabled = false;
 
                 if (item && item.id) {
                     this.formDisabled = false;
@@ -404,9 +415,7 @@
                     this.form.name = item.name;
                     this.form.sortNumber = item.sortNumber;
                     this.form.isLeaf = item.isLeaf;
-                    // this.form.code = item.code;
-                    // this.form.remark = item.remark;
-                    // this.form.isShow = item.isShow;
+                    this.form.level = item.level;
                 }
             },
 

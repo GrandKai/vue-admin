@@ -218,6 +218,8 @@
                 defaultChecked: [],
                 // 默认展开
                 isExpand: true,
+                // 树的选中节点
+                currentTreeKey: "",
                 defaultExpandKeys: [],
                 // 当前选中的组织机构结点
                 selectedItem: {},
@@ -275,7 +277,24 @@
                     if (200 === data.code) {
                         let content = data.content;
 
-                        this.treeDataOrg = common.toTree(content);
+                        let root = {
+                            id: -1,
+                            label: '根节点',
+                            children: common.toTree(content)
+                        };
+
+                        this.treeDataOrg = [root];
+
+                        // 请求结束后执行选中首节点
+                        this.$nextTick(() => {
+                            // 默认选中根节点
+                            this.$refs.tree.setCurrentKey(root.id);
+                            // 默认展开第一层
+                            let ary = root.children.map(item => item.id);
+                            this.defaultExpandKeys = ary;
+                            this.handleNodeClick(root);
+                        });
+
                     } else {
                         this.$message.error(data.message);
                     }
@@ -284,27 +303,33 @@
 
             /****************** 展开树 **********************/
             treeOpen() {
-                this.selected = this.$refs.tree.getCheckedKeys();
-                if (this.selected.length > 0) {
-                    this.defaultChecked = this.$refs.tree.getCheckedKeys();
-                }
+                this.currentTreeKey = this.$refs.tree.getCurrentKey();
                 this.isExpand = true;
                 this.treeIsShow = false;
+
                 setTimeout(() => {
                     this.treeIsShow = true;
+                    if (this.currentTreeKey != null) {
+                        this.$nextTick(() => {
+                            this.$refs.tree.setCurrentKey(this.currentTreeKey);
+                        });
+                    }
                 }, 10)
 
             },
             /****************** 合并树 **********************/
             treeClose() {
-                this.selected = this.$refs.tree.getCheckedKeys();
-                if(this.selected.length > 0){
-                    this.defaultChecked = this.$refs.tree.getCheckedKeys();
-                }
+                this.currentTreeKey = this.$refs.tree.getCurrentKey();
                 this.isExpand = false;
                 this.treeIsShow = false;
+
                 setTimeout(()=>{
-                    this.treeIsShow = true
+                    this.treeIsShow = true;
+                    if (this.currentTreeKey != null) {
+                        this.$nextTick(() => {
+                            this.$refs.tree.setCurrentKey(this.currentTreeKey);
+                        });
+                    }
                 }, 10)
             },
 

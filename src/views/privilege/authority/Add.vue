@@ -55,7 +55,7 @@
                                  :expand-on-click-node="false"
                                  check-on-click-node
                                  node-key="id"
-                                 ref="tree" v-show="treeIsShow" style="max-height: 500px; overflow-y: auto">
+                                 ref="tree" v-if="treeIsShow" style="max-height: 500px; overflow-y: auto">
                         </el-tree>
 
                     </el-form-item>

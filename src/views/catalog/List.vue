@@ -31,7 +31,7 @@
                          :show-checkbox="false"
                          :expand-on-click-node="false"
                          node-key="id"
-                         ref="tree" v-show="treeIsShow">
+                         ref="tree" v-if="treeIsShow">
                 </el-tree>
             </template>
 

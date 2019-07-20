@@ -559,7 +559,7 @@
         width: 1px;
         min-height: 500px;
         float: right;
-        /*background-color: #f0f0f0;*/
-        background-color: red;
+        background-color: #e0e9e2;
+        /*background-color: red;*/
     }
 </style>
