@@ -163,7 +163,7 @@ export default {
 
     // 从缓存中取出
     popLocalStorage: function (key) {
-        var value = sessionStorage.getItem(key);
+        let value = sessionStorage.getItem(key);
         if (!this.isEmpty(value)) {
             value = this.stringToJson(value);
             return value;
@@ -180,7 +180,7 @@ export default {
         if (!fmt || !this.isString(fmt)) {
             fmt = 'yyyy-MM-dd';
         }
-        var o = {
+        let o = {
             'M+': date.getMonth() + 1, // 月份
             'd+': date.getDate(), // 日
             'h+': date.getHours() % 12 == 0 ? 12 : date.getHours() % 12, // 小时
@@ -190,7 +190,7 @@ export default {
             'q+': Math.floor((date.getMonth() + 3) / 3), // 季度
             'S': date.getMilliseconds() // 毫秒
         };
-        var week = {
+        let week = {
             '0': '\u65e5',
             '1': '\u4e00',
             '2': '\u4e8c',
@@ -205,7 +205,7 @@ export default {
         if (/(E+)/.test(fmt)) {
             fmt = fmt.replace(RegExp.$1, ((RegExp.$1.length > 1) ? (RegExp.$1.length > 2 ? '\u661f\u671f' : '\u5468') : '') + week[date.getDay() + '']);
         }
-        for (var k in o) {
+        for (let k in o) {
             if (new RegExp('(' + k + ')').test(fmt)) {
                 fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (('00' + o[k]).substr(('' + o[k]).length)));
             }
@@ -214,15 +214,15 @@ export default {
     },
     // 克隆对象
     clone: function (obj) {
-        var buf;
+        let buf;
         if (obj instanceof Array) {
             buf = [];
-            for (var i = 0; i < obj.length; i++) {
+            for (let i = 0; i < obj.length; i++) {
                 buf.push(this.clone(obj[i]));
             }
         } else if (obj instanceof Object) {
             buf = {};
-            for (var j in obj) {
+            for (let j in obj) {
                 buf[j] = this.clone(obj[j]);
             }
         } else {
@@ -239,13 +239,13 @@ export default {
         }
     },
     numberFormat: function (val, index) {
-        var vm = this;
-        var fa = '';
+        let vm = this;
+        let fa = '';
         val = val + '';
         if (val.substring(0, 1) == '-')
         // fa = "-"; // 允许为负数
             fa = ''; // 不允许为负数
-        var str = '';
+        let str = '';
         if (index == 1) {
             str = (val.replace(/[^0-9.]/g, '')).replace(/[.][0-9]*[.]/, '.').replace(/^(\-)*(\d+)\.(\d).*$/, '$1$2.$3');
         } else if (index == 2) {
@@ -259,19 +259,19 @@ export default {
     },
     // 是否存在数字
     existNumber: function (str) {
-        var p = /[0-9]/;
-        var b = p.test(str);
+        let p = /[0-9]/;
+        let b = p.test(str);
         return b;
     },
 
     // 获得url中的参数
     getQueryString: function () {
-        var url = location.href; //获取url中"?"符后的字串
-        var theRequest = new Object();
+        let url = location.href; //获取url中"?"符后的字串
+        let theRequest = new Object();
         if (url.indexOf('?') != -1) {
-            var str = url.substr(url.indexOf('?') + 1);
-            var strs = str.split('&');
-            for (var i = 0; i < strs.length; i++) {
+            let str = url.substr(url.indexOf('?') + 1);
+            let strs = str.split('&');
+            for (let i = 0; i < strs.length; i++) {
                 theRequest[strs[i].split('=')[0]] = unescape(strs[i].split('=')[1]);
             }
         }
@@ -286,11 +286,11 @@ export default {
         digit = digit ? digit : 2;
 
         var num = num.toString(),
-            minus = num.substring(0, 1) == '-' ? '-' : '';
+        minus = num.substring(0, 1) == '-' ? '-' : '';
         num = minus == '-' ? num.substring(1) : num;
         num = num.replace(/\.$/, '');
 
-        var integral = num,
+        let integral = num,
             decimal = '';
         if (num.indexOf('.') != -1) {
             integral = num.substring(0, num.indexOf('.'));
@@ -299,7 +299,7 @@ export default {
             decimal = decimal.length > (1 + digit) ? decimal.substring(0, (1 + digit)) : decimal;
         }
 
-        var result = '';
+        let result = '';
         while (integral.length > 3) {
             result = ',' + integral.slice(-3) + result;
             integral = integral.slice(0, integral.length - 3);
@@ -314,7 +314,7 @@ export default {
 
     // 加密手机号中间四位
     formatPhone: function (phone) {
-        var str = '1366668888';
+        let str = '1366668888';
         if (phone.length == 11) {
             return phone.substr(0, 3) + '****' + phone.substr(7);
         } else {
@@ -322,18 +322,18 @@ export default {
         }
     },
     getSelRan: function (id) {
-        var obj = document.activeElement;
+        let obj = document.activeElement;
         if (document.activeElement.id == id) {
-            var pos = common.getCursorPos(obj);
+            let pos = common.getCursorPos(obj);
             common.setCursorPos(obj, pos);
         }
     },
 
     //获取光标位置
     getCursorPos: function (ctrl) {
-        var pos = 0; // IE Support
+        let pos = 0; // IE Support
         if (ctrl.selection) {
-            var Sel = ctrl.selection.createRange();
+            let Sel = ctrl.selection.createRange();
             Sel.moveStart('character', -ctrl.value.length);
             pos = Sel.text.length;
         }
@@ -348,7 +348,7 @@ export default {
         if (ctrl.setSelectionRange) {
             ctrl.setSelectionRange(pos, pos);
         } else if (ctrl.createTextRange) {
-            var range = ctrl.createTextRange();
+            let range = ctrl.createTextRange();
             range.collapse(true);
             range.moveEnd('character', pos);
             range.moveStart('character', pos);
@@ -385,16 +385,16 @@ export default {
         delete item.children;
       });
       // 将数据存储为 以 id 为 KEY 的 map 索引数据列
-      var map = {};
+      let map = {};
       config.data.forEach(function (item) {
         // 树 的label
         item.label = item[config.nodeName];
         map[item[config.nodeId]] = item;
       });
-      var val = [];
+      let val = [];
       config.data.forEach(function (item) {
         // 以当前遍历项，的pid,去map对象中找到索引的id
-        var parent = map[item[config.parentId]];
+        let parent = map[item[config.parentId]];
         // 如果找到索引，那么说明此项不在顶级当中,那么需要把此项添加到，他对应的父级中
         if (parent) {
           (parent.children || (parent.children = [])).push(item);
@@ -494,15 +494,15 @@ export default {
 
     // 列表中空数据的显示形式
     emptyFormat: function (row, column) {
-        console.log("表格列格式化设置");
-        var val = row[column.property];
+        // console.log("表格列格式化设置");
+        let val = row[column.property];
         if (common.isEmpty(val)) {
             return constant.EMPTY;
         }
         return val;
     },
     toZeroFormat: function (row, column) {
-        var val = row[column.property];
+        let val = row[column.property];
         if (common.isEmpty(val)) {
             return 0;
         }
@@ -525,9 +525,9 @@ export default {
         }
         //获取年龄
         let age = 0;
-        var myDate = new Date();
-        var month = myDate.getMonth() + 1;
-        var day = myDate.getDate();
+        let myDate = new Date();
+        let month = myDate.getMonth() + 1;
+        let day = myDate.getDate();
         age = myDate.getFullYear() - idcard.substring(6, 10) - 1;
         if (idcard.substring(10, 12) < month || idcard.substring(10, 12) == month && idcard.substring(12, 14) <= day) {
             age++;
@@ -584,7 +584,7 @@ export default {
     compare: function (objA, objB) {
         return common.compareObj(objA, objB, true); //默认为true
     }, compareObj: function (objA, objB, flag) {
-        for (var key in objA) {
+        for (let key in objA) {
             let valA = common.nullToString(objA[key]);
             let valB = common.nullToString(objB[key]);
             if (!flag) //跳出整个循环
@@ -604,13 +604,13 @@ export default {
                     flag = false;
                     break;
                 }
-                var oA = valA,
+                let oA = valA,
                     oB = valB;
                 if (oA.length != oB.length) {
                     flag = false;
                     break;
                 }
-                for (var k in oA) {
+                for (let k in oA) {
                     if (!flag) //这里跳出循环是为了不让递归继续
                         break;
                     flag = compareObj(oA[k], oB[k], flag);
@@ -633,7 +633,7 @@ export default {
     isJSON(obj) {
         // if (typeof str == 'string') {
         try {
-            // var obj=JSON.parse(str);
+            // let obj=JSON.parse(str);
             if (typeof obj == 'object' && obj) {
                 return true;
             } else {

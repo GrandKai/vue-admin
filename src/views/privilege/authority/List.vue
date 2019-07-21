@@ -439,8 +439,8 @@
                 common.treeClose(this, 'tree');
             },
 
-            handleCellClick(row, column, cell, event) {
-                console.log('点击单元格', row, column, cell, event);
+            handleCellClick(row) {
+                // console.log('点击单元格', row);
                 let platId = row.platId;
                 let platName = row.platName;
                 let authorityId = row.id;

@@ -147,12 +147,13 @@
                             :default-expand-all="isExpand"
                             :default-expanded-keys="defaultExpandKeys"
                             :data="treeDataOrg"
+                            :expand-on-click-node="false"
                             @node-click="handleNodeClick"></el-tree>
                 </el-col>
 
                 <el-col :span="7" style="position: relative;z-index: 2;">
 
-                    <el-input placeholder="输入你要添加的员工姓名" v-model="leftTable.param.content.staffName" style="" size="mini"
+                    <el-input placeholder="输入你要添加的员工姓名" v-model="leftTable.param.content.userName" style="" size="mini"
                               @keyup.native="searchLeftByCondition">
                         <el-button slot="append" icon="el-icon-search" @click="searchLeftByCondition"></el-button>
                     </el-input>
@@ -164,19 +165,14 @@
                               size="mini"
                               border
                               align="left"
-                              @selection-change="handleLeftSelectionChange"
-                    >
+                              @selection-change="handleLeftSelectionChange">
 
-                        <el-table-column
-                                type="selection"
-                                width="35">
-                        </el-table-column>
+                        <!--                        <el-table-column prop="staffNumber" label="员工编号"></el-table-column>-->
+                        <!--                        <el-table-column prop="staffName" label="员工名称"></el-table-column>-->
 
-                        <el-table-column prop="staffNumber" label="员工编号">
-                        </el-table-column>
-
-                        <el-table-column prop="staffName" label="员工名称">
-                        </el-table-column>
+                        <el-table-column type="selection" width="35"></el-table-column>
+                        <el-table-column prop="userId" label="员工编号"></el-table-column>
+                        <el-table-column prop="userName" label="员工名称"></el-table-column>
                     </el-table>
 
 
@@ -209,7 +205,7 @@
                 <el-col :span="7" style="position: relative;z-index: 2;">
 
 
-                    <el-input placeholder="输入你要移除的员工姓名" v-model="rightTable.param.content.staffName" style="" size="mini"
+                    <el-input placeholder="输入你要移除的员工姓名" v-model="rightTable.param.content.userName" style="" size="mini"
                               @keyup.native="searchRightByCondition">
                         <el-button slot="append" icon="el-icon-search" @click="searchRightByCondition"></el-button>
                     </el-input>
@@ -223,11 +219,10 @@
                               align="left"
                               @selection-change="handleRightSelectionChange" >
 
+                        <!--                        <el-table-column prop="staffNumber" label="员工编号"></el-table-column>-->
+                        <!--                        <el-table-column prop="staffName" label="员工名称"></el-table-column>-->
+
                         <el-table-column type="selection" width="35"></el-table-column>
-
-<!--                        <el-table-column prop="staffNumber" label="员工编号"></el-table-column>-->
-<!--                        <el-table-column prop="staffName" label="员工名称"></el-table-column>-->
-
                         <el-table-column prop="userId" label="员工编号"></el-table-column>
                         <el-table-column prop="userName" label="员工名称"></el-table-column>
                     </el-table>
@@ -426,7 +421,7 @@
             },
 
             handleNodeClick(item) {
-
+                this.getUserLeftRightList(item);
             },
 
             ok() {
@@ -453,7 +448,7 @@
                     this.$refs.tree.setCurrentKey(this.currentTreeKey);
                 });
 
-                this.getUserLeftList(this.treeDataOrg[0]);
+                this.getUserLeftRightList(this.treeDataOrg[0]);
             },
             handleLeftSelectionChange(val) {
                 this.leftTable.multipleSelection = val.map(item => item.userId);
@@ -483,9 +478,9 @@
 
                 // console.log(`向左移动入参`, param);
 
-                this.$http.post('/api/role/user/delete', param).then(resp => {
-                    if (200 === resp.data.status) {
-                        this.$message.success(resp.data.message);
+                this.$http.post('/role/users/delete', param).then(data => {
+                    if (200 === data.code) {
+                        this.$message.success(data.message);
                         this.rightTable.param.page.pageNum = 1;
                         this.leftTable.param.page.pageNum = 1;
 
@@ -493,7 +488,7 @@
                         this.queryRightPage();
 
                     } else {
-                        this.$message.error(resp.data.message);
+                        this.$message.error(data.message);
                     }
                 });
             },
@@ -515,9 +510,9 @@
                 };
 
                 // console.log(`向右移动入参`, param);
-                this.$http.post('/api/role/user/add', param).then(resp => {
-                    if (200 === resp.data.status) {
-                        this.$message.success(resp.data.message);
+                this.$http.post('/role/users/add', param).then(data => {
+                    if (200 === data.code) {
+                        this.$message.success(data.message);
                         this.rightTable.param.page.pageNum = 1;
                         this.leftTable.param.page.pageNum = 1;
 
@@ -525,22 +520,22 @@
                         this.queryLeftPage();
 
                     } else {
-                        this.$message.error(resp.data.message);
+                        this.$message.error(data.message);
                     }
                 });
 
             },
 
             // 展示员工列表
-            getUserLeftList(currentData) {
+            getUserLeftRightList(currentData) {
 
-                console.log(`当前选中部门：${currentData.organizationId}`);
+                console.log(`当前选中部门：${currentData.id}`);
 
                 this.leftTable.param.page.pageNum = 1;
                 this.leftTable.param.content.isLeaf = currentData.isLeaf;
                 this.leftTable.param.content.level = currentData.level;
 
-                this.leftTable.param.content.organizationId = currentData.organizationId;
+                this.leftTable.param.content.organizationId = currentData.id;
                 this.queryLeftPage();
 
 
@@ -548,7 +543,7 @@
                 this.rightTable.param.content.isLeaf = currentData.isLeaf;
                 this.rightTable.param.content.level = currentData.level;
 
-                this.rightTable.param.content.organizationId = currentData.organizationId;
+                this.rightTable.param.content.organizationId = currentData.id;
                 this.queryRightPage();
             },
 

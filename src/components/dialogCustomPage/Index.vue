@@ -18,7 +18,7 @@
                     placeholder="输入关键字进行过滤" clearable>
           </el-input>
           <el-tree show-checkbox
-                   v-model="form.roleList"
+                   v-model="form.roleIds"
                    class="filter-tree"
                    node-key="id"
                    :data="treeData"
@@ -50,7 +50,7 @@
         // 修改的内容
         form: {
           userId: '',
-          roleList: []
+          roleIds: []
         },
         isload: false,
         filterText: '',//关键字
@@ -116,8 +116,8 @@
 
           if (valid) {
             let param = {
-              userId : vm.userId,
-              roleList : roleList
+              userId: vm.userId,
+              roleIds: roleList
             };
             vm.$refs.form.resetFields();
             vm.isload = true;
