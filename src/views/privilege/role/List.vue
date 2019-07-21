@@ -138,7 +138,9 @@
 
             <div id="content" style="height: 510px; max-height: 510px;overflow-y: auto;text-align:center">
 
-                <el-col :span="8" style="position: relative;z-index: 2;max-width: 300px;max-height: inherit;overflow-y: auto">
+                <el-col :span="8" class="config_user tree_class">
+                    <el-input placeholder="输入关键字进行过滤" v-model="filterText" size="mini"></el-input>
+
                     <el-tree
                             ref="tree"
                             node-key="id"
@@ -148,10 +150,11 @@
                             :default-expanded-keys="defaultExpandKeys"
                             :data="treeDataOrg"
                             :expand-on-click-node="false"
+                            :filter-node-method="filterNode"
                             @node-click="handleNodeClick"></el-tree>
                 </el-col>
 
-                <el-col :span="7" style="position: relative;z-index: 2;">
+                <el-col :span="7" class="config_user">
 
                     <el-input placeholder="输入你要添加的员工姓名" v-model="leftTable.param.content.userName" style="" size="mini"
                               @keyup.native="searchLeftByCondition">
@@ -177,7 +180,6 @@
 
 
                     <div class="pagination" style="margin-top: 20px">
-
                         <el-pagination @current-change="handleLeftCurrentChange"
                                        :current-page="leftTable.param.page.pageNum"
                                        :page-size="leftTable.param.page.pageSize"
@@ -186,6 +188,7 @@
                                        :page-sizes="pageSizes"
                                        background
                                        small
+                                       :pager-count="5"
                                        @size-change="handleSizeLeftChange"
                         >
                         </el-pagination>
@@ -193,7 +196,7 @@
 
                 </el-col>
 
-                <el-col :span="2" style="position: relative;z-index: 2;">
+                <el-col :span="2" class="config_user">
                     <div style="margin-top: 200px">
                         <el-button size="small" icon="el-icon-d-arrow-left" @click="moveToLeft"></el-button>
                     </div>
@@ -202,7 +205,7 @@
                     </div>
                 </el-col>
 
-                <el-col :span="7" style="position: relative;z-index: 2;">
+                <el-col :span="7" class="config_user">
 
 
                     <el-input placeholder="输入你要移除的员工姓名" v-model="rightTable.param.content.userName" style="" size="mini"
@@ -238,6 +241,7 @@
                                        :total="rightTable.total"
                                        background
                                        small
+                                       :pager-count="5"
                                        @size-change="handleSizeRightChange"
                         >
                         </el-pagination>
@@ -314,6 +318,7 @@
         },
         data() {
             return {
+                filterText: '',
                 treeDataOrg: [],
                 treeIsShow: true,
                 defaultChecked: [],
@@ -414,8 +419,17 @@
 
             this.queryOrganizationList();
         },
-        methods: {
+        watch: {
+            filterText(val) {
+                this.$refs.tree.filter(val);
+            }
+        },
 
+        methods: {
+            filterNode(value, data) {
+                if (!value) return true;
+                return data.label.indexOf(value) !== -1;
+            },
             queryOrganizationList() {
                 common.queryOrganizationList(this, 'tree', 'treeDataOrg');
             },
@@ -877,7 +891,13 @@
 </script>
 
 <style scoped>
-
+    .config_user {
+        position: relative;z-index: 2;
+        padding-left: 10px;
+    }
+    .tree_class {
+        max-width: 300px;max-height: inherit;overflow-y: auto
+    }
 
     .header-height {
         height: 40px !important;
