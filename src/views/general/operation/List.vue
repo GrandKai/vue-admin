@@ -112,8 +112,6 @@
 
 <script>
     import TreeForm from 'components/business/treeForm/Index';
-    import {queryDictionaryItemList} from 'apis/dictionary/item';
-
     import {
         queryPermissionList,
         addOperation,
@@ -203,20 +201,9 @@
         },
         created() {
             common.queryPlatList(data => this.options = data);
-            this.queryAllDicItemList();
+            common.queryDictionaryt('operation', data => this.codeOptions = data);
         },
         methods: {
-
-            queryAllDicItemList() {
-                let param = {
-                    content: 'operation'
-                };
-                queryDictionaryItemList(param).then(data => {
-                    if (200 === data.code) {
-                        this.codeOptions = data.content;
-                    }
-                });
-            },
 
             selectChange() {
 

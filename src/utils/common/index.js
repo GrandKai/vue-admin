@@ -1,8 +1,27 @@
 import {$vm} from '@/main';
 import { queryOrganizationList } from 'apis/system/organization';
 import {queryPlatList} from 'apis/general/plat';
+import {queryDictionaryItemList} from 'apis/dictionary/item';
 
 export default {
+
+    /**
+     * 查询数据字典
+     * @param type
+     * @param callBack
+     */
+    queryDictionaryt(type, callBack) {
+        let param = {
+            content: type
+        };
+        queryDictionaryItemList(param).then(data => {
+            if (200 === data.code) {
+                if (callBack instanceof Function) {
+                    callBack(data.content)
+                }
+            }
+        });
+    },
     /**
      * 查询所有平台
      * @param callBack
