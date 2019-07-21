@@ -60,6 +60,20 @@ export const user = {
   QUERY_USER_ROLES: '/user/select/roles',
 };
 
+// 资讯管理
+export const information = {
+  QUERY_PAGE: '/information',
+  CHECK_EXIST: '/information/check/exist',
+  CHECK_UPDATE_EXIST: '/information/check/update/exist',
+  ADD: '/information/add',
+  UPDATE: '/information/update',
+  DELETE: '/information/delete', // 删除用户信息 置状态
+  STOP: '/information/stop', // 停用 置状态
+  RESET: '/information/reset/password',
+  ADD_USER_ROLES: '/information/add/roles',
+  QUERY_USER_ROLES: '/information/select/roles',
+};
+
 // 操作管理
 export const operation = {
   QUERY_LIST: '/operation/list',

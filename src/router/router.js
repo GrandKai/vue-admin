@@ -1,6 +1,9 @@
 //页面配置文件
 const About = () => import('views/About.vue');
 
+const InformationList = () => import('views/content/information/List.vue');
+const InformationAdd = () => import('views/content/information/Add.vue');
+
 const UserList = () => import('views/user/List.vue');
 const UserAdd = () => import('views/user/Add.vue');
 
@@ -70,6 +73,14 @@ let router = [
     {
         path: 'user/add',
         component: UserAdd
+    },
+    {
+        path: 'information',
+        component: InformationList
+    },
+    {
+        path: 'information/add',
+        component: InformationAdd
     },
     {
         path: 'plat',

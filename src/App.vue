@@ -24,4 +24,10 @@
     .el-button {
         margin-right: 5px;
     }
+
+    /*.btn-groups {*/
+    /*    text-align: left;*/
+    /*    padding-bottom: 1em;*/
+    /*}*/
+
 </style>
