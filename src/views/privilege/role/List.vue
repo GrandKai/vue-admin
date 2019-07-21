@@ -134,7 +134,7 @@
             </template>
         </custom-page>
 
-        <Modal v-model="staffVisible" width="80%" title="成员管理">
+        <Modal v-model="staffVisible" width="80%" title="成员管理" :mask-closable="false">
 
             <div id="content" style="height: 510px; max-height: 510px;overflow-y: auto;text-align:center">
 
