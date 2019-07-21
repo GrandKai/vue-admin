@@ -148,7 +148,7 @@
 
             queryOrganizationList() {
                 queryOrganizationList().then(data => {
-                    console.log('查询组织机构列表：', data.message, data.content);
+                    // console.log('查询组织机构列表：', data.message, data.content);
                     if (200 === data.code) {
                         let content = data.content;
 

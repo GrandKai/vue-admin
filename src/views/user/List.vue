@@ -195,8 +195,6 @@
     import treeDialog from 'components/dialogCustomPage/Index';
     import {queryUserPage, updateUserStopStatus, queryUserRoleList, addUserRoles, updateUser, deleteUser, resetUser, checkUpdateExist} from 'apis/user';
     import {queryAllPlatsAndRoles} from 'apis/general/plat';
-    import { queryOrganizationList } from 'apis/system/organization';
-
 
     export default {
         components: {
@@ -277,28 +275,7 @@
         methods: {
 
             queryOrganizationList() {
-                queryOrganizationList().then(data => {
-                    console.log('查询组织机构列表：', data.message, data.content);
-                    if (200 === data.code) {
-                        let content = data.content;
-
-                        this.treeDataOrg = common.toTree(content);
-                        let root = this.treeDataOrg[0];
-
-                        // 请求结束后执行选中首节点
-                        this.$nextTick(() => {
-                            // 默认选中根节点
-                            this.$refs.tree.setCurrentKey(root.id);
-                            // 默认展开第一层
-                            let ary = root.children.map(item => item.id);
-                            this.defaultExpandKeys = ary;
-                            this.handleNodeClick(root);
-                        });
-
-                    } else {
-                        this.$message.error(data.message);
-                    }
-                });
+                common.queryOrganizationList(this, 'tree', 'treeDataOrg');
             },
 
             /****************** 展开树 **********************/
@@ -595,7 +572,7 @@
             // 获取全部的用户角色
             queryAllPlatsAndRoles: function () {
                 let vm = this;
-                queryAllPlatsAndRoles({}).then(data => {
+                queryAllPlatsAndRoles().then(data => {
                     if (200 === data.code) {
                         vm.treeData = common.toTree(data.content);
                     } else {

@@ -107,7 +107,7 @@
                     <el-table-column label="操作" header-align="center" align="center" fixed="right" min-width="210px">
                         <template slot-scope="scope">
 
-                            <el-button >
+                            <el-button @click="configUser(scope.row.id)">
                                 成员管理
                             </el-button>
 
@@ -134,6 +134,127 @@
             </template>
         </custom-page>
 
+        <Modal v-model="staffVisible" width="80%" title="成员管理">
+
+            <div id="content" style="height: 510px; max-height: 510px;overflow-y: auto;text-align:center">
+
+                <el-col :span="8" style="position: relative;z-index: 2;max-width: 300px;max-height: inherit;overflow-y: auto">
+                    <el-tree
+                            ref="tree"
+                            node-key="id"
+                            highlight-current
+                            v-if="treeIsShow"
+                            :default-expand-all="isExpand"
+                            :default-expanded-keys="defaultExpandKeys"
+                            :data="treeDataOrg"
+                            @node-click="handleNodeClick"></el-tree>
+                </el-col>
+
+                <el-col :span="7" style="position: relative;z-index: 2;">
+
+                    <el-input placeholder="输入你要添加的员工姓名" v-model="leftTable.param.content.staffName" style="" size="mini"
+                              @keyup.native="searchLeftByCondition">
+                        <el-button slot="append" icon="el-icon-search" @click="searchLeftByCondition"></el-button>
+                    </el-input>
+
+                    <el-table :data="leftTable.tableData"
+                              style="height: 408px;overflow-y: auto"
+                              :show-header="true"
+                              :highlight-current-row="true"
+                              size="mini"
+                              border
+                              align="left"
+                              @selection-change="handleLeftSelectionChange"
+                    >
+
+                        <el-table-column
+                                type="selection"
+                                width="35">
+                        </el-table-column>
+
+                        <el-table-column prop="staffNumber" label="员工编号">
+                        </el-table-column>
+
+                        <el-table-column prop="staffName" label="员工名称">
+                        </el-table-column>
+                    </el-table>
+
+
+                    <div class="pagination" style="margin-top: 20px">
+
+                        <el-pagination @current-change="handleLeftCurrentChange"
+                                       :current-page="leftTable.param.page.pageNum"
+                                       :page-size="leftTable.param.page.pageSize"
+                                       layout="total, sizes, prev, pager, next"
+                                       :total="leftTable.total"
+                                       :page-sizes="pageSizes"
+                                       background
+                                       small
+                                       @size-change="handleSizeLeftChange"
+                        >
+                        </el-pagination>
+                    </div>
+
+                </el-col>
+
+                <el-col :span="2" style="position: relative;z-index: 2;">
+                    <div style="margin-top: 200px">
+                        <el-button size="small" icon="el-icon-d-arrow-left" @click="moveToLeft"></el-button>
+                    </div>
+                    <div style="padding-top: 20px">
+                        <el-button size="small" icon="el-icon-d-arrow-right" @click="moveToRight"></el-button>
+                    </div>
+                </el-col>
+
+                <el-col :span="7" style="position: relative;z-index: 2;">
+
+
+                    <el-input placeholder="输入你要移除的员工姓名" v-model="rightTable.param.content.staffName" style="" size="mini"
+                              @keyup.native="searchRightByCondition">
+                        <el-button slot="append" icon="el-icon-search" @click="searchRightByCondition"></el-button>
+                    </el-input>
+
+                    <el-table :data="rightTable.tableData"
+                              style="height: 408px;overflow-y: auto"
+                              :show-header="true"
+                              :highlight-current-row="true"
+                              size="mini"
+                              border
+                              align="left"
+                              @selection-change="handleRightSelectionChange" >
+
+                        <el-table-column type="selection" width="35"></el-table-column>
+
+<!--                        <el-table-column prop="staffNumber" label="员工编号"></el-table-column>-->
+<!--                        <el-table-column prop="staffName" label="员工名称"></el-table-column>-->
+
+                        <el-table-column prop="userId" label="员工编号"></el-table-column>
+                        <el-table-column prop="userName" label="员工名称"></el-table-column>
+                    </el-table>
+
+
+                    <div class="pagination" style="margin-top: 20px">
+
+                        <el-pagination @current-change="handleRightCurrentChange"
+                                       :current-page="rightTable.param.page.pageNum"
+                                       :page-size="rightTable.param.page.pageSize"
+                                       :page-sizes="pageSizes"
+                                       layout="total, sizes, prev, pager, next"
+                                       :total="rightTable.total"
+                                       background
+                                       small
+                                       @size-change="handleSizeRightChange"
+                        >
+                        </el-pagination>
+                    </div>
+
+                </el-col>
+            </div>
+
+            <div slot="footer" style="text-align: right">
+                <Button type="primary" @click="ok">关闭</Button>
+            </div>
+        </Modal>
 
         <!-- 编辑【角色】信息对话框 -->
         <el-dialog :title="dlgSettings.title + '设置'"
@@ -188,7 +309,6 @@
 
 <script>
     import CustomPage from 'components/listCustomPage/Index'
-    import {queryPlatList} from 'apis/general/plat';
     import {queryAuthorityList} from 'apis/privilege/authority';
     import {queryRolePage, queryRoleAuthorityList, addRoleAuthority, updateRole, deleteRole, checkUpdateExistRole} from 'apis/privilege/role';
 
@@ -199,6 +319,16 @@
         },
         data() {
             return {
+                treeDataOrg: [],
+                treeIsShow: true,
+                defaultChecked: [],
+                // 默认展开
+                isExpand: true,
+                // 树的选中节点
+                currentTreeKey: "",
+                defaultExpandKeys: [],
+
+                staffVisible: false,
                 authorityPlatName: '',
                 authorityVisible: false,
                 authorities: [],
@@ -229,6 +359,48 @@
 
                 tableData: [],
 
+                leftTable: {
+                    multipleSelection: [],
+                    tableData: [],
+
+                    param: {
+                        content: {
+                            organizationId: "",
+                            isLeaf: "",
+                            level: "",
+
+                            userName: "",
+                            roleId: ""
+                        },
+                        page: {
+                            pageNum: 1,
+                            pageSize: 10
+                        }
+                    },
+                    total: 0,
+                },
+
+                rightTable: {
+                    multipleSelection: [],
+                    tableData: [],
+
+                    param: {
+                        content: {
+                            organizationId: "",
+                            isLeaf: "",
+                            level: "",
+
+                            userName: "",
+                            roleId: ""
+                        },
+                        page: {
+                            pageNum: 1,
+                            pageSize: 10
+                        }
+                    },
+                    total: 0,
+                },
+
                 // 弹出框属性设置
                 dlgSettings: {
                     title: "", // 弹窗标题
@@ -243,19 +415,219 @@
 
         created() {
             this.queryPage();
-            this.queryAllPlat();
+            common.queryPlatList(data => this.options = data);
+
+            this.queryOrganizationList();
         },
         methods: {
 
-            queryAllPlat() {
-                queryPlatList().then(data => {
-                    console.log('查询所有平台', data);
-                    if (200 === data.code) {
-                        this.options = data.content;
+            queryOrganizationList() {
+                common.queryOrganizationList(this, 'tree', 'treeDataOrg');
+            },
+
+            handleNodeClick(item) {
+
+            },
+
+            ok() {
+                this.staffVisible = false;
+            },
+            configUser(roleId) {
+                console.log('为角色配置用户', roleId);
+
+                this.leftTable.tableData = [];
+                this.rightTable.tableData = [];
+
+                this.leftTable.multipleSelection = [];
+                this.rightTable.multipleSelection = [];
+
+                this.leftTable.param.content.roleId = roleId;
+                this.rightTable.param.content.roleId = roleId;
+
+                this.getUserRightList();
+
+                this.staffVisible = true;
+
+                this.$nextTick(() => {
+                    this.currentTreeKey = this.treeDataOrg[0].id;
+                    this.$refs.tree.setCurrentKey(this.currentTreeKey);
+                });
+
+                this.getUserLeftList(this.treeDataOrg[0]);
+            },
+            handleLeftSelectionChange(val) {
+                this.leftTable.multipleSelection = val.map(item => item.userId);
+                // console.log(`左侧选中多行数据`, this.leftTable.multipleSelection)
+            },
+
+            handleRightSelectionChange(val) {
+                this.rightTable.multipleSelection = val.map(item => item.userId);
+                // console.log(`右侧选中多行数据`, this.rightTable.multipleSelection)
+            },
+            moveToLeft() {
+
+                let userIds = this.rightTable.multipleSelection;
+                console.log(userIds);
+
+                if (!(userIds && userIds.length > 0)) {
+                    this.$message.warning("请选择你要移除的员工！");
+                    return false;
+                }
+
+                let param = {
+                    content: {
+                        roleId: this.rightTable.param.content.roleId,
+                        userIds: this.rightTable.multipleSelection
+                    }
+                };
+
+                // console.log(`向左移动入参`, param);
+
+                this.$http.post('/api/role/user/delete', param).then(resp => {
+                    if (200 === resp.data.status) {
+                        this.$message.success(resp.data.message);
+                        this.rightTable.param.page.pageNum = 1;
+                        this.leftTable.param.page.pageNum = 1;
+
+                        this.queryLeftPage();
+                        this.queryRightPage();
+
+                    } else {
+                        this.$message.error(resp.data.message);
                     }
                 });
             },
+            moveToRight() {
 
+                let userIds = this.leftTable.multipleSelection;
+                console.log(userIds);
+
+                if (!(userIds && userIds.length > 0)) {
+                    this.$message.warning("请选择你要添加的员工！");
+                    return false;
+                }
+
+                let param = {
+                    content: {
+                        roleId: this.rightTable.param.content.roleId,
+                        userIds: this.leftTable.multipleSelection
+                    }
+                };
+
+                // console.log(`向右移动入参`, param);
+                this.$http.post('/api/role/user/add', param).then(resp => {
+                    if (200 === resp.data.status) {
+                        this.$message.success(resp.data.message);
+                        this.rightTable.param.page.pageNum = 1;
+                        this.leftTable.param.page.pageNum = 1;
+
+                        this.queryRightPage();
+                        this.queryLeftPage();
+
+                    } else {
+                        this.$message.error(resp.data.message);
+                    }
+                });
+
+            },
+
+            // 展示员工列表
+            getUserLeftList(currentData) {
+
+                console.log(`当前选中部门：${currentData.organizationId}`);
+
+                this.leftTable.param.page.pageNum = 1;
+                this.leftTable.param.content.isLeaf = currentData.isLeaf;
+                this.leftTable.param.content.level = currentData.level;
+
+                this.leftTable.param.content.organizationId = currentData.organizationId;
+                this.queryLeftPage();
+
+
+                this.rightTable.param.page.pageNum = 1;
+                this.rightTable.param.content.isLeaf = currentData.isLeaf;
+                this.rightTable.param.content.level = currentData.level;
+
+                this.rightTable.param.content.organizationId = currentData.organizationId;
+                this.queryRightPage();
+            },
+
+            // 展示员工列表
+            getUserRightList() {
+                this.rightTable.param.page.pageNum = 1;
+                this.queryRightPage();
+            },
+
+            /**
+             * 下一页
+             * @param val
+             */
+            handleLeftCurrentChange(val) {
+                this.leftTable.param.page.pageNum = val;
+                this.queryLeftPage();
+            },
+
+            /**
+             * 下一页
+             * @param val
+             */
+            handleRightCurrentChange(val) {
+                this.rightTable.param.page.pageNum = val;
+                this.queryRightPage();
+            },
+
+            handleSizeLeftChange(val) {
+                this.leftTable.param.page.pageSize = val;
+                this.queryLeftPage();
+            },
+
+            handleSizeRightChange(val) {
+                this.rightTable.param.page.pageSize = val;
+                this.queryRightPage();
+            },
+
+            /**
+             * 模态分页查询
+             **/
+            searchLeftByCondition() {
+                this.leftTable.param.page.pageNum = 1;
+                this.queryLeftPage();
+            },
+
+            /**
+             * 模态分页查询
+             **/
+            searchRightByCondition() {
+                this.rightTable.param.page.pageNum = 1;
+                this.queryRightPage();
+            },
+
+            queryLeftPage() {
+                console.log(`查询左侧table`, this.rightTable.param);
+
+                this.$http.post(`/user/page/left/unset`, this.leftTable.param).then(data => {
+                    this.leftTable.tableData = data.content.list;
+                    this.leftTable.total = data.content.total;
+
+                    this.leftTable.param.page.pageSize = data.content.pageSize;
+                    this.leftTable.param.page.pageNum = data.content.pageNum;
+
+                });
+            },
+
+
+            queryRightPage() {
+
+                console.log(`查询右侧table`, this.rightTable.param);
+                this.$http.post(`/user/page/right/set`, this.rightTable.param).then(data => {
+                    this.rightTable.tableData = data.content.list;
+                    this.rightTable.total = data.content.total;
+
+                    this.rightTable.param.page.pageSize = data.content.pageSize;
+                    this.rightTable.param.page.pageNum = data.content.pageNum;
+
+                });
+            },
 
             tableRowClassName({row, rowIndex}) {
                 // 把每一行的索引放进row

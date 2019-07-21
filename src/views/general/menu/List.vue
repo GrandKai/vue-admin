@@ -89,7 +89,6 @@
 
 <script>
     import TreeForm from 'components/business/treeForm/Index';
-    import {queryPlatList} from 'apis/general/plat';
     import {queryMenuList, addMenu, updateMenu, deleteMenu} from 'apis/general/menu';
 
     const sortNumber = 10;
@@ -167,18 +166,9 @@
             };
         },
         created() {
-            this.queryAllPlat();
+            common.queryPlatList(data => this.options = data);
         },
         methods: {
-
-            queryAllPlat() {
-                queryPlatList().then(data => {
-                    console.log('查询所有平台', data);
-                    if (200 === data.code) {
-                        this.options = data.content;
-                    }
-                });
-            },
 
             /**
              * 根据所选系统查询树形数据

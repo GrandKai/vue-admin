@@ -55,7 +55,6 @@
 </template>
 
 <script>
-    import {queryPlatList} from 'apis/general/plat';
     import {addRole, checkExistRole} from 'apis/privilege/role';
     import {queryAuthorityList} from 'apis/privilege/authority'
     export default {
@@ -100,7 +99,7 @@
             }
         },
         created() {
-            this.queryAllPlat();
+            common.queryPlatList(data => this.options = data);
         },
 
         methods: {
@@ -129,14 +128,6 @@
                 }
             },
 
-            queryAllPlat() {
-                queryPlatList().then(data => {
-                    console.log('查询所有平台', data);
-                    if (200 === data.code) {
-                        this.options = data.content;
-                    }
-                });
-            },
             /***************** 提交操作 *********************/
             onSubmit() {
                 this.$refs["form"].validate(valid => {

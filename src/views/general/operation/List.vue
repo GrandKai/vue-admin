@@ -112,7 +112,6 @@
 
 <script>
     import TreeForm from 'components/business/treeForm/Index';
-    import {queryPlatList} from 'apis/general/plat';
     import {queryDictionaryItemList} from 'apis/dictionary/item';
 
     import {
@@ -203,18 +202,11 @@
             }
         },
         created() {
-            this.queryAllPlat();
+            common.queryPlatList(data => this.options = data);
             this.queryAllDicItemList();
         },
         methods: {
 
-            queryAllPlat() {
-                queryPlatList().then(data => {
-                    if (200 === data.code) {
-                        this.options = data.content;
-                    }
-                });
-            },
             queryAllDicItemList() {
                 let param = {
                     content: 'operation'
@@ -244,12 +236,12 @@
                     queryPermissionList(param).then(data => {
                         if (200 === data.code) {
                             let content = data.content;
-                            console.log('根据平台id查询所有操作信息', content);
+                            // console.log('根据平台id查询所有操作信息', content);
 
                             let platName = this.$refs.select.selected.currentLabel;
                             let platId = this.$refs.select.selected.currentValue;
                             // 获取选中的平台名称
-                            console.log('获取选中的平台名称', platName, 'id:', platId);
+                            // console.log('获取选中的平台名称', platName, 'id:', platId);
                             let root = {
                                 id: platId,
                                 label: platName,

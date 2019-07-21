@@ -70,7 +70,6 @@
 </template>
 
 <script>
-    import {queryPlatList} from 'apis/general/plat';
     import {queryOperationList} from 'apis/general/operation';
     import {addAuthority} from 'apis/privilege/authority';
 
@@ -123,18 +122,10 @@
             }
         },
         created() {
-            this.queryAllPlat();
+            common.queryPlatList(data => this.options = data);
         },
 
         methods: {
-
-            queryAllPlat() {
-                queryPlatList().then(data => {
-                    if (200 === data.code) {
-                        this.options = data.content;
-                    }
-                });
-            },
 
             handleNodeClick(nodeData) {
                 // console.log('当前选中node节点:', nodeData);
@@ -182,10 +173,10 @@
                     queryOperationList(param).then(data => {
                         if (200 === data.code) {
                             let content = data.content;
-                            console.log('根据平台id查询所有操作信息', content);
+                            // console.log('根据平台id查询所有操作信息', content);
                             let platName = this.$refs.select.selected.currentLabel;
                             // 获取选中的平台名称
-                            console.log('获取选中的平台名称', platName, 'id:', platId);
+                            // console.log('获取选中的平台名称', platName, 'id:', platId);
                             let root = {
                                 id: platId,
                                 label: platName,

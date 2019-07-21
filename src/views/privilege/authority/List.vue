@@ -187,8 +187,6 @@
 </template>
 
 <script>
-
-    import {queryPlatList} from 'apis/general/plat';
     import {
         queryAuthorityPage,
         queryAuthorityGrantedIds,
@@ -261,22 +259,11 @@
             }
         },
         created() {
-            this.queryAllPlat();
+            common.queryPlatList(data => this.options = data);
             this.selectChange();
         },
         methods: {
 
-            /**
-             *  查询所有平台
-             **/
-            queryAllPlat() {
-                queryPlatList().then(data => {
-                    console.log('查询所有平台', data);
-                    if (200 === data.code) {
-                        this.options = data.content;
-                    }
-                });
-            },
             selectChange() {
                 console.log("系统改变");
                 this.param.page.pageNum = 1;
@@ -472,10 +459,10 @@
                     queryOperationList(param).then(data => {
                         if (200 === data.code) {
                             let content = data.content;
-                            console.log('根据平台id查询所有操作信息', content);
+                            // console.log('根据平台id查询所有操作信息', content);
 
                             // 获取选中的平台名称
-                            console.log('获取选中的平台名称', platName, 'id:', platId);
+                            // console.log('获取选中的平台名称', platName, 'id:', platId);
                             let root = {
                                 id: platId,
                                 label: platName,
