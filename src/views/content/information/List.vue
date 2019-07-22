@@ -2,7 +2,7 @@
     <div>
         <el-breadcrumb class="crumb"
                        separator-class="el-icon-arrow-right">
-            <el-breadcrumb-item :to="{ path : '/' }">内容管理</el-breadcrumb-item>
+            <el-breadcrumb-item :to="{ path : '' }">内容管理</el-breadcrumb-item>
             <el-breadcrumb-item :to="{ path : '/information' }">资讯管理</el-breadcrumb-item>
         </el-breadcrumb>
         <custom-page>
@@ -51,14 +51,14 @@
                 <li>
                     <span>
                        <el-date-picker v-model="param.content.startTime"
-                                       placeholder="创建开始时间"
+                                       placeholder="发布开始时间"
                                        style="width: 195px"
                                        type="datetime"
                                        value-format="yyyy-MM-dd HH:mm:ss"
                                        @change="queryPage">
                         </el-date-picker> ~
                         <el-date-picker v-model="param.content.endTime"
-                                        placeholder="创建结束时间"
+                                        placeholder="发布结束时间"
                                         style="width: 195px"
                                         type="datetime"
                                         value-format="yyyy-MM-dd HH:mm:ss"
@@ -74,74 +74,26 @@
                           row-key="id"
                           :data="tableData"
                           :row-class-name="tableRowClassName"
+                          @node-click="handleNodeClick"
                           @selection-change="handleSelectionChange">
                     <!-- 多选框 -->
-                    <!--<el-table-column align="center"-->
-                    <!--header-align="center"-->
-                    <!--type="selection"-->
-                    <!--width="50"-->
-                    <!--:reserve-selection="true">-->
-                    <!--</el-table-column>-->
+                    <el-table-column  header-align="center" align="center" type="selection" width="50" :reserve-selection="true"></el-table-column>
 
                     <!-- 显示索引 -->
-<!--                    <el-table-column type="index" label="序号" header-align="center" align="center"></el-table-column>-->
-                    <el-table-column align="center" header-align="center" label="序号" prop="module" width="60" :formatter="formatter"></el-table-column>
+                    <el-table-column label="序号" header-align="center" align="center" width="50" :formatter="formatter"></el-table-column>
+                    <el-table-column label="标题" prop="title" header-align="left" align="left" :formatter="common.emptyFormat"></el-table-column>
+                    <el-table-column label="所属栏目" prop="catalogName" header-align="left" align="left" :formatter="common.emptyFormat"></el-table-column>
+                    <el-table-column label="置顶级别" prop="topLevel" header-align="right" align="right" :formatter="common.emptyFormat" width="80"></el-table-column>
 
-                    <el-table-column align="left" label="标题" prop="title"></el-table-column>
+                    <el-table-column label="发布者" prop="publisher" header-align="right" align="right" :formatter="common.emptyFormat" width="120"></el-table-column>
+                    <el-table-column label="点击量" prop="clickAmount" header-align="right" align="right" :formatter="common.emptyFormat" width="80"></el-table-column>
+                    <el-table-column label="发布时间" prop="releaseTime" header-align="center" align="center" :formatter="common.emptyFormat" width="180"></el-table-column>
 
-
-                    <el-table-column label="账号" header-align="left" align="left">
+                    <el-table-column align="center" fixed="right" header-align="center" label="操作" width="200">
                         <template slot-scope="scope">
-                            <div class="click-text" @click='updateEntity(scope.row , "name" , "账号")'>
-                                {{ scope.row.name }}
-                            </div>
-                        </template>
-                    </el-table-column>
-
-
-                    <el-table-column label="点击量" prop="clickAmount" header-align="left" align="left" :formatter="common.emptyFormat"></el-table-column>
-
-                    <el-table-column label="角色" header-align="left" align="left" show-overflow-tooltip>
-                        <template slot-scope="scope">
-                            <span>{{ scope.row.roles | filterRoleNames }}</span>
-                        </template>
-                    </el-table-column>
-
-                    <el-table-column label="创建日期" prop="createTime" width="180" header-align="left"  align="left" :formatter="common.emptyFormat" ></el-table-column>
-
-                    <!--<el-table-column label="删除状态" header-align="center" align="center" fixed="right" width="80px">
-                        <template slot-scope="scope">
-                            <el-tag :type="scope.row.isDeleted === 1 ? 'danger' : 'success'" disable-transitions>
-                                {{scope.row.isDeleted === 1 ? '已删除' : '有效'}}
-                            </el-tag>
-                        </template>
-                    </el-table-column>-->
-
-                    <el-table-column align="center" header-align="center" label="状态" width="80px">
-                        <template slot-scope="scope">
-                            <el-tag disable-transitions
-                                    :type="scope.row.isEnabled === '1' ? 'success' : 'danger'">
-                                {{ scope.row.isEnabled == '1' ? '使用中' : '停用'}}
-                            </el-tag>
-                        </template>
-                    </el-table-column>
-
-                    <el-table-column align="center" fixed="right" header-align="center" label="操作" min-width="120">
-                        <template slot-scope="scope">
-<!--                            <el-button type="button" @click="openDialog(scope.row.userId)">设置角色</el-button>-->
-
-<!--                            <el-popover trigger="hover" placement="bottom">-->
-                                <el-button type="text" @click="resetEntity(scope.row)">恢复默认密码</el-button>
-                                <el-button type="text" @click="updateEntityEnabledStatus(scope.row)">
-                                    {{scope.row.isEnabled === '0' ? '启用' : '停用'}}
-                                </el-button>
-                                <el-button type="text" @click="deleteEntity(scope.row)">删除</el-button>
-                                <template slot="reference">
-                                    <!--<div slot="reference">-->
-                                    <el-button type="info" icon="el-icon-tickets"></el-button>
-                                    <!--</div>-->
-                                </template>
-<!--                            </el-popover>-->
+                            <el-button type="text" @click="resetEntity(scope.row.id)">编辑</el-button>
+                            <el-button type="text" @click="copyTextToClipboard(scope.row.id)">复制链接</el-button>
+                            <el-button type="text" @click="copyTextToClipboard(scope.row.id)">复制ID</el-button>
                         </template>
                     </el-table-column>
                 </el-table>
@@ -268,6 +220,30 @@
         methods: {
 
             /**
+             *  复制到剪贴板
+             **/
+            copyTextToClipboard(value) {
+                let textArea = document.createElement("textarea");
+                textArea.value = value;
+                document.body.appendChild(textArea);
+                textArea.focus();
+                textArea.select();
+
+                try {
+                    let successful = document.execCommand('copy');
+                    if (successful == true) {
+                        //console.log("复制输入框的值",textArea.value)
+                        this.$message.success("复制成功！");
+                    } else {
+                        this.$message.error("该浏览器不支持点击复制到剪贴板");
+                    }
+                } catch (err) {
+                    alert('该浏览器不支持点击复制到剪贴板');
+                }
+                document.body.removeChild(textArea);
+            },
+
+            /**
              * 根据所选系统查询树形数据
              */
             queryCatalogList() {
@@ -277,7 +253,7 @@
                         let content = data.content;
                         this.treeData = common.toTree(content);
                         // 默认展开根节点
-                        this.defaultExpandKeys = this.treeData[0].id;
+                        this.defaultExpandKeys = [this.treeData[0].id];
                     } else {
                         this.$message.error(data.message);
                     }
@@ -299,9 +275,9 @@
                 //  点击的结点不是已经选择过的结点
                 if (this.param.content.contCatalogId !== item.id) {
 
-                    this.param.content.contCatalogId = this.item.id;
-                    this.param.content.isLeaf = this.item.isLeaf;
-                    this.param.content.level = this.item.level;
+                    this.param.content.contCatalogId = item.id;
+                    this.param.content.isLeaf = item.isLeaf;
+                    this.param.content.level = item.level;
 
                     this.param.page.pageNum = 1;
                     this.searchByCondition();
@@ -365,11 +341,16 @@
 
             // 清空查询条件
             clearQueryParam() {
+                let contCatalogId = this.param.content.contCatalogId;
                 this.param.content = {
                     name: '',
                     startTime: '',
-                    endTime: ''
+                    endTime: '',
+                    contCatalogId: contCatalogId,
+                    isLeaf: '',
+                    level: ''
                 };
+                this.$refs.tree.setCurrentKey(contCatalogId);
                 this.queryPage();
                 this.$refs.multipleTable.clearSelection();
             },
@@ -583,6 +564,7 @@
         color: #409eff;
         cursor: pointer;
     }
+
     .line {
         float: right;
     }

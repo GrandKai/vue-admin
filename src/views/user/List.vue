@@ -213,8 +213,6 @@
                 // 树的选中节点
                 currentTreeKey: "",
                 defaultExpandKeys: [],
-                // 当前选中的组织机构结点
-                selectedItem: {},
 
                 // 修改的内容
                 editForm: {
@@ -291,12 +289,11 @@
                 console.log('当前选中node节点:', item);
 
                 //  点击的结点不是已经选择过的结点
-                if (this.selectedItem.id !== item.id) {
-                    this.selectedItem = item;
+                if (this.param.content.organizationId !== item.id) {
 
-                    this.param.content.organizationId = this.selectedItem.id;
-                    this.param.content.isLeaf = this.selectedItem.isLeaf;
-                    this.param.content.level = this.selectedItem.level;
+                    this.param.content.organizationId = item.id;
+                    this.param.content.isLeaf = item.isLeaf;
+                    this.param.content.level = item.level;
 
                     this.param.page.pageNum = 1;
                     this.searchByCondition();

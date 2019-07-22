@@ -2,8 +2,9 @@
     <div>
         <el-breadcrumb class="crumb"
                        separator-class="el-icon-arrow-right">
-            <el-breadcrumb-item :to="{ path : '/user' }">用户管理</el-breadcrumb-item>
-            <el-breadcrumb-item :to="{ path : '/user/add' }">添加用户</el-breadcrumb-item>
+            <el-breadcrumb-item :to="{ path : '' }">内容管理</el-breadcrumb-item>
+            <el-breadcrumb-item :to="{ path : '/information' }">资讯管理</el-breadcrumb-item>
+            <el-breadcrumb-item :to="{ path : '/information/add' }">添加资讯</el-breadcrumb-item>
         </el-breadcrumb>
         <el-row>
             <el-col :span="12">
