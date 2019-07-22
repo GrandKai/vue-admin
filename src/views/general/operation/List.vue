@@ -311,7 +311,7 @@
             setNodeUpdateForm(currentNode) {
                 // 设置选中树节点，并出发 node-click 设置对应的表单信息
                 this.$nextTick(() => {
-                    this.$refs.tree.setCurrentKey(currentNode.currentNodeId);
+                    this.$refs.tree.setCurrentKey(currentNode.id);
                     this.handleNodeClick(currentNode);
                 });
             },
