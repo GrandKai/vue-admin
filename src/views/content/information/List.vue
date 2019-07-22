@@ -272,11 +272,12 @@
              */
             queryCatalogList() {
                 queryCatalogList().then(data => {
+                    // console.log('根据平台id查询所有栏目信息', data);
                     if (200 === data.code) {
                         let content = data.content;
                         this.treeData = common.toTree(content);
-                        // console.log('根据平台id查询所有栏目信息', content);
-                        // console.log("树数据..............................：", this.treeData);
+                        // 默认展开根节点
+                        this.defaultExpandKeys = this.treeData[0].id;
                     } else {
                         this.$message.error(data.message);
                     }
