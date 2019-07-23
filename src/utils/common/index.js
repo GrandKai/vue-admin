@@ -2,8 +2,29 @@ import {$vm} from '@/main';
 import { queryOrganizationList } from 'apis/system/organization';
 import {queryPlatList} from 'apis/general/plat';
 import {queryDictionaryItemList} from 'apis/dictionary/item';
+import {queryCatalogList} from 'apis/catalog';
 
 export default {
+
+
+    /**
+     * 根据所选系统查询树形数据
+     */
+    queryCatalogList(callBack) {
+        queryCatalogList().then(data => {
+            // console.log('根据平台id查询所有栏目信息', data);
+            if (200 === data.code) {
+                let content = data.content;
+
+                if (callBack instanceof Function) {
+                    callBack(this.toTree(content))
+                }
+
+            } else {
+                this.$message.error(data.message);
+            }
+        });
+    },
 
     /**
      * 查询数据字典

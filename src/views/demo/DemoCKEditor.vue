@@ -8,7 +8,6 @@
                 :value="value"
                 @input="onChange"
         ></ckeditor>
-
     </div>
 
 </template>

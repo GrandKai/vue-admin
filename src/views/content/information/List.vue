@@ -93,9 +93,9 @@
 
                     <el-table-column align="center" fixed="right" header-align="center" label="操作" width="200">
                         <template slot-scope="scope">
-                            <el-button type="text" @click="updateEntity(scope.row.id)">编辑</el-button>
-                            <el-button type="text" @click="copyTextToClipboard(scope.row.id)">复制链接</el-button>
-                            <el-button type="text" @click="copyTextToClipboard(scope.row.id)">复制ID</el-button>
+                            <el-button type="text" @click="updateEntity(scope.row)">编辑</el-button>
+                            <el-button type="text" @click="copyTextToClipboard(scope.row.id, '复制链接成功！')">复制链接</el-button>
+                            <el-button type="text" @click="copyTextToClipboard(scope.row.id, '复制ID成功！')">复制ID</el-button>
                         </template>
                     </el-table-column>
                 </el-table>
@@ -127,8 +127,6 @@
         updateEntity,
         deleteEntity,
     } from 'apis/content/information';
-
-    import {queryCatalogList} from 'apis/catalog';
 
     export default {
         components: {
@@ -183,7 +181,7 @@
             /**
              *  复制到剪贴板
              **/
-            copyTextToClipboard(value) {
+            copyTextToClipboard(value, message) {
                 let textArea = document.createElement("textarea");
                 textArea.value = value;
                 document.body.appendChild(textArea);
@@ -194,7 +192,7 @@
                     let successful = document.execCommand('copy');
                     if (successful == true) {
                         //console.log("复制输入框的值",textArea.value)
-                        this.$message.success("复制成功！");
+                        this.$message.success(message);
                     } else {
                         this.$message.error("该浏览器不支持点击复制到剪贴板");
                     }
@@ -208,23 +206,16 @@
              * 根据所选系统查询树形数据
              */
             queryCatalogList() {
-                queryCatalogList().then(data => {
-                    // console.log('根据平台id查询所有栏目信息', data);
-                    if (200 === data.code) {
-                        let content = data.content;
-                        this.treeData = common.toTree(content);
-                        // 默认展开根节点
-                        let root = this.treeData[0];
-                        this.defaultExpandKeys = [root.id];
+                common.queryCatalogList(data => {
+                    this.treeData = data;
+                    // 默认展开根节点
+                    let root = data[0];
+                    this.defaultExpandKeys = [root.id];
 
-                        this.$nextTick(() => {
-                            this.$refs.tree.setCurrentKey(root.id);
-                            this.handleNodeClick(root);
-                        });
-
-                    } else {
-                        this.$message.error(data.message);
-                    }
+                    this.$nextTick(() => {
+                        this.$refs.tree.setCurrentKey(root.id);
+                        this.handleNodeClick(root);
+                    });
                 });
             },
 
@@ -355,12 +346,23 @@
 
             // 创建资讯信息
             addEntity() {
-                this.$router.push({path: '/information/add'});
+                this.$router.push({
+                    path: '/information/add',
+                    query: {
+                        contCatalogId: this.param.content.contCatalogId
+                    }
+                });
             },
 
             // 修改资讯信息
-            updateEntity(id) {
-                this.$router.push({path: "/information/add", query: {id: id}});
+            updateEntity(row) {
+                this.$router.push({
+                    path: "/information/add",
+                    query: {
+                        id: row.id,
+                        contCatalogId: this.param.content.contCatalogId
+                    }
+                });
             },
 
         },
