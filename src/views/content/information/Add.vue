@@ -92,8 +92,6 @@
                                 @input="onChange"
                                 @blur="onBlur"
                         ></ckeditor>
-                        <!--                        v-model.trim="form.content"-->
-                        <!--                        <el-input v-model.trim="form.content" placeholder="内容"></el-input>-->
                     </el-form-item>
 
                     <el-form-item>

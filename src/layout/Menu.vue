@@ -1,26 +1,16 @@
 <template>
     <el-row class="tac">
-        <!--<el-radio-group v-model="isCollapse" style="margin-bottom: 20px;">
-            <el-radio-button :label="false">展开</el-radio-button>
-            <el-radio-button :label="true">收起</el-radio-button>
-        </el-radio-group>-->
         <el-col :span="24">
-            <img :src="logo" style="height: 60px;width: 200px;"/>
+            <img :src="logo" style="height: 60px;width: 100%"/>
             <!--<h5>权限管理系统</h5>-->
             <el-menu
-                    default-active="2"
+                    :default-active="$route.path"
                     class="el-menu-vertical-demo"
                     background-color="#515a6e"
                     text-color="#fff"
                     active-text-color="#ffd04b"
                     @open="handleOpen"
                     @close="handleClose" :collapse="expan" router>
-
-
-                <!--<el-menu-item index="/login" v-if="'development' === nodeEnv">
-                    <i class="el-icon-loading"></i>
-                    <span slot="title">登录</span>
-                </el-menu-item>-->
 
                 <template v-for="(item, index) in treeData">
                     <el-menu-item :key="item.id" :index="String(index)" v-if="!item.children || 0 === item.children.length">
