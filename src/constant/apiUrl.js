@@ -66,7 +66,8 @@ export const information = {
   GET: '/information/get',
   ADD: '/information/add',
   UPDATE: '/information/update',
-  DELETE: '/information/delete', // 删除用户信息 置状态
+  DELETE: '/information/delete',
+  UPLOAD: '/information/upload',
 };
 
 // 操作管理

@@ -83,6 +83,28 @@
                         </el-col>
                     </el-row>
 
+                    <el-row>
+                        <el-col :span="12">
+                            <el-form-item label="封面图片" prop="coverImage">
+                                <el-upload
+                                        ref="upload"
+                                        class="avatar-uploader"
+                                        action=""
+                                        :show-file-list="false"
+                                        :http-request="uploadRequest"
+                                        :on-exceed="handleExceed"
+                                        :before-upload="beforeAvatarUpload">
+                                    <img v-if="form.coverImage" :src="form.coverImage" class="avatar">
+
+                                    <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+                                    <!--                            <div slot="tip" class="el-upload__tip">请上传400宽400高的图片，仅限一张图片</div>-->
+                                    <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过2MB,仅限一张图片</div>
+                                </el-upload>
+                            </el-form-item>
+                        </el-col>
+                    </el-row>
+
+
                     <el-form-item label="内容" prop="content">
                         <ckeditor
                                 id="editorContent"
@@ -208,6 +230,62 @@
             // console.log("初始化资讯添加页面数据", this.form)
         },
         methods: {
+
+            uploadRequest(param) {
+                console.log("上传参数：", param);
+                //创建临时的路径来展示图片
+                let windowURL = window.URL || window.webkitURL;
+                this.form.coverImage = windowURL.createObjectURL(param.file);
+
+                let file = param.file;
+                let fileName = param.file.name;
+                let fileType = fileName.split(".")[fileName.split('.').length - 1];
+
+                console.log('.........................', file.row);
+                let formData = new FormData();
+
+                // 通过append向form对象添加数据
+                formData.append('file', file);
+                // 通过append向form对象添加数据
+                formData.append('fileType', fileType);
+                // 通过append向form对象添加数据
+                // formData.append('fileId', fileId);
+                // 添加form表单中其他数据
+                formData.append('fileName', fileName);
+
+                uploadImage(formData).then(data => {
+                    if (200 === data.code) {
+                        let content = data.content;
+                        this.form.coverImage = content.url;
+                        console.log("资讯上传图片结果：", content);
+                    } else {
+                        this.$message.error(data.message);
+                    }
+
+                    // 验证上传的图片
+                    this.$refs["form"].validateField("coverImage");
+                })
+            },
+
+            // 上传文件个数超过定义的数量
+            handleExceed(files, fileList) {
+                this.$message.warning(`当前限制选择 1 个文件，请删除后继续上传`)
+            },
+
+            beforeAvatarUpload(file) {
+                const isJPG = file.type === 'image/jpeg';
+                const isPNG = file.type === 'image/png';
+                const isLt2M = file.size / 1024 / 1024 < 2;
+
+                if (!isJPG && !isPNG) {
+                    this.$message.error('上传的图片只能是 JPG/PNG 格式!');
+                }
+                if (!isLt2M) {
+                    this.$message.error('上传的图片大小不能超过 2MB!');
+                }
+                return (isJPG || isPNG) && isLt2M;
+            },
+
             queryCatalogList() {
                 common.queryCatalogList(data => this.options = data);
             },
@@ -290,6 +368,33 @@
 </script>
 
 <style lang="scss" scoped>
+    .avatar-uploader .el-upload {
+        border: 1px dashed #d9d9d9;
+        border-radius: 6px;
+        cursor: pointer;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .avatar-uploader .el-upload:hover {
+        border-color: #409EFF;
+    }
+
+    .avatar-uploader-icon {
+        font-size: 28px;
+        color: #8c939d;
+        width: 220px;
+        height: 220px;
+        line-height: 220px;
+        text-align: center;
+    }
+
+    .avatar {
+        width: 220px;
+        height: 220px;
+        display: block;
+    }
+
     .submit {
         display: block;
         width: 60%;

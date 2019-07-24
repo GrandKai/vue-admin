@@ -59,9 +59,6 @@
                     </el-form-item>
 
                     <el-form-item label="栏目图标" prop="image">
-<!--                        <el-input v-model="form.image"></el-input>-->
-
-<!--                        :action="uploadImageUrl"-->
                         <el-upload
                                 ref="upload"
                                 class="avatar-uploader"
@@ -93,7 +90,7 @@
 
 <script>
     import TreeForm from 'components/business/treeForm/Index';
-    import {queryCatalogList, addCatalog, updateCatalog, deleteCatalog, uploadCatalogImage} from 'apis/catalog';
+    import {queryCatalogList, addEntity, updateEntity, deleteEntity, uploadEntityImage} from 'apis/catalog';
 
     const sortNumber = 10;
     const isShow = '1';
@@ -188,7 +185,7 @@
                 // 添加form表单中其他数据
                 formData.append('fileName', fileName);
 
-                uploadCatalogImage(formData).then(data => {
+                uploadEntityImage(formData).then(data => {
                     if (200 === data.code) {
                         let content = data.content;
                         this.form.image = content.url;
@@ -261,7 +258,7 @@
                         }
                     };
 
-                    addCatalog(param).then(data => {
+                    addEntity(param).then(data => {
                         if (200 === data.code) {
                             let newEntity = data.content;
                             newEntity.label = newEntity.name;
@@ -321,7 +318,7 @@
                 let param = {
                     content: this.form
                 };
-                updateCatalog(param).then(data => {
+                updateEntity(param).then(data => {
                     if (200 === data.code) {
                         this.$message.success(data.message);
                         this.$refs.form.resetFields();
@@ -363,7 +360,7 @@
                     let param = {
                         content: currentNodeKey
                     };
-                    deleteCatalog(param).then(data => {
+                    deleteEntity(param).then(data => {
                         if (200 === data.code) {
                             this.$message.success(data.message);
 
