@@ -1,1 +1,1 @@
-export const EXPANMENU = 'expanMenu'
+export const EXPAND_MENU = 'expandMenu';

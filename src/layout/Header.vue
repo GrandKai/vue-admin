@@ -1,6 +1,6 @@
 <template>
     <div class="header_class">
-        <img :src="expansrc" alt="伸展" class="expan" @click="expanSideMenu">
+        <img :src="expansrc" alt="伸展" class="expand" @click="expandSideMenu">
         <ul>
             <li>
                 <i class="ele-icon-third-account-setting2"></i>
@@ -50,10 +50,10 @@
       }
     },
     computed: {
-      ...mapGetters(["expan"])
+      ...mapGetters(["expand"])
     },
     watch: {
-      expan: function (currentValue) {
+      expand: function (currentValue) {
         if (currentValue) {
           this.updateAsideWidth('65px');
         } else {
@@ -68,11 +68,11 @@
     },
     methods: {
       ...mapActions([
-        'expanMenu'
+        'expandMenu'
       ]),
 
-      expanSideMenu() {
-        this.expanMenu();
+      expandSideMenu() {
+        this.expandMenu();
       },
 
       queryGrantedPlats() {

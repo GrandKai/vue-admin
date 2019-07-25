@@ -1,7 +1,7 @@
 import * as types from './types'
 
 export default {
-    expanMenu: ({ commit }) => {
-        commit(types.EXPANMENU)
+    expandMenu: ({ commit }) => {
+        commit(types.EXPAND_MENU)
     }
 }

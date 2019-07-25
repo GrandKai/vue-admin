@@ -1,5 +1,5 @@
 export default {
-    expan: state => {
-        return state.expan
+    expand: state => {
+        return state.expand
     }
 }

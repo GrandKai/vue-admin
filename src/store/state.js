@@ -1,3 +1,3 @@
 export default {
-    expan: false
+    expand: false
 }

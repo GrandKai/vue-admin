@@ -10,7 +10,7 @@
                     text-color="#fff"
                     active-text-color="#ffd04b"
                     @open="handleOpen"
-                    @close="handleClose" :collapse="expan" router>
+                    @close="handleClose" :collapse="expand" router>
 
                 <template v-for="(item, index) in treeData">
                     <el-menu-item :key="item.id" :index="String(index)" v-if="!item.children || 0 === item.children.length">
@@ -49,10 +49,10 @@
     props: ['treeData'],
 
     computed: {
-      ...mapGetters(["expan"])
+      ...mapGetters(["expand"])
     },
     // watch: {
-    //     expan: function(currentValue){
+    //     expand: function(currentValue){
     //         if(currentValue){
     //             this.updateAsideWidth('65px');
     //         }else{

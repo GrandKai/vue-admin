@@ -7,7 +7,7 @@
             <el-breadcrumb-item :to="{ path : '/information/add' }">添加资讯</el-breadcrumb-item>
         </el-breadcrumb>
         <el-row>
-            <el-col :span="20">
+            <el-col :span="14">
                 <el-form label-width="130px" ref="form" :model="form" :rules="rules">
 
                     <el-row>
@@ -93,10 +93,12 @@
                                         :show-file-list="false"
                                         :http-request="uploadRequest"
                                         :on-exceed="handleExceed"
+                                        :on-preview="handlePictureCardPreview"
                                         :before-upload="beforeAvatarUpload">
-                                    <img v-if="form.coverImage" :src="form.coverImage" class="avatar">
 
-                                    <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+                                    <img v-if="form.coverImage" :src="form.coverImage" class="avatar">
+                                    <i v-else class="el-icon-plus"></i>
+<!--                                    <i v-else class="el-icon-plus avatar-uploader-icon"></i>-->
                                     <!--                            <div slot="tip" class="el-upload__tip">请上传400宽400高的图片，仅限一张图片</div>-->
                                     <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过2MB,仅限一张图片</div>
                                 </el-upload>
@@ -122,6 +124,10 @@
                 </el-form>
             </el-col>
         </el-row>
+
+        <el-dialog :visible.sync="dialogVisible">
+            <img width="100%" :src="form.coverImage" alt="">
+        </el-dialog>
     </div>
 
 </template>
@@ -129,7 +135,7 @@
 <script>
 
     import CustomPage from 'components/formCustomPage/Index';
-    import {addEntity, getEntity} from 'apis/content/information';
+    import {addEntity, getEntity, uploadImage} from 'apis/content/information';
     import CKEditor from '@/components/ckeditor/CKEditor';
 
     export default {
@@ -152,6 +158,7 @@
         },
         data() {
             return {
+                dialogVisible: false,
                 config: {
                     height: '300px',
                     width: '100%',
@@ -231,11 +238,16 @@
         },
         methods: {
 
+            handlePictureCardPreview(file) {
+                console.log("preview image file..........", file);
+                this.form.coverImage = file.url;
+                this.dialogVisible = true;
+            },
             uploadRequest(param) {
                 console.log("上传参数：", param);
                 //创建临时的路径来展示图片
                 let windowURL = window.URL || window.webkitURL;
-                this.form.coverImage = windowURL.createObjectURL(param.file);
+                // this.form.coverImage = windowURL.createObjectURL(param.file);
 
                 let file = param.file;
                 let fileName = param.file.name;

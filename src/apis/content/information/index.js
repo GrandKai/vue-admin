@@ -17,6 +17,5 @@ export const addEntity = (param) => {
 
 };
 export const deleteEntity = param => $http.post(information.DELETE, param);
-
-export const uploadImage = param => $http.post(information.UPDATE, param);
+export const uploadImage = param => $http.post(information.UPLOAD, param);
 
