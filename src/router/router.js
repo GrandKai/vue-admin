@@ -36,26 +36,36 @@ const DemoCKEditor = () => import('views/demo/DemoCKEditor.vue');
 const DemoAvater = () => import('views/demo/DemoAvater.vue');
 
 const CatalogList = () => import('views/catalog/List.vue');
+const LabelList = () => import('views/label/LabelList.vue');
+const LabelGroupList = () => import('views/label/LabelGroupList.vue');
 let router = [
+    {
+        path: 'label',
+        component: LabelList
+    },
+    {
+        path: 'label/group',
+        component: LabelGroupList
+    },
     {
         path: 'catalog',
         component: CatalogList
     },
-  {
-    path: 'avater',
-    component: DemoAvater
+    {
+        path: 'avater',
+        component: DemoAvater
 
-  },
-  {
-    path: 'echarts',
-    component: DemoEcharts
+    },
+    {
+        path: 'echarts',
+        component: DemoEcharts
 
-  },
-  {
-    path: 'ckeditor',
-    component: DemoCKEditor
+    },
+    {
+        path: 'ckeditor',
+        component: DemoCKEditor
 
-  },
+    },
 
     {
         path: 'test/menu',

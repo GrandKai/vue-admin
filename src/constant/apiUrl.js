@@ -87,6 +87,30 @@ export const permission = {
   DELETE: '/permission/delete',
 };
 
+// 标签管理
+export const label = {
+  QUERY_PAGE: '/label',
+  QUERY_LIST: '/label/list',
+  ADD: '/label/add',
+  UPDATE: '/label/update',
+  DELETE: '/label/delete',
+  SET: '/label/set',
+  CHECK_EXIST: '/label/check/exist',
+  CHECK_STATUS: '/label/check/status',
+};
+
+// 标签组管理
+export const labelGroup = {
+  QUERY_PAGE: '/label/group',
+  QUERY_LIST: '/label/group/list',
+  ADD: '/label/group/add',
+  UPDATE: '/label/group/update',
+  DELETE: '/label/group/delete',
+  SET: '/label/group/set',
+  CHECK_EXIST: '/label/group/check/exist',
+  CHECK_STATUS: '/label/group/check/status',
+};
+
 // 数据项目管理
 export const dictionaryItem = {
   QUERY_PAGE: '/dictionary/item',
