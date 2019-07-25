@@ -3,5 +3,11 @@ import * as types from './types'
 export default {
     [types.EXPAND_MENU]: (state) => {
         state.expand = !state.expand
+    },
+
+    [types.contCatalogId]: (state, contCatalogId) => {
+        console.log('mutation被触发，参数', state, contCatalogId);
+        state.contCatalogId = contCatalogId;
     }
+
 }

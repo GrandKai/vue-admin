@@ -122,6 +122,7 @@
 <script>
     import CustomPage from 'components/treeCustomPage/Index';
     import treeDialog from 'components/dialogCustomPage/Index';
+    import {mapState, mapActions, mapGetters} from 'vuex';
     import {
         queryEntityPage,
         updateEntity,
@@ -132,6 +133,9 @@
         components: {
             'custom-page': CustomPage,
             'treeDialog': treeDialog
+        },
+        computed: {
+            ...mapGetters(['contCatalogId'])
         },
         data() {
             return {
@@ -177,7 +181,7 @@
         },
 
         methods: {
-
+            ...mapActions(['selectContCatalogId']),
             /**
              *  复制到剪贴板
              **/
@@ -346,12 +350,16 @@
 
             // 创建资讯信息
             addEntity() {
+                // 将栏目id 存储在 vuex 中
+                this.selectContCatalogId(this.param.content.contCatalogId);
+                console.error("获取 store 中的值：", this.contCatalogId);
                 this.$router.push({
                     path: '/information/add',
                     query: {
                         contCatalogId: this.param.content.contCatalogId
                     }
                 });
+
             },
 
             // 修改资讯信息
@@ -367,9 +375,14 @@
 
         },
         created() {
+            console.log("列表 created", this.contCatalogId);
             this.queryCatalogList();
         },
         mounted() {
+            console.log("列表 mounted", this.contCatalogId);
+            if (this.contCatalogId) {
+                this.$refs.tree.setCurrentKey(this.contCatalogId);
+            }
             // this.queryPage();
         }
     };

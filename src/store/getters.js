@@ -1,5 +1,4 @@
 export default {
-    expand: state => {
-        return state.expand
-    }
+    expand: state => state.expand,
+    contCatalogId: state => state.contCatalogId,
 }
