@@ -8,13 +8,11 @@
 
         <custom-page>
             <template slot="queryArea">
-
                 <li>
-                    <el-input v-model="param.content.name" placeholder="标签组名称" @keyup.native.enter="queryPage"
+                    <el-input v-model="param.content.name" placeholder="标签名称" @keyup.native.enter="queryPage"
                               style="width: 220px"
                               clearable @input="queryPage"></el-input>
                 </li>
-
                 <li>
                     <el-button type="primary" @click="queryPage()" icon="el-icon-search">查 询
                     </el-button>
@@ -23,15 +21,11 @@
                     <el-button @click="clearQueryParam" icon="el-icon-delete">清 空
                     </el-button>
                 </li>
-                <li>
-                    <el-button @click="clearQueryParam" type="danger" icon="el-icon-delete">删 除
-                    </el-button>
-                </li>
             </template>
 
             <template slot="buttonArea">
                 <li>
-                    <el-button type="primary" @click="addEntity"><i class="el-icon-plus"></i> 新建数据类型</el-button>
+                    <el-button type="primary" @click="openAddEntityDialog"><i class="el-icon-plus"></i> 新建标签</el-button>
                 </li>
             </template>
 
@@ -39,30 +33,25 @@
                 <el-table :data="tableData" border stripe highlight-current-row
                           row-key="id" ref="multipleTable"
                           :row-class-name="tableRowClassName" v-loading="loading">
+                    <!-- 多选框 -->
+                    <el-table-column header-align="center" align="center" type="selection" width="50" :reserve-selection="true"></el-table-column>
 
                     <!-- 显示索引 -->
-                    <el-table-column
-                            prop="module"
-                            :formatter="formatter"
-                            label="序号"
-                            width="60" header-align="center" align="center">
-                    </el-table-column>
+                    <el-table-column :formatter="formatter" label="序号" width="60" header-align="center" align="center"></el-table-column>
 
-                    <el-table-column label="数据类型名称" prop="name" header-align="left" align="left">
+                    <el-table-column label="标签组名称" prop="groupName" header-align="left" align="left"></el-table-column>
+
+                    <el-table-column label="标签名称" prop="name" header-align="left" align="left">
                         <template slot-scope="scope">
-                            <div class="click-text" @click='openDialog(scope.row , "name" , "数据类型名称")'>
+                            <div class="click-text" @click='openDialog(scope.row, "name", "标签名称", "text", formRules.name)'>
                                 {{ scope.row.name }}
                             </div>
                         </template>
                     </el-table-column>
 
-                    <el-table-column prop="code" label="数据类型编码" align="left">
-                    </el-table-column>
-
                     <el-table-column label="显示顺序" header-align="left" align="left" fixed="right">
                         <template slot-scope="scope">
-                            <!--<div class="click-text" @click='updateEntity(scope.row , "sortNumber" , "显示顺序")'>-->
-                            <div class="click-text" @click='openDialog(scope.row ,"sortNumber", "显示顺序")'>
+                            <div class="click-text" @click='openDialog(scope.row, "sortNumber", "显示顺序", "text", formRules.sortNumber)'>
                                 {{ scope.row.sortNumber}}
                             </div>
                         </template>
@@ -103,328 +92,328 @@
             </template>
         </custom-page>
 
-
-        <!-- 编辑【角色】信息对话框 -->
-        <!--<el-dialog :title="dlgSettings.title + '设置'"
-                   :visible.sync="dlgSettings.visible"
-                   width="30%"
-                   :close-on-click-modal="false">
-            <el-form :model="editForm" :rules="rules" ref="editForm" onsubmit="return false;">
-                <div class="clearfix">
-                    <el-form-item prop="content">
-                        <el-input v-model.trim="editForm.content" placeholder="请输入内容" class="left role-input"
-                                  :type="dlgSettings.inputType" :rows="dlgSettings.rowNum"
-                                  @keyup.native.enter="onSubmit"></el-input>
-                        <el-button @click="dlgSettings.visible = false" class="left">取 消</el-button>
-                        <el-button type="primary" @click="onSubmit" class="left">保 存</el-button>
-                    </el-form-item>
-                </div>
-            </el-form>
-
-        </el-dialog>-->
-        <update-item
-                :dialogVisible="dlgSettings.visible"
-                :title="dlgSettings.title"
-                @closeDialog="closeDialog"
-                :saveDialog="onSubmit"
-                :editForm="editForm">
-            <template slot="dialogContentArea" slot-scope="props">
-
-                <el-form-item  :rules="rules">
-                    <el-input placeholder="请输入内容" class="left role-input"
-                              v-model.trim="props.entity.content"
-                              :type="dlgSettings.inputType" :rows="dlgSettings.rowNum" @keyup.native.enter="onSubmit"></el-input>
-                </el-form-item>
-            </template>
-        </update-item>
-
-        <form-dialog :title="title" :dialogVisible="dialogVisible" :rules="rules" :label="label" :data="content" :type="type" @closeDialog="closeDialog">
-
+        <form-dialog
+                :title="formDialog.title"
+                :dialogVisible="formDialog.dialogVisible"
+                :rules="formDialog.rules"
+                :label="formDialog.label"
+                :fieldValue="formDialog.fieldValue"
+                :type="formDialog.type" @closeDialog="closeDialog" @submitForm="onSubmit">
         </form-dialog>
 
+        <el-dialog title="新建标签" :visible.sync="dialogFormVisible" width="30%">
+            <el-form :model="form" ref="form" :rules="formRules">
+                <el-form-item label="标签名称" :label-width="formLabelWidth" prop="name">
+                    <el-input v-model="form.name"></el-input>
+                </el-form-item>
+
+                <el-form-item label="标签顺序" :label-width="formLabelWidth" prop="sortNumber">
+                    <el-input v-model="form.sortNumber"></el-input>
+                </el-form-item>
+
+            </el-form>
+
+            <div slot="footer" class="dialog-footer">
+                <el-button @click="dialogFormVisible = false">取 消</el-button>
+                <el-button type="primary" @click="addEntity">确 定</el-button>
+            </div>
+        </el-dialog>
     </div>
 </template>
 
 <script>
-  import CustomPage from 'components/listCustomPage/Index';
-  import FormDialog from 'components/business/dialog/FormCustomDialog';
-  import UpdateItem from 'components/business/dialog/UpdateItem';
-  import {
-    queryDictionaryTypePage,
-    updateDictionaryType,
-    setDictionaryType,
-    deleteDictionaryType,
-    checkStatus
-  } from 'apis/dictionary/type';
+    import CustomPage from 'components/listCustomPage/Index';
+    import FormDialog from 'components/business/dialog/FormCustomDialog';
+    import UpdateItem from 'components/business/dialog/UpdateItem';
+    import {
+        queryLabelPage,
+        addLabel,
+        updateLabel,
+        setLabel,
+        deleteLabel,
+        checkLabelStatus,
+        checkLabelExist
+    } from 'apis/label';
 
-  export default {
-    components: {
-      'custom-page': CustomPage,
-      'update-item': UpdateItem,
-      'form-dialog': FormDialog,
-    },
-    data() {
-      return {
-        loading: true,
-        paginationShow: false,
-        pageSizes: pageSizes,
-        total: 0,
-        param: {
-          content: {
-            name: '',
-          },
-          page: {
-            pageNum: 1,
-            pageSize: pageSizes[0]
-          }
+    export default {
+        components: {
+            'custom-page': CustomPage,
+            'update-item': UpdateItem,
+            'form-dialog': FormDialog,
         },
+        data() {
+            return {
+                formRules: {
+                    name: [
+                        {required: true, message: "请输入标签名称，长度在50个字符内", trigger: "blur", max: 50},
+                        {validator: this.checkLabelExist, trigger: "blur"},
+                    ],
+                    sortNumber: [{required:true, validator: common.checkNumber, trigger: "blur"}]
+                },
+                form: {
+                    name: '',
+                    sortNumber: 1
+                },
+                formLabelWidth: '120px',
+                dialogFormVisible: false,
+                loading: true,
+                paginationShow: false,
+                pageSizes: pageSizes,
+                total: 0,
+                param: {
+                    content: {
+                        name: '',
+                    },
+                    page: {
+                        pageNum: 1,
+                        pageSize: pageSizes[0]
+                    }
+                },
 
-        tableData: [],
+                tableData: [],
 
-        // 修改的内容
-        editForm: {
-          id: "",
-          property: "",
-          content: ""
-        },
-
-        // 弹出框属性设置
-        dlgSettings: {
-          title: "", // 弹窗标题
-          visible: false, // 弹窗可见
-          inputType: "text", // 弹窗内文本框类型
-          rowNum: 1 // 文本框行数
-        },
-        // 校验规则
-        rules: {},
-        dialogVisible: false,//默认弹出框为隐藏
-        title: '',//
-        label: '',
-        content: '',
-        type: '',
-      }
-    },
-
-    created() {
-      this.queryPage();
-    },
-    methods: {
-
-      tableRowClassName({row, rowIndex}) {
-        // 把每一行的索引放进row
-        row.rowIndex = rowIndex
-      },
-
-      formatter(row, column, cellValue, index) {
-        //放回索引值
-        return this.param.page.pageSize * (this.param.page.pageNum - 1) + 1 + row.rowIndex;
-      },
-
-      // 改变页码
-      handleCurrentChange(val) {
-        this.param.page.pageNum = val;
-        this.queryPage();
-      },
-      // 改变每页显示多少条
-      handleSizeChange(value) {
-        this.param.page.pageSize = value;
-        this.queryPage();
-      },
-
-      /**
-       * 分页查询
-       * @param param
-       */
-      queryPage() {
-
-        this.loading = true;
-        queryDictionaryTypePage(this.param).then((data) => {
-
-          console.log('..............查询分页结果：', data);
-          this.loading = false;
-          this.paginationShow = true;
-
-          if (data.content && data.content.list) {
-            this.tableData = data.content.list;
-            this.total = data.content.total;
-          }
-        }).catch(error => {
-          this.loading = false;
-        });
-      },
-
-      searchByCondition() {
-        this.param.page.pageNum = 1;
-        this.queryPage();
-      },
-
-      // 清空查询条件
-      clearQueryParam() {
-        this.param.content = {
-          name: '',
-          startTime: '',
-          endTime: '',
-        };
-        this.queryPage();
-        this.$refs.multipleTable.clearSelection();
-      },
-      clearInput() {
-        console.log("........................")
-      },
-
-      /********************************* 业务逻辑处理 ************************************/
-
-      addEntity() {
-        this.$router.push('/dictionary/type/add');
-      },
-
-
-      /***************　打开修改系统对话框　*********************/
-      updateEntity(row, rowName, dlgTitle) {
-
-        // 判断弹出框展示样式
-        switch (rowName) {
-          case 'sortNumber': {
-            this.dlgSettings = {title: dlgTitle, visible: true, inputType: "textarea", rowNum: 4};
-            break;
-          }
-          default: {
-            this.dlgSettings = {title: dlgTitle, visible: true, inputType: "text", rowNum: 1};
-            break;
-          }
-        }
-        // 根据列名添加校验规则
-        switch (rowName) {
-          case 'sortNumber': {
-            // 手动添加的数字校验
-            this.rules.content = [{validator: common.checkNumber, trigger: "blur"}];
-            break;
-          }
-          case 'name': {
-            this.rules.content = [
-              {required: true, message: "请输入" + dlgTitle + "，长度在50个字符内", trigger: "blur", max: 50},
-            ];
-            break;
-          }
-        }
-        // 清空表单
-          common.clearForm(this, "editForm");
-        this.editForm = {
-          id: row.id,
-          property: rowName,
-          content: row[rowName]
-        };
-      },
-
-      /**
-       * 删除实体
-       * @param id
-       */
-      deleteEntity(row) {
-        this.checkStatus(row, () => {
-          common.confirm({
-            message: `确认删除数据类型【${row.name}】？`,
-          }).then(() => {
-            deleteDictionaryType({content: row.id}).then(data => {
-              if (200 === data.code) {
-                this.$message.success(`删除数据类型【${row.name}】成功`);
-                this.queryPage();
-              } else {
-                this.$message.error(data.message)
-              }
-
-            });
-          }).catch(() => {
-            // 取消按钮的回调
-            console.log('取消按钮的回调');
-          });
-        });
-      },
-
-      checkStatus(row, callBack) {
-        checkStatus({content: row.id}).then(data => {
-          if (200 === data.code) {
-            callBack();
-          } else {
-            this.$message.error(data.message);
-          }
-        });
-      },
-
-      updateEntityStatus(row) {
-        let text = row.isShow === '1' ? '隐藏' : '显示';
-        let isShow = row.isShow === '1' ? '0' : '1';
-
-        common.confirm({
-          message: `是否${text}数据类型【${row.name}】？`,
-        }).then(() => {
-          let param = {
-            content: {
-              id: row.id,
-              isShow: isShow
+                // 校验规则
+                formDialog: {
+                    id: '',
+                    groupId: '',
+                    groupName: '',
+                    rules: {},
+                    dialogVisible: false,//默认弹出框为隐藏
+                    title: '',//
+                    label: '',
+                    fieldValue: '',
+                    fieldName: '',
+                    type: '',
+                    rows: 1
+                }
             }
-          };
-          setDictionaryType(param).then(data => {
-            if (200 === data.code) {
-              this.$message.success(data.message);
-              this.queryPage();
-            } else {
-              this.$message.error(data.message);
-            }
+        },
 
-          });
+        created() {
+            this.queryPage();
+        },
+        methods: {
 
-        }).catch(_ => {
-        });
-      },
+            tableRowClassName({row, rowIndex}) {
+                // 把每一行的索引放进row
+                row.rowIndex = rowIndex
+            },
 
-      /***************　提交修改信息　*********************/
-      onSubmit() {
-        this.$refs.editForm.validate(valid => {
-          if (valid) {
-            // 传入参数
-            let param = {
-              content: {
-                id: this.editForm.id, // 修改记录的ID
-              }
-            };
-            // 修改记录的属性和属性值
-            param.content[this.editForm.property] = this.editForm.content;
+            formatter(row, column, cellValue, index) {
+                //放回索引值
+                return this.param.page.pageSize * (this.param.page.pageNum - 1) + 1 + row.rowIndex;
+            },
 
-            updateDictionaryType(param).then(data => {
-              this.dlgSettings.visible = false; // 对话框关闭
-              if (200 === data.code) {
-                this.$message.success(data.message);
+            // 改变页码
+            handleCurrentChange(val) {
+                this.param.page.pageNum = val;
                 this.queryPage();
-              } else {
-                this.$message.error(data.message);
-              }
-            });
-          }
-        });
-      },
-      closeDialog: function() {
-        let vm = this;
-        vm.dialogVisible = false;
-      },
-      openDialog(data, name, title){//打开弹出框
-        let vm = this;
-        vm.title = "修改"+title
-        vm.label = title
-        vm.dialogVisible = true
-        vm.content = data[name];
-        vm.type = "textarea"
-        if('sortNumber' == name){
-          vm.rules = {
-            content :[
-                {validator: common.checkNumber, trigger: "blur"},
-            ]
-          }
-        }
+            },
+            // 改变每页显示多少条
+            handleSizeChange(value) {
+                this.param.page.pageSize = value;
+                this.queryPage();
+            },
 
-      }
-    },
-  }
+            /**
+             * 分页查询
+             * @param param
+             */
+            queryPage() {
+
+                this.loading = true;
+                queryLabelPage(this.param).then((data) => {
+
+                    console.log('..............查询分页结果：', data);
+                    this.loading = false;
+                    this.paginationShow = true;
+
+                    if (data.content && data.content.list) {
+                        this.tableData = data.content.list;
+                        this.total = data.content.total;
+                    }
+                }).catch(error => {
+                    this.loading = false;
+                });
+            },
+
+            searchByCondition() {
+                this.param.page.pageNum = 1;
+                this.queryPage();
+            },
+
+            // 清空查询条件
+            clearQueryParam() {
+                this.param.content = {
+                    name: '',
+                    startTime: '',
+                    endTime: '',
+                };
+                this.queryPage();
+                this.$refs.multipleTable.clearSelection();
+            },
+            clearInput() {
+                console.log("........................")
+            },
+
+            openAddEntityDialog() {
+                this.dialogFormVisible = true;
+                this.formDialog.id = '';
+                this.formDialog.groupId = '';
+                this.formDialog.groupName = '';
+            },
+            addEntity() {
+                console.log("提交表单");
+                this.$refs.form.validate((valid) => {
+                    if (valid) {
+                        let param = {
+                            content: this.form
+                        };
+                        addLabel(param).then(data => {
+                            if (200 === data.code) {
+                                this.$message.success(data.message);
+                                this.$refs.form.resetFields();
+                                this.queryPage();
+                            } else {
+                                this.$message.error(data.message);
+                            }
+                            this.dialogFormVisible = false;
+                        });
+                    }
+                });
+            },
+
+            /**
+             * 校验数据类型是否存在
+             * @param rule
+             * @param value 数据类型名
+             * @param callback
+             */
+            checkLabelExist(rule, value, callback) {
+                console.log("检测标签名称是否存在", rule, value);
+                let param = {
+                    content: {
+                        id: this.formDialog.id,
+                        groupId: this.formDialog.groupId,
+                        groupName: this.formDialog.groupName,
+                        name: value
+                    }
+                };
+                checkLabelExist(param).then(data => {
+                    if (200 !== data.code) {
+                        callback(new Error(data.message));
+                    } else {
+                        callback();
+                    }
+                });
+            },
+            /**
+             * 删除实体
+             * @param id
+             */
+            deleteEntity(row) {
+                this.checkLabelStatus(row, () => {
+                    common.confirm({
+                        message: `确认删除标签【${row.name}】？`,
+                    }).then(() => {
+                        deleteLabel({content: [row.id]}).then(data => {
+                            if (200 === data.code) {
+                                this.$message.success(`删除标签【${row.name}】成功`);
+                                this.queryPage();
+                            } else {
+                                this.$message.error(data.message)
+                            }
+
+                        });
+                    }).catch(() => {
+                        // 取消按钮的回调
+                        console.log('取消按钮的回调');
+                    });
+                });
+            },
+
+            checkLabelStatus(row, callBack) {
+                checkLabelStatus({content: row.id}).then(data => {
+                    if (200 === data.code) {
+                        callBack();
+                    } else {
+                        this.$message.error(data.message);
+                    }
+                });
+            },
+
+            updateEntityStatus(row) {
+                let text = row.isShow === '1' ? '隐藏' : '显示';
+                let isShow = row.isShow === '1' ? '0' : '1';
+
+                common.confirm({
+                    message: `是否${text}标签【${row.name}】？`,
+                }).then(() => {
+                    let param = {
+                        content: {
+                            id: row.id,
+                            isShow: isShow
+                        }
+                    };
+                    setLabel(param).then(data => {
+                        if (200 === data.code) {
+                            this.$message.success(data.message);
+                            this.queryPage();
+                        } else {
+                            this.$message.error(data.message);
+                        }
+
+                    });
+
+                }).catch(_ => {
+                });
+            },
+
+            /***************　提交修改信息　*********************/
+            onSubmit(value) {
+                // 传入参数
+                let param = {
+                    content: {
+                        id: this.formDialog.id,
+
+                    }
+                };
+                param.content[this.formDialog.fieldName] = value;
+
+                // 修改记录的属性和属性值
+                updateLabel(param).then(data => {
+                    if (200 === data.code) {
+                        this.formDialog.dialogVisible = false;
+                        this.$message.success(data.message);
+                        this.queryPage();
+                    } else {
+                        this.$message.error(data.message);
+                    }
+                });
+            },
+            closeDialog() {
+                this.formDialog.dialogVisible = false;
+            },
+
+            // 打开弹出框
+            openDialog(row, fieldName, title, type, contentRules) {
+                if (!contentRules) contentRules = [];
+                this.formDialog.id = row.id;
+                this.formDialog.groupId = row.groupId;
+                this.formDialog.groupName = row.groupName;
+                this.formDialog.title = "修改" + title;
+                this.formDialog.label = title;
+                this.formDialog.dialogVisible = true;
+                this.formDialog.fieldName = fieldName;
+                this.formDialog.fieldValue = row[fieldName];
+                this.formDialog.type = type;
+
+                this.formDialog.rules = {
+                    content: contentRules
+                };
+            }
+        },
+    }
 </script>
 <style scoped>
 

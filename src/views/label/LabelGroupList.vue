@@ -186,6 +186,7 @@
 
                 // 校验规则
                 formDialog: {
+                    id: '',
                     rules: {},
                     dialogVisible: false,//默认弹出框为隐藏
                     title: '',//
