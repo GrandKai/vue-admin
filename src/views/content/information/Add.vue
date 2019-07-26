@@ -118,6 +118,36 @@
                         ></ckeditor>
                     </el-form-item>
 
+                    <el-form-item label="关联标签">
+
+                    </el-form-item>
+
+                    <el-form-item label="关联资讯">
+                        <div style="text-align: left">
+                            <el-button type="primary" @click="setRelationEntities" icon="el-icon-edit">编辑关联资讯</el-button>
+                            <br/>已关联资讯
+
+                            <div class="table">
+                                <el-table :data="selectedTableData"
+                                          :show-header="true"
+                                          :highlight-current-row="true"
+                                          size="mini"
+                                          border>
+
+                                    <el-table-column property="productName" min-width="160px" label="资讯名称" header-align="center" align="left"></el-table-column>
+                                    <el-table-column align="center" fixed="right" header-align="center" label="操作" width="200">
+                                        <template slot-scope="scope">
+                                            <el-button type="text" @click="">删除</el-button>
+                                            <el-button type="text" @click="">上移</el-button>
+                                            <el-button type="text" @click="">下移</el-button>
+                                        </template>
+                                    </el-table-column>
+                                </el-table>
+                            </div>
+                        </div>
+                    </el-form-item>
+
+
                     <el-form-item>
                         <el-button class="submit" type="success" @click="onSubmit">提交</el-button>
                     </el-form-item>
@@ -125,8 +155,71 @@
             </el-col>
         </el-row>
 
-        <el-dialog :visible.sync="dialogVisible">
-            <img width="100%" :src="form.coverImage" alt="">
+        <el-dialog title="编辑关联资讯" :visible.sync="dialogTableVisible" :close-on-click-modal="false" :close-on-press-escape="false" v-dialogDrag>
+            <custom-page>
+                <template slot="queryArea">
+
+                </template>
+
+                <template slot="buttonArea">
+
+                </template>
+
+                <template slot="tableArea">
+                    <el-table :data="tableData" ref="multipleTable"
+                              style="height: 440px;overflow-y: auto"
+                              :show-header="true"
+                              v-loading="loading"
+                              :highlight-current-row="true"
+                              size="mini"
+                              border
+                              align="left"
+                              @selection-change="handleSelectionChange"
+                              row-key="id">
+
+                        <el-table-column :reserve-selection="true" type="selection" width="35"></el-table-column>
+
+                        <el-table-column property="catalogName" min-width="50em" label="所属栏目" header-align="left" align="left"></el-table-column>
+                        <el-table-column property="title" min-width="130em" label="资讯名称" header-align="left" align="left"></el-table-column>
+                        <el-table-column property="createTime" min-width="50em" label="创建时间" header-align="center" align="center"></el-table-column>
+                    </el-table>
+
+                </template>
+
+                <template slot="paginationArea">
+                    <el-pagination class="pagination" @size-change="handleSizeChange" @current-change="handleCurrentChange"
+                                   ref="multipleTablePagination"
+                                   v-show="paginationShow"
+                                   :current-page="param.page.pageNum" :page-size="param.page.pageSize" background
+                                   :page-sizes="pageSizes"
+                                   layout="total, sizes, prev, pager, next, jumper" :total="total">
+                    </el-pagination>
+
+                </template>
+
+            </custom-page>
+
+            <el-divider></el-divider>
+
+            <div style="text-align: left">
+                <el-alert  type="info" :closable="false">
+
+                    <el-tag
+                            :key="tag.id"
+                            v-for="tag in selectedItems"
+                            closable size="large"
+                            :disable-transitions="false"
+                            @close="handleClose(tag)">
+                        {{tag.title}}
+                    </el-tag>
+                </el-alert>
+
+            </div>
+
+            <div slot="footer" class="dialog-footer">
+<!--                <el-button @click="">取 消</el-button>-->
+                <el-button type="primary" @click="">保 存</el-button>
+            </div>
         </el-dialog>
     </div>
 
@@ -134,8 +227,8 @@
 
 <script>
 
-    import CustomPage from 'components/formCustomPage/Index';
-    import {addEntity, getEntity, uploadImage} from 'apis/content/information';
+    import CustomPage from 'components/listCustomPage/Index';
+    import {queryEntityPage, addEntity, getEntity, uploadImage} from 'apis/content/information';
     import CKEditor from '@/components/ckeditor/CKEditor';
 
     export default {
@@ -158,7 +251,30 @@
         },
         data() {
             return {
-                dialogVisible: false,
+                loading: true,
+                paginationShow: false,
+                tableData: [],
+                total: 0,
+                pageSizes: pageSizes,
+                dialogTableVisible: false,
+
+                // 选中的 tags
+                selectedItems: [],
+
+                param: {
+                    content: {
+                        category: '',
+                        name: '',
+                        type: 1,
+                        status: 1
+                    },
+                    page: {
+                        pageNum: 1,
+                        pageSize: pageSizes[0]
+                    }
+                },
+
+                selectedTableData: [],
                 config: {
                     height: '300px',
                     width: '100%',
@@ -224,8 +340,7 @@
         },
         mounted() {
             this.queryCatalogList();
-            let catalogId = this.$route.query.contCatalogId;
-            this.form.catalogId = catalogId;
+            this.form.catalogId = this.$route.query.contCatalogId;
 
             let id = this.$route.query.id;
             // id 存在则说明是编辑页面
@@ -237,7 +352,54 @@
             // console.log("初始化资讯添加页面数据", this.form)
         },
         methods: {
+            handleClose(tag) {
+                let index = this.selectedItems.indexOf(tag);
+                // 去除 tag 选中
+                this.selectedItems.splice(index, 1);
+                // 去除表格选中
+                this.$refs.multipleTable.selection.splice(index, 1);
+            },
+            handleSelectionChange(rows) {
+                // 新增/修改
+                this.selectedItems = rows;
+            },
+            handleSizeChange(val) {
+                this.param.page.pageSize = val;
+                this.queryPage();
+            },
+            handleCurrentChange(val) {
+                this.param.page.pageNum = val;
+                this.queryPage();
+            },
 
+            queryPage() {
+
+                this.loading = true;
+                queryEntityPage(this.param).then((resp) => {
+
+                    this.loading = false;
+                    this.paginationShow = true;
+
+                    if (resp.content && resp.content.list) {
+                        this.tableData = resp.content.list;
+                        this.total = resp.content.total;
+                    }
+                }).catch(error => {
+                    this.loading = false;
+                });
+            },
+
+            setRelationEntities() {
+
+                this.dialogTableVisible = true;
+                this.queryPage();
+                // 编辑
+                if (!common.isEmpty(this.$route.query.id)) {
+
+                } else {
+                    // 新增
+                }
+            },
             handlePictureCardPreview(file) {
                 console.log("preview image file..........", file);
                 this.form.coverImage = file.url;
@@ -380,6 +542,31 @@
 </script>
 
 <style lang="scss" scoped>
+
+    .el-tag {
+        margin-right: 10px;
+        margin-bottom: 10px;
+    }
+
+    .button-new-tag {
+        margin-right: 10px;
+        height: 32px;
+        line-height: 30px;
+        padding-top: 0;
+        padding-bottom: 0;
+    }
+
+    .input-new-tag {
+        width: 90px;
+        margin-right: 10px;
+        vertical-align: bottom;
+    }
+
+    .click-text {
+        color: #409eff;
+        cursor: pointer;
+    }
+
     .avatar-uploader .el-upload {
         border: 1px dashed #d9d9d9;
         border-radius: 6px;
