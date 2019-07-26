@@ -318,6 +318,7 @@
              * @param id
              */
             deleteEntity(row) {
+                row.errorText = '，无法删除';
                 this.checkLabelGroupStatus(row, () => {
                     common.confirm({
                         message: `确认删除标签组【${row.name}】？`,
@@ -343,15 +344,12 @@
                     if (200 === data.code) {
                         callBack();
                     } else {
-                        this.$message.error(data.message);
+                        this.$message.error(data.message + row.errorText);
                     }
                 });
             },
 
-            updateEntityStatus(row) {
-                let text = row.isShow === '1' ? '隐藏' : '显示';
-                let isShow = row.isShow === '1' ? '0' : '1';
-
+            updateEntityStatusCallBack(row, text, isShow) {
                 common.confirm({
                     message: `是否${text}标签组【${row.name}】？`,
                 }).then(() => {
@@ -370,9 +368,22 @@
                         }
 
                     });
-
-                }).catch(_ => {
                 });
+            },
+
+            updateEntityStatus(row) {
+                let text = row.isShow === '1' ? '隐藏' : '显示';
+                let isShow = row.isShow === '1' ? '0' : '1';
+
+                // 要隐藏的话，进行状态判断 - 标签组下是否含有子标签
+                if ('0' === isShow) {
+                    row.errorText = '，无法隐藏';
+                    this.checkLabelGroupStatus(row, (row, text, isShow) => {
+                        this.updateEntityStatusCallBack(row, text, isShow);
+                    });
+                } else {
+                    this.updateEntityStatusCallBack(row, text, isShow);
+                }
             },
 
             /***************　提交修改信息　*********************/
@@ -399,6 +410,7 @@
             },
             closeDialog() {
                 this.formDialog.dialogVisible = false;
+                // this.formDialog.fieldValue = '';
             },
 
             // 打开弹出框

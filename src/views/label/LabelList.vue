@@ -9,6 +9,12 @@
         <custom-page>
             <template slot="queryArea">
                 <li>
+                    <el-select v-model="param.content.groupId" placeholder="全部标签组" clearable @change="queryPage" ref="select">
+                        <el-option v-for="item in options" :key="item.id" :label="item.name"
+                                   :value="item.id"></el-option>
+                    </el-select>
+                </li>
+                <li>
                     <el-input v-model="param.content.name" placeholder="标签名称" @keyup.native.enter="queryPage"
                               style="width: 220px"
                               clearable @input="queryPage"></el-input>
@@ -101,20 +107,52 @@
                 :type="formDialog.type" @closeDialog="closeDialog" @submitForm="onSubmit">
         </form-dialog>
 
-        <el-dialog title="新建标签" :visible.sync="dialogFormVisible" width="30%">
-            <el-form :model="form" ref="form" :rules="formRules">
-                <el-form-item label="标签名称" :label-width="formLabelWidth" prop="name">
-                    <el-input v-model="form.name"></el-input>
+        <el-dialog title="新建标签" :visible.sync="dialogFormVisible" width="30%"
+                   v-dialogDrag
+                   :close-on-click-modal="false">
+
+            <el-form :model="form" ref="form">
+
+                <el-form-item label="所属标签组：" :label-width="formLabelWidth" prop="groupId" :rules="formRules.groupId">
+                    <el-select v-model="form.groupId" placeholder="请选择标签组" clearable @change="getSelectedLabel" ref="select" style="width: 100%">
+                        <el-option v-for="item in options" :key="item.id" :label="item.name" :value="item.id"></el-option>
+                    </el-select>
                 </el-form-item>
 
-                <el-form-item label="标签顺序" :label-width="formLabelWidth" prop="sortNumber">
-                    <el-input v-model="form.sortNumber"></el-input>
+                <el-form-item label="" :label-width="formLabelWidth">
+                    <el-alert :closable='false' style="margin-top: 1em;margin-bottom: -5px;" title="单个标签最多10个字符，使用Enter创建标签" type="info"></el-alert>
+                </el-form-item>
+                <el-form-item label="标签名称：" :label-width="formLabelWidth" class="is-required" prop="name" :rules="formRules.labelName">
+                    <div style="width: 100%; text-align: left">
+                        <el-tag
+                                :key="tag"
+                                v-for="tag in dynamicTags"
+                                closable
+                                :disable-transitions="false"
+                                @close="handleClose(tag)">
+                            {{tag}}
+                        </el-tag>
+
+                        <template v-if="inputVisible">
+                            <el-input
+                                    class="input-new-tag"
+                                    v-model="form.name"
+                                    ref="saveTagInput"
+                                    style="width: 80%;"
+                                    :maxlength="10"
+                                    clearable
+                                    @keyup.enter.native="handleInputConfirm">
+                            </el-input>
+                            ({{form.name.length}}/10)
+                        </template>
+                        <el-button v-else class="button-new-tag" @click="showInput">+ 新建标签</el-button>
+                    </div>
                 </el-form-item>
 
             </el-form>
 
             <div slot="footer" class="dialog-footer">
-                <el-button @click="dialogFormVisible = false">取 消</el-button>
+                <el-button @click="closeDialogForm">取 消</el-button>
                 <el-button type="primary" @click="addEntity">确 定</el-button>
             </div>
         </el-dialog>
@@ -132,7 +170,8 @@
         setLabel,
         deleteLabel,
         checkLabelStatus,
-        checkLabelExist
+        checkLabelExist,
+        queryLabelGroupList
     } from 'apis/label';
 
     export default {
@@ -143,15 +182,26 @@
         },
         data() {
             return {
+                dynamicTags: [],
+                inputVisible: false,
+                options: [],
                 formRules: {
+                    groupId: [{required: true, message: "请选择标签组", trigger: "change"}],
                     name: [
-                        {required: true, message: "请输入标签名称，长度在50个字符内", trigger: "blur", max: 50},
+                        {required: true, message: "请输入标签名称，长度在10个字符内", trigger: "blur", max: 10},
                         {validator: this.checkLabelExist, trigger: "blur"},
                     ],
-                    sortNumber: [{required:true, validator: common.checkNumber, trigger: "blur"}]
+                    labelName: [
+                        {required: true, message: "请输入标签名称，长度在10个字符内", trigger: "blur", max: 10},
+                        {validator: this.checkLabelNameExist, trigger: "blur"},
+                    ],
+                    sortNumber: [{required: true, validator: common.checkNumber, trigger: "blur"}]
                 },
                 form: {
+                    groupName: '',
+                    groupId: '',
                     name: '',
+                    names: [],
                     sortNumber: 1
                 },
                 formLabelWidth: '120px',
@@ -163,6 +213,7 @@
                 param: {
                     content: {
                         name: '',
+                        groupId: ''
                     },
                     page: {
                         pageNum: 1,
@@ -188,12 +239,69 @@
                 }
             }
         },
-
+        watch: {
+            dialogFormVisible: function (newValue, oldValue) {
+                if (!newValue) {
+                    console.log("对话框关闭，重置添加表单");
+                    this.$refs.form.resetFields();
+                    this.inputVisible = false;
+                }
+            }
+        },
         created() {
+            this.queryLabelGroupList();
             this.queryPage();
         },
         methods: {
+            closeDialogForm() {
+                this.dialogFormVisible = false;
+                this.dynamicTags = [];
+                this.inputVisible = false;
+            },
+            getSelectedLabel(value) {
+                this.$nextTick(() => {
+                    this.form.groupName = this.$refs.select.selected.label;
+                });
+            },
+            handleClose(tag) {
+                this.dynamicTags.splice(this.dynamicTags.indexOf(tag), 1);
+            },
 
+            showInput() {
+                this.inputVisible = true;
+                this.$nextTick(_ => {
+                    this.form.name = '';
+                    this.$refs.saveTagInput.$refs.input.focus();
+                });
+            },
+
+            handleInputConfirm() {
+                console.log("验证 handleInputConfirm");
+                this.$refs.form.validate(valid => {
+                    if (valid) {
+                        let inputValue = this.form.name;
+                        if (inputValue) {
+                            this.dynamicTags.push(inputValue);
+                        }
+                        this.inputVisible = false;
+                        // this.$nextTick(() => {
+                            // this.form.name = '';
+                        // });
+                    }
+                });
+            },
+            queryLabelGroupList() {
+                let param = {
+                    content: {
+                        isShow: '1' // 只查询显示的标签组
+                    }
+                };
+                queryLabelGroupList(param).then(data => {
+                    if (200 === data.code) {
+                        this.options = data.content;
+                    }
+                })
+            },
             tableRowClassName({row, rowIndex}) {
                 // 把每一行的索引放进row
                 row.rowIndex = rowIndex
@@ -263,9 +371,11 @@
                 this.formDialog.groupName = '';
             },
             addEntity() {
-                console.log("提交表单");
+                let vm = this;
+                console.log("验证提交表单", vm.form);
                 this.$refs.form.validate((valid) => {
                     if (valid) {
+                        this.form.names = this.dynamicTags;
                         let param = {
                             content: this.form
                         };
@@ -277,20 +387,39 @@
                             } else {
                                 this.$message.error(data.message);
                             }
+                            this.dynamicTags = [];
+                            this.form.groupId = '';
                             this.dialogFormVisible = false;
                         });
                     }
                 });
             },
-
+            checkLabelNameExist(rule, value, callback) {
+                console.log("验证添加标签 blur：", rule, value, callback);
+                let param = {
+                    content: {
+                        id: this.form.id,
+                        groupId: this.form.groupId,
+                        groupName: this.form.groupName,
+                        name: value
+                    }
+                };
+                checkLabelExist(param).then(data => {
+                    if (200 !== data.code) {
+                        callback(new Error(data.message));
+                    } else {
+                        callback();
+                    }
+                });
+            },
             /**
-             * 校验数据类型是否存在
+             * 修改校验数据类型是否存在
              * @param rule
              * @param value 数据类型名
              * @param callback
              */
             checkLabelExist(rule, value, callback) {
-                console.log("检测标签名称是否存在", rule, value);
+                // console.log("检测标签名称是否存在", rule, value);
                 let param = {
                     content: {
                         id: this.formDialog.id,
@@ -412,10 +541,29 @@
                     content: contentRules
                 };
             }
-        },
+        }
+        ,
     }
 </script>
 <style scoped>
+    .el-tag {
+        margin-right: 10px;
+        margin-bottom: 10px;
+    }
+
+    .button-new-tag {
+        margin-right: 10px;
+        height: 32px;
+        line-height: 30px;
+        padding-top: 0;
+        padding-bottom: 0;
+    }
+
+    .input-new-tag {
+        width: 90px;
+        margin-right: 10px;
+        vertical-align: bottom;
+    }
 
     .click-text {
         color: #409eff;

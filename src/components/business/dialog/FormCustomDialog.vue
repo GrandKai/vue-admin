@@ -13,7 +13,7 @@
                 </el-form>
             </div>
             <span class="dialog-footer" slot="footer">
-                <el-button type="primary" @click="submitForm('form')">保 存</el-button>
+                <el-button type="primary" @click="submitForm('form')" :loading="isLoading">保 存</el-button>
                 <el-button @click="closeDialog">取 消</el-button>
             </span>
         </el-dialog>
@@ -25,6 +25,7 @@
         data() {
             return {
                 rows: 1,
+                isLoading: false,
                 form: {
                     content: ''
                 }
@@ -42,16 +43,16 @@
                 // 如果关闭对话框
                 if (!newVal) {
                     console.log("关闭对话框清空表单值：", newVal);
+                    // 打开加载
+                    this.isLoading = false;
                     // this.$refs.form.resetFields();
-                    // this.form.content = '';
                 } else {
                     console.log("打开对话框：", newVal);
+                    // 打开中，将 props 属性赋值给 data
+                    this.form.content = '';
+                    this.form.content = this.fieldValue;
                 }
             },
-            fieldValue: function (newVal) {
-                console.log("观察父组件传过来的值（如果传过来的值相同，不执行此函数）：", newVal);
-                this.form.content = newVal;
-            }
         },
         computed: {
         },
@@ -86,6 +87,7 @@
                 console.log("提交表单");
                 this.$refs[formName].validate((valid) => {
                     if (valid) {
+                        this.isLoading = true;
                         this.$nextTick(function () {
                             this.$emit('submitForm', this.form.content); // 回调参数
                         });
@@ -98,9 +100,9 @@
             },
 
             closeDialog: function () {//关闭弹出框
-                let vm = this;
-                vm.$nextTick(function () {
-                    vm.$emit('closeDialog'); // 回调参数
+                // this.form.content = '';
+                this.$nextTick(function () {
+                    this.$emit('closeDialog'); // 回调参数
                 });
             }
         }
