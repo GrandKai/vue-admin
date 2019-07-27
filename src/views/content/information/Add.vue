@@ -125,21 +125,27 @@
                     <el-form-item label="关联资讯">
                         <div style="text-align: left">
                             <el-button type="primary" @click="setRelationEntities" icon="el-icon-edit">编辑关联资讯</el-button>
-                            <br/>已关联资讯
+
+                            <br/>
+                            <br/>
+                            已关联资讯
+                            <br/>
+                            <br/>
 
                             <div class="table">
                                 <el-table :data="selectedTableData"
                                           :show-header="true"
                                           :highlight-current-row="true"
+                                          :row-class-name="tableRowClassName"
                                           size="mini"
                                           border>
 
-                                    <el-table-column property="productName" min-width="160px" label="资讯名称" header-align="center" align="left"></el-table-column>
-                                    <el-table-column align="center" fixed="right" header-align="center" label="操作" width="200">
+                                    <el-table-column property="title" min-width="160px" label="资讯名称" header-align="left" align="left"></el-table-column>
+                                    <el-table-column align="center" fixed="right" header-align="center" label="操作" width="150">
                                         <template slot-scope="scope">
-                                            <el-button type="text" @click="">删除</el-button>
-                                            <el-button type="text" @click="">上移</el-button>
-                                            <el-button type="text" @click="">下移</el-button>
+                                            <el-button type="text" @click="deleteItem(scope.row)">删除</el-button>
+                                            <el-button type="text" @click="moveUp(scope.row)">上移</el-button>
+                                            <el-button type="text" @click="moveDown(scope.row)">下移</el-button>
                                         </template>
                                     </el-table-column>
                                 </el-table>
@@ -174,6 +180,7 @@
                               size="mini"
                               border
                               align="left"
+                              :row-class-name="tableRowClassName"
                               @selection-change="handleSelectionChange"
                               row-key="id">
 
@@ -218,7 +225,7 @@
 
             <div slot="footer" class="dialog-footer">
 <!--                <el-button @click="">取 消</el-button>-->
-                <el-button type="primary" @click="">保 存</el-button>
+                <el-button type="primary" @click="saveAssociation">保 存</el-button>
             </div>
         </el-dialog>
     </div>
@@ -228,7 +235,8 @@
 <script>
 
     import CustomPage from 'components/listCustomPage/Index';
-    import {queryEntityPage, addEntity, getEntity, uploadImage} from 'apis/content/information';
+    import {addEntity, getEntity, queryEntityPageSimple, uploadImage} from 'apis/content/information';
+    import {queryEntityList as queryAssociationList} from 'apis/content/association';
     import CKEditor from '@/components/ckeditor/CKEditor';
 
     export default {
@@ -295,6 +303,10 @@
                     topEndTime: '',
                     releaseTime: '',
                     content: '',
+
+                    information: [],
+                    labels: []
+
                 },
 
                 options: [],
@@ -347,11 +359,51 @@
             if (id) {
                 this.form.id = id;
                 this.getEntity();
+                this.queryAssociationList();
             }
 
             // console.log("初始化资讯添加页面数据", this.form)
         },
         methods: {
+            tableRowClassName({row, rowIndex}) {
+                // 把每一行的索引放进row
+                row.rowIndex = rowIndex;
+            },
+
+            formatter(row, column, cellValue, index) {
+                //放回索引值
+                return this.param.page.pageSize * (this.param.page.pageNum - 1) + 1 + row.rowIndex;
+            },
+            queryAssociationList() {
+                let param = {
+                    content: {
+                        sourceId: this.form.id
+                    }
+                };
+                queryAssociationList(param).then(data => {
+                    if (200 === data.code) {
+                        this.selectedTableData = data.content;
+                    } else {
+                        this.$message.error(data.message);
+                    }
+                });
+            },
+            deleteItem(row) {
+                // 1. 清除已选 tag，指向的相同的地址，可以直接清除
+                this.selectedTableData.splice(this.selectedTableData.indexOf(row), 1);
+            },
+            moveUp(row) {
+
+            },
+            moveDown(row) {
+
+            },
+            // 保存关联关系
+            saveAssociation() {
+                // 将选中的值赋值给主页面
+                this.selectedTableData = this.selectedItems;
+                this.dialogTableVisible = false;
+            },
             handleClose(tag) {
                 let index = this.selectedItems.indexOf(tag);
                 // 去除 tag 选中
@@ -375,7 +427,7 @@
             queryPage() {
 
                 this.loading = true;
-                queryEntityPage(this.param).then((resp) => {
+                queryEntityPageSimple(this.param).then((resp) => {
 
                     this.loading = false;
                     this.paginationShow = true;
@@ -390,15 +442,34 @@
             },
 
             setRelationEntities() {
-
+                // 打开对话框
                 this.dialogTableVisible = true;
-                this.queryPage();
-                // 编辑
-                if (!common.isEmpty(this.$route.query.id)) {
 
-                } else {
-                    // 新增
-                }
+                console.log("主页面选中的数组：", this.selectedTableData);
+
+                this.$nextTick(_ => {
+                    // 1. 清空子页面选中
+                    this.$refs.multipleTable.clearSelection();
+
+                    // 2. 从主页面复制选中的元素给子页面（勾选tag）
+                    this.selectedItems = this.selectedTableData.concat();
+                    // this.selectedItems = [...this.selectedTableData];
+
+                    // 3. 勾选子 table
+                    this.selectedItems.forEach(item => this.$refs.multipleTable.selection.push(item));
+
+                    // 4. 重置分页为第一页
+                    this.$refs.multipleTablePagination.lastEmittedPage = 1;
+                    this.param.page.pageNum = 1;
+                    this.queryPage();
+
+                    // 编辑
+                    if (!common.isEmpty(this.$route.query.id)) {
+
+                    } else {
+                        // 新增
+                    }
+                });
             },
             handlePictureCardPreview(file) {
                 console.log("preview image file..........", file);
@@ -523,6 +594,13 @@
             onSubmit() {
                 this.$refs['form'].validate(valid => {
                     if (valid) {
+                        let information = [];
+                        // 1. 设置关联资讯
+
+                        console.log("主页面缓存的数据", this.selectedTableData);
+                        this.selectedTableData.forEach(item => information.push({associationId: item.id, sortNumber: item.sortNumber}));
+                        this.form.information = information;
+
                         let param = {
                             content: this.form
                         };

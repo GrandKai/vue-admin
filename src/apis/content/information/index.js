@@ -2,6 +2,8 @@ import {information} from '@/constant/apiUrl';
 import $http from '@/utils/axios'
 
 export const queryEntityPage = param => $http.post(information.QUERY_PAGE, param);
+export const queryEntityPageSimple = param => $http.post(information.QUERY_PAGE_SIMPLE, param);
+
 
 export const getEntity = param => $http.post(information.GET, param);
 export const addEntity = (param) => {

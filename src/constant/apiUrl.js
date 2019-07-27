@@ -59,10 +59,18 @@ export const user = {
   ADD_USER_ROLES: '/user/add/roles',
   QUERY_USER_ROLES: '/user/select/roles',
 };
-
+// 关联内容
+export const association = {
+  QUERY_LIST: '/association/list/information',
+  // ADD: '/association/add',
+  // UPDATE: '/association/update',
+  // DELETE: '/association/delete',
+  // CHECK_STATUS: '/association/check/status',
+};
 // 资讯管理
 export const information = {
   QUERY_PAGE: '/information',
+  QUERY_PAGE_SIMPLE: '/information/page/simple',
   GET: '/information/get',
   ADD: '/information/add',
   UPDATE: '/information/update',
