@@ -138,14 +138,15 @@
                                           :highlight-current-row="true"
                                           :row-class-name="tableRowClassName"
                                           size="mini"
+                                          row-key="id"
                                           border>
 
                                     <el-table-column property="title" min-width="160px" label="资讯名称" header-align="left" align="left"></el-table-column>
-                                    <el-table-column align="center" fixed="right" header-align="center" label="操作" width="150">
+                                    <el-table-column align="center" fixed="right" header-align="center" label="操作" width="80">
                                         <template slot-scope="scope">
                                             <el-button type="text" @click="deleteItem(scope.row)">删除</el-button>
-                                            <el-button type="text" @click="moveUp(scope.row)">上移</el-button>
-                                            <el-button type="text" @click="moveDown(scope.row)">下移</el-button>
+<!--                                            <el-button type="text" @click="moveUp(scope.row)">上移</el-button>-->
+<!--                                            <el-button type="text" @click="moveDown(scope.row)">下移</el-button>-->
                                         </template>
                                     </el-table-column>
                                 </el-table>
@@ -184,7 +185,7 @@
                               @selection-change="handleSelectionChange"
                               row-key="id">
 
-                        <el-table-column :reserve-selection="true" type="selection" width="35"></el-table-column>
+                        <el-table-column :reserve-selection="true" type="selection" width="35" :selectable="checkSelectable"></el-table-column>
 
                         <el-table-column property="catalogName" min-width="50em" label="所属栏目" header-align="left" align="left"></el-table-column>
                         <el-table-column property="title" min-width="130em" label="资讯名称" header-align="left" align="left"></el-table-column>
@@ -238,6 +239,7 @@
     import {addEntity, getEntity, queryEntityPageSimple, uploadImage} from 'apis/content/information';
     import {queryEntityList as queryAssociationList} from 'apis/content/association';
     import CKEditor from '@/components/ckeditor/CKEditor';
+    import Sortable from 'sortablejs';
 
     export default {
         components: {
@@ -362,9 +364,27 @@
                 this.queryAssociationList();
             }
 
-            // console.log("初始化资讯添加页面数据", this.form)
+
+            // 表格中需要实现行拖动，所以选中tr的父级元素
+            this.rowDrop();
         },
         methods: {
+            // 检查该行是否可以被选中
+            checkSelectable(row) {
+                return row.id !== this.form.id;
+            },
+
+            // 表格行移动
+            rowDrop() {
+                const tbody = document.querySelector('.el-table__body-wrapper tbody');
+                const _this = this;
+                Sortable.create(tbody, {
+                    onEnd({ newIndex, oldIndex }) {
+                        const currRow = _this.selectedTableData.splice(oldIndex, 1)[0];
+                        _this.selectedTableData.splice(newIndex, 0, currRow);
+                    }
+                })
+            },
             tableRowClassName({row, rowIndex}) {
                 // 把每一行的索引放进row
                 row.rowIndex = rowIndex;
@@ -598,7 +618,7 @@
                         // 1. 设置关联资讯
 
                         console.log("主页面缓存的数据", this.selectedTableData);
-                        this.selectedTableData.forEach(item => information.push({associationId: item.id, sortNumber: item.sortNumber}));
+                        this.selectedTableData.forEach(item => information.push({"associationId": item.id, "sourceType": "INFORMATION", "sortNumber": item.sortNumber}));
                         this.form.information = information;
 
                         let param = {
