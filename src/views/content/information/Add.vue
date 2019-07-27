@@ -352,21 +352,21 @@
                 }
             };
         },
-        mounted() {
+        mounted: function () {
             this.queryCatalogList();
             this.form.catalogId = this.$route.query.contCatalogId;
-
-            let id = this.$route.query.id;
-            // id 存在则说明是编辑页面
-            if (id) {
-                this.form.id = id;
-                this.getEntity();
-                this.queryAssociationList();
-            }
-
-
             // 表格中需要实现行拖动，所以选中tr的父级元素
             this.rowDrop();
+
+            this.form.id = this.$route.query.id;
+            this.$nextTick(_ => {
+                // id 存在则说明是编辑页面
+                if (this.form.id) {
+                    this.getEntity();
+                    this.queryAssociationList();
+                }
+            });
+
         },
         methods: {
             // 检查该行是否可以被选中
@@ -579,8 +579,11 @@
                         this.form.releaseTime = content.releaseTime;
                         this.form.content = content.content;
 
-                        // this.$nextTick(() => {
-                        this.$refs["form"].validate();
+                        console.warn("初始化实体内容", this.form.content);
+                        // this.$nextTick(_ => {
+                        //     setTimeout(_ => {
+                        //         this.$refs["form"].validate();
+                        //     }, 300);
                         // });
                     } else {
                         this.$message.error(data.message);
@@ -590,7 +593,7 @@
             },
             validateContent(rule, value, callback) {
                 // console.log("内容验证:规则：", rule, "，值：", value ,"，回调：", callback);
-                if (value == "" || value.length == 0) {
+                if (value === "" || value.length === 0) {
                     callback(new Error("请输入内容"));
                 } else {
                     callback();
