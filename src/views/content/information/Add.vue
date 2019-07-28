@@ -845,11 +845,16 @@
             onSubmit() {
                 this.$refs['form'].validate(valid => {
                     if (valid) {
-                        let information = [];
-                        // 1. 设置关联资讯
 
+                        // 1 设置关联标签
+                        let labels = [];
+                        this.selectedLabels.forEach(item => labels.push({"associationId": item.id, "sourceType": "LABEL"}));
+                        this.form.labels = labels;
+
+                        // 2. 设置关联资讯
+                        let information = [];
                         // console.log("主页面缓存的数据", this.selectedInformation);
-                        this.selectedInformation.forEach(item => information.push({"associationId": item.id, "sourceType": "INFORMATION", "sortNumber": item.sortNumber}));
+                        this.selectedInformation.forEach(item => information.push({"associationId": item.id, "sourceType": "INFORMATION"}));
                         this.form.information = information;
 
                         let param = {
