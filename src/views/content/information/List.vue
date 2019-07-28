@@ -233,8 +233,7 @@
             },
 
             handleNodeClick(item) {
-                console.log('当前选中node节点:', item);
-
+                // console.log('当前选中node节点:', item);
                 //  点击的结点不是已经选择过的结点
                 if (this.param.content.contCatalogId !== item.id) {
 
@@ -375,11 +374,11 @@
 
         },
         created() {
-            console.log("列表 created", this.contCatalogId);
+            // console.log("列表 created", this.contCatalogId);
             this.queryCatalogList();
         },
         mounted() {
-            console.log("列表 mounted", this.contCatalogId);
+            // console.log("列表 mounted", this.contCatalogId);
             if (this.contCatalogId) {
                 this.$refs.tree.setCurrentKey(this.contCatalogId);
             }

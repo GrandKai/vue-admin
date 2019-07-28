@@ -106,7 +106,6 @@
                         </el-col>
                     </el-row>
 
-
                     <el-form-item label="内容" prop="content">
                         <ckeditor
                                 id="editorContent"
@@ -114,7 +113,6 @@
                                 :config="config"
                                 :value.sync="form.content"
                                 @input="onChange"
-                                @blur="onBlur"
                         ></ckeditor>
                     </el-form-item>
 
@@ -153,7 +151,6 @@
                             </div>
                         </div>
                     </el-form-item>
-
 
                     <el-form-item>
                         <el-button class="submit" type="success" @click="onSubmit">提交</el-button>
@@ -256,7 +253,7 @@
 
             },
             'form.content': function (newVal, oldVal) {
-                console.log("父组件 form.content 值修改：", newVal, oldVal);
+                // console.log("父组件 form.content 值修改：", newVal, oldVal);
             },
         },
         data() {
@@ -465,7 +462,7 @@
                 // 打开对话框
                 this.dialogTableVisible = true;
 
-                console.log("主页面选中的数组：", this.selectedTableData);
+                // console.log("主页面选中的数组：", this.selectedTableData);
 
                 this.$nextTick(_ => {
                     // 1. 清空子页面选中
@@ -492,12 +489,12 @@
                 });
             },
             handlePictureCardPreview(file) {
-                console.log("preview image file..........", file);
+                // console.log("preview image file..........", file);
                 this.form.coverImage = file.url;
                 this.dialogVisible = true;
             },
             uploadRequest(param) {
-                console.log("上传参数：", param);
+                // console.log("上传参数：", param);
                 //创建临时的路径来展示图片
                 let windowURL = window.URL || window.webkitURL;
                 // this.form.coverImage = windowURL.createObjectURL(param.file);
@@ -506,7 +503,7 @@
                 let fileName = param.file.name;
                 let fileType = fileName.split(".")[fileName.split('.').length - 1];
 
-                console.log('.........................', file.row);
+                // console.log('.........................', file.row);
                 let formData = new FormData();
 
                 // 通过append向form对象添加数据
@@ -620,7 +617,7 @@
                         let information = [];
                         // 1. 设置关联资讯
 
-                        console.log("主页面缓存的数据", this.selectedTableData);
+                        // console.log("主页面缓存的数据", this.selectedTableData);
                         this.selectedTableData.forEach(item => information.push({"associationId": item.id, "sourceType": "INFORMATION", "sortNumber": item.sortNumber}));
                         this.form.information = information;
 

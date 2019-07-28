@@ -93,7 +93,12 @@
                     this.instance.setData(this.value);
 
                     this.instance.on('instanceReady', () => {
-                        this.instance.setData(this.value);
+
+                        if ('' === this.instance.getData()) {
+                            setTimeout(_ => {
+                                this.instance.setData(this.value);
+                            },500);
+                        }
                     });
 
                     // Ckeditor change event
