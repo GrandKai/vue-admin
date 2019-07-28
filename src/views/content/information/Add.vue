@@ -117,17 +117,18 @@
                     </el-form-item>
 
                     <el-form-item label="关联标签">
+                        <div style="text-align: left">
+                            <el-button type="primary" @click="editAssociationLabels" icon="el-icon-edit">编辑关联标签</el-button>
+                        </div>
 
                     </el-form-item>
 
                     <el-form-item label="关联资讯">
                         <div style="text-align: left">
-                            <el-button type="primary" @click="setRelationEntities" icon="el-icon-edit">编辑关联资讯</el-button>
-
+                            <el-button type="primary" @click="editAssociationInformation" icon="el-icon-edit">编辑关联资讯</el-button>
                             <p style="font-size: 13px; line-height: 18px; margin-top: 10px;margin-bottom: 10px">已关联资讯，使用鼠标拖拽调整顺序</p>
-
                             <div class="table">
-                                <el-table :data="selectedTableData"
+                                <el-table :data="selectedInformation"
                                           :show-header="true"
                                           :highlight-current-row="true"
                                           :row-class-name="tableRowClassName"
@@ -155,7 +156,54 @@
             </el-col>
         </el-row>
 
-        <el-dialog title="编辑关联资讯" :visible.sync="dialogTableVisible" :close-on-click-modal="false" :close-on-press-escape="false" v-dialogDrag>
+        <el-dialog title="编辑关联标签" :visible.sync="dialogAssociationLabels" :close-on-click-modal="false" :close-on-press-escape="false" v-dialogDrag>
+            <el-tabs v-model="labelParam.content.activeName" @tab-click="handleClick">
+                <el-tab-pane :label="item.name" :name="item.name" v-for="item in labelGroups" :key="item.id">
+                    <div class="association-labels">
+                        <el-checkbox-group v-model="checkedLabels" @change="handleLabelChange">
+                            <el-row>
+                                    <el-col v-for="item in labelTableData" :span="4" :key="item.id">
+                                            <el-checkbox :label="item.id" @change="selectLabel($event, item)">{{item.name}}</el-checkbox>
+                                    </el-col>
+                            </el-row>
+                        </el-checkbox-group>
+                    </div>
+                </el-tab-pane>
+            </el-tabs>
+
+<!--            hide-on-single-page-->
+            <el-pagination class="pagination" @size-change="handleSizeLabelChange" @current-change="handleCurrentLabelChange"
+                           small
+                           ref="labelMultipleTablePagination"
+                           v-show="labelPaginationShow"
+                           :current-page="labelParam.page.pageNum" :page-size="labelParam.page.pageSize" background
+                           :page-sizes="pageSizes"
+                           layout="total, prev, pager, next" :total="labelTotal">
+<!--                           layout="total, sizes, prev, pager, next, jumper" :total="labelTotal">-->
+            </el-pagination>
+
+            <el-divider></el-divider>
+
+            <div style="text-align: left">
+                <el-alert  type="info" :closable="false">
+                    <el-tag
+                            :key="tag.id"
+                            v-for="tag in selectedLabelTags"
+                            closable size="large"
+                            :disable-transitions="false"
+                            @close="handleLabelsClose(tag)">
+                        {{tag.name}}
+                    </el-tag>
+                </el-alert>
+            </div>
+
+            <div slot="footer" class="dialog-footer">
+                <el-button @click="dialogAssociationLabels = false">关 闭</el-button>
+                <el-button type="primary" @click="saveAssociationLabels">保 存</el-button>
+            </div>
+        </el-dialog>
+
+        <el-dialog title="编辑关联资讯" :visible.sync="dialogAssociationInformation" :close-on-click-modal="false" :close-on-press-escape="false" v-dialogDrag>
             <custom-page>
                 <template slot="queryArea">
                     <li>
@@ -217,19 +265,18 @@
 
                     <el-tag
                             :key="tag.id"
-                            v-for="tag in selectedItems"
+                            v-for="tag in selectedInformationTags"
                             closable size="large"
                             :disable-transitions="false"
                             @close="handleClose(tag)">
                         {{tag.title}}
                     </el-tag>
                 </el-alert>
-
             </div>
 
             <div slot="footer" class="dialog-footer">
-<!--                <el-button @click="">取 消</el-button>-->
-                <el-button type="primary" @click="saveAssociation">保 存</el-button>
+                <el-button @click="dialogAssociationInformation = false">关 闭</el-button>
+                <el-button type="primary" @click="saveAssociationInformation">保 存</el-button>
             </div>
         </el-dialog>
     </div>
@@ -241,6 +288,8 @@
     import CustomPage from 'components/listCustomPage/Index';
     import {addEntity, getEntity, queryEntityPageSimple, uploadImage} from 'apis/content/information';
     import {queryEntityList as queryAssociationList} from 'apis/content/association';
+    import {queryLabelPage,  queryLabelGroupList} from 'apis/label';
+
     import CKEditor from '@/components/ckeditor/CKEditor';
     import Sortable from 'sortablejs';
 
@@ -264,15 +313,43 @@
         },
         data() {
             return {
+                // 主页面选中的标签数据
+                selectedLabels: [],
+                // 子页面选中的标签数据
+                selectedLabelIds: [],
+                selectedLabelTags: [],
+
+                checkedLabels: [],
+                labelGroups: [],
+                labelLoading: true,
+                labelPaginationShow: false,
+                labelTableData: [],
+                labelTotal: 0,
+
+                labelParam: {
+                    content: {
+                        name: '',
+                        groupId: '',
+                        activeName: '',
+                    },
+                    page: {
+                        pageNum: 1,
+                        pageSize: 24
+                    }
+                },
+
                 loading: true,
                 paginationShow: false,
                 tableData: [],
                 total: 0,
                 pageSizes: pageSizes,
-                dialogTableVisible: false,
+
+                dialogAssociationLabels: false,
+                dialogAssociationInformation: false,
 
                 // 选中的 tags
-                selectedItems: [],
+                selectedInformationTags: [],
+                selectedInformation: [],
 
                 param: {
                     content: {
@@ -285,7 +362,6 @@
                     }
                 },
 
-                selectedTableData: [],
                 config: {
                     height: '300px',
                     width: '100%',
@@ -370,6 +446,72 @@
 
         },
         methods: {
+            selectLabel(checked, item) {
+                // console.log("选中/取消的标签", checked, item);
+                if (checked) {
+                    this.selectedLabelTags.push(item);
+                } else {
+                    // 使用 findIndex 比较 id， 而不是使用 indexOf
+                    let index = this.selectedLabelTags.findIndex(i => i.id === item.id);
+                    this.selectedLabelTags.splice(index, 1);
+                }
+
+            },
+            /**
+             * 处理标签选中事件
+             */
+            handleLabelChange(value) {
+                // console.log("选中的标签组：", value);
+                this.selectedLabelIds = value;
+            },
+            queryLabelGroupList() {
+                let param = {
+                    content: {
+                        isShow: '1' // 只查询显示的标签组
+                    }
+                };
+                queryLabelGroupList(param).then(data => {
+                    if (200 === data.code) {
+                        this.labelGroups = data.content;
+
+                        let first = this.labelGroups[0];
+                        if (first) {
+                            // 默认选中第一个标签组
+                            this.labelParam.content.activeName = first.name;
+                            this.labelParam.content.groupId = first.id;
+                            this.queryLabelPage();
+                        }
+                    }
+                })
+            },
+
+            /**
+             * 分页查询标签
+             * @param param
+             */
+            queryLabelPage() {
+                this.labelLoading = true;
+                queryLabelPage(this.labelParam).then((data) => {
+
+                    this.labelLoading = false;
+                    this.labelPaginationShow = true;
+
+                    if (data.content && data.content.list) {
+                        this.labelTableData = data.content.list;
+                        this.labelTotal = data.content.total;
+                    }
+                }).catch(error => {
+                    this.labelLoading = false;
+                });
+            },
+
+            handleClick(tab, event) {
+                // console.log(tab, event);
+                // 选中的标签组id
+                this.labelParam.content.groupId = this.labelGroups[tab.index].id;
+                this.queryLabelPage();
+            },
+
             // 检查该行是否可以被选中
             checkSelectable(row) {
                 return row.id !== this.form.id;
@@ -381,8 +523,8 @@
                 const _this = this;
                 Sortable.create(tbody, {
                     onEnd({ newIndex, oldIndex }) {
-                        const currRow = _this.selectedTableData.splice(oldIndex, 1)[0];
-                        _this.selectedTableData.splice(newIndex, 0, currRow);
+                        const currRow = _this.selectedInformation.splice(oldIndex, 1)[0];
+                        _this.selectedInformation.splice(newIndex, 0, currRow);
                     }
                 })
             },
@@ -403,7 +545,7 @@
                 };
                 queryAssociationList(param).then(data => {
                     if (200 === data.code) {
-                        this.selectedTableData = data.content;
+                        this.selectedInformation = data.content;
                     } else {
                         this.$message.error(data.message);
                     }
@@ -411,30 +553,39 @@
             },
             deleteItem(row) {
                 // 1. 清除已选 tag，指向的相同的地址，可以直接清除
-                this.selectedTableData.splice(this.selectedTableData.indexOf(row), 1);
+                this.selectedInformation.splice(this.selectedInformation.indexOf(row), 1);
             },
-            moveUp(row) {
-
+            // 保存关联标签
+            saveAssociationLabels() {
+                this.selectedLabels = this.selectedLabelTags;
+                this.dialogAssociationLabels = false;
             },
-            moveDown(row) {
-
-            },
-            // 保存关联关系
-            saveAssociation() {
+            // 保存关联资讯
+            saveAssociationInformation() {
                 // 将选中的值赋值给主页面
-                this.selectedTableData = this.selectedItems;
-                this.dialogTableVisible = false;
+                this.selectedInformation = this.selectedInformationTags;
+                this.dialogAssociationInformation = false;
+            },
+            handleLabelsClose(tag) {
+                // console.log("tag标签：", tag);
+                let index = this.selectedLabelTags.indexOf(tag);
+                // 去除 tag 取消选中
+                this.selectedLabelTags.splice(index, 1);
+
+                // 去除 tags 表格取消选中
+                let idIndex = this.checkedLabels.findIndex(i => i === tag.id);
+                this.checkedLabels.splice(idIndex, 1);
             },
             handleClose(tag) {
-                let index = this.selectedItems.indexOf(tag);
+                let index = this.selectedInformationTags.indexOf(tag);
                 // 去除 tag 选中
-                this.selectedItems.splice(index, 1);
+                this.selectedInformationTags.splice(index, 1);
                 // 去除表格选中
                 this.$refs.multipleTable.selection.splice(index, 1);
             },
             handleSelectionChange(rows) {
                 // 新增/修改
-                this.selectedItems = rows;
+                this.selectedInformationTags = rows;
             },
             handleSizeChange(val) {
                 this.param.page.pageSize = val;
@@ -443,6 +594,16 @@
             handleCurrentChange(val) {
                 this.param.page.pageNum = val;
                 this.queryPage();
+            },
+
+            // 标签分页更改
+            handleSizeLabelChange(val) {
+                this.labelParam.page.pageSize = val;
+                this.queryLabelPage();
+            },
+            handleCurrentLabelChange(val) {
+                this.labelParam.page.pageNum = val;
+                this.queryLabelPage();
             },
 
             // 清空查询条件
@@ -475,22 +636,34 @@
                 });
             },
 
-            setRelationEntities() {
+            /**
+             *  编辑关联标签
+             */
+            editAssociationLabels() {
                 // 打开对话框
-                this.dialogTableVisible = true;
+                this.dialogAssociationLabels = true;
+                this.queryLabelGroupList();
+            },
 
-                // console.log("主页面选中的数组：", this.selectedTableData);
+            /**
+             * 编辑关联资讯
+             */
+            editAssociationInformation() {
+                // 打开对话框
+                this.dialogAssociationInformation = true;
+
+                // console.log("主页面选中的数组：", this.selectedInformation);
 
                 this.$nextTick(_ => {
                     // 1. 清空子页面选中
                     this.$refs.multipleTable.clearSelection();
 
                     // 2. 从主页面复制选中的元素给子页面（勾选tag）
-                    this.selectedItems = this.selectedTableData.concat();
-                    // this.selectedItems = [...this.selectedTableData];
+                    this.selectedInformationTags = this.selectedInformation.concat();
+                    // this.selectedInformationTags = [...this.selectedInformation];
 
                     // 3. 勾选子 table
-                    this.selectedItems.forEach(item => this.$refs.multipleTable.selection.push(item));
+                    this.selectedInformationTags.forEach(item => this.$refs.multipleTable.selection.push(item));
 
                     // 4. 重置分页为第一页
                     this.$refs.multipleTablePagination.lastEmittedPage = 1;
@@ -634,8 +807,8 @@
                         let information = [];
                         // 1. 设置关联资讯
 
-                        // console.log("主页面缓存的数据", this.selectedTableData);
-                        this.selectedTableData.forEach(item => information.push({"associationId": item.id, "sourceType": "INFORMATION", "sortNumber": item.sortNumber}));
+                        // console.log("主页面缓存的数据", this.selectedInformation);
+                        this.selectedInformation.forEach(item => information.push({"associationId": item.id, "sourceType": "INFORMATION", "sortNumber": item.sortNumber}));
                         this.form.information = information;
 
                         let param = {
@@ -658,6 +831,9 @@
 
 <style lang="scss" scoped>
 
+    .association-labels {
+        height: 100px; overflow: hidden; text-align: left
+    }
     .el-tag {
         margin-right: 10px;
         margin-bottom: 10px;
