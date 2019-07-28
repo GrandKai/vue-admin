@@ -171,10 +171,10 @@
         </el-row>
 
         <el-dialog title="编辑关联标签" :visible.sync="dialogAssociationLabels" :close-on-click-modal="false" :close-on-press-escape="false" v-dialogDrag>
-            <el-tabs v-model="labelParam.content.activeName" @tab-click="handleClick">
+            <el-tabs v-model="labelParam.content.activeName" @tab-click="handleTagClick">
                 <el-tab-pane :label="item.name" :name="item.name" v-for="item in labelGroups" :key="item.id">
                     <div class="association-labels">
-                        <el-checkbox-group v-model="checkedLabels" @change="handleLabelChange">
+                        <el-checkbox-group v-model="selectedLabelIds" @change="handleLabelChange">
                             <el-row>
                                 <el-col v-for="item in labelTableData" :span="4" :key="item.id">
                                     <el-checkbox :label="item.id" @change="selectLabel($event, item)">{{item.name}}</el-checkbox>
@@ -333,7 +333,6 @@
                 selectedLabelIds: [],
                 selectedLabelTags: [],
 
-                checkedLabels: [],
                 labelGroups: [],
                 labelLoading: true,
                 labelPaginationShow: false,
@@ -489,13 +488,15 @@
                     if (200 === data.code) {
                         this.labelGroups = data.content;
 
-                        let first = this.labelGroups[0];
-                        if (first) {
-                            // 默认选中第一个标签组
-                            this.labelParam.content.activeName = first.name;
-                            this.labelParam.content.groupId = first.id;
-                            this.queryLabelPage();
+                        if (!this.labelParam.content.groupId) {
+                            let first = this.labelGroups[0];
+                            if (first) {
+                                // 默认选中第一个标签组
+                                this.labelParam.content.activeName = first.name;
+                                this.labelParam.content.groupId = first.id;
+                            }
                         }
+                        this.queryLabelPage();
                     }
                 })
             },
@@ -520,7 +521,7 @@
                 });
             },
 
-            handleClick(tab, event) {
+            handleTagClick(tab, event) {
                 // console.log(tab, event);
                 // 选中的标签组id
                 this.labelParam.content.groupId = this.labelGroups[tab.index].id;
@@ -612,8 +613,8 @@
                 this.selectedLabelTags.splice(index, 1);
 
                 // 去除 tags 表格取消选中
-                let idIndex = this.checkedLabels.findIndex(i => i === tag.id);
-                this.checkedLabels.splice(idIndex, 1);
+                let idIndex = this.selectedLabelIds.findIndex(i => i === tag.id);
+                this.selectedLabelIds.splice(idIndex, 1);
             },
             handleClose(tag) {
                 let index = this.selectedInformationTags.indexOf(tag);
@@ -682,6 +683,13 @@
                 // 打开对话框
                 this.dialogAssociationLabels = true;
                 this.queryLabelGroupList();
+                this.$nextTick(_ => {
+                    // 1. 将已经关联的标签在对话框中进行选中
+                    this.selectedLabelIds = this.selectedLabels.map(item => item.id);
+                    // 2. 选中 tag
+                    this.selectedLabelTags = [...this.selectedLabels];
+                });
+
             },
 
             /**
@@ -709,12 +717,6 @@
                     this.param.page.pageNum = 1;
                     this.queryPage();
 
-                    // 编辑
-                    if (!common.isEmpty(this.$route.query.id)) {
-
-                    } else {
-                        // 新增
-                    }
                 });
             },
             handlePictureCardPreview(file) {
