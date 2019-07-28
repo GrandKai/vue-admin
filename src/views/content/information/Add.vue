@@ -98,7 +98,7 @@
 
                                     <img v-if="form.coverImage" :src="form.coverImage" class="avatar">
                                     <i v-else class="el-icon-plus"></i>
-<!--                                    <i v-else class="el-icon-plus avatar-uploader-icon"></i>-->
+                                    <!--                                    <i v-else class="el-icon-plus avatar-uploader-icon"></i>-->
                                     <!--                            <div slot="tip" class="el-upload__tip">请上传400宽400高的图片，仅限一张图片</div>-->
                                     <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过2MB,仅限一张图片</div>
                                 </el-upload>
@@ -119,6 +119,20 @@
                     <el-form-item label="关联标签">
                         <div style="text-align: left">
                             <el-button type="primary" @click="editAssociationLabels" icon="el-icon-edit">编辑关联标签</el-button>
+
+                            <p class="show-alert">已关联的标签</p>
+                            <el-alert type="info" :closable="false">
+                                <!--                                                            <div>-->
+                                <el-tag
+                                        :key="tag.id"
+                                        v-for="tag in selectedLabels"
+                                        closable size="large"
+                                        :disable-transitions="false"
+                                        @close="handleLabelsClose(tag)">
+                                    {{tag.name}}
+                                </el-tag>
+                                <!--                                                            </div>-->
+                            </el-alert>
                         </div>
 
                     </el-form-item>
@@ -126,7 +140,7 @@
                     <el-form-item label="关联资讯">
                         <div style="text-align: left">
                             <el-button type="primary" @click="editAssociationInformation" icon="el-icon-edit">编辑关联资讯</el-button>
-                            <p style="font-size: 13px; line-height: 18px; margin-top: 10px;margin-bottom: 10px">已关联资讯，使用鼠标拖拽调整顺序</p>
+                            <p class="show-alert">已关联资讯，使用鼠标拖拽调整顺序</p>
                             <div class="table">
                                 <el-table :data="selectedInformation"
                                           :show-header="true"
@@ -140,8 +154,8 @@
                                     <el-table-column align="center" fixed="right" header-align="center" label="操作" width="80">
                                         <template slot-scope="scope">
                                             <el-button type="text" @click="deleteItem(scope.row)">删除</el-button>
-<!--                                            <el-button type="text" @click="moveUp(scope.row)">上移</el-button>-->
-<!--                                            <el-button type="text" @click="moveDown(scope.row)">下移</el-button>-->
+                                            <!--                                            <el-button type="text" @click="moveUp(scope.row)">上移</el-button>-->
+                                            <!--                                            <el-button type="text" @click="moveDown(scope.row)">下移</el-button>-->
                                         </template>
                                     </el-table-column>
                                 </el-table>
@@ -162,16 +176,16 @@
                     <div class="association-labels">
                         <el-checkbox-group v-model="checkedLabels" @change="handleLabelChange">
                             <el-row>
-                                    <el-col v-for="item in labelTableData" :span="4" :key="item.id">
-                                            <el-checkbox :label="item.id" @change="selectLabel($event, item)">{{item.name}}</el-checkbox>
-                                    </el-col>
+                                <el-col v-for="item in labelTableData" :span="4" :key="item.id">
+                                    <el-checkbox :label="item.id" @change="selectLabel($event, item)">{{item.name}}</el-checkbox>
+                                </el-col>
                             </el-row>
                         </el-checkbox-group>
                     </div>
                 </el-tab-pane>
             </el-tabs>
 
-<!--            hide-on-single-page-->
+            <!--            hide-on-single-page-->
             <el-pagination class="pagination" @size-change="handleSizeLabelChange" @current-change="handleCurrentLabelChange"
                            small
                            ref="labelMultipleTablePagination"
@@ -179,13 +193,13 @@
                            :current-page="labelParam.page.pageNum" :page-size="labelParam.page.pageSize" background
                            :page-sizes="pageSizes"
                            layout="total, prev, pager, next" :total="labelTotal">
-<!--                           layout="total, sizes, prev, pager, next, jumper" :total="labelTotal">-->
+                <!--                           layout="total, sizes, prev, pager, next, jumper" :total="labelTotal">-->
             </el-pagination>
 
             <el-divider></el-divider>
 
             <div style="text-align: left">
-                <el-alert  type="info" :closable="false">
+                <el-alert type="info" :closable="false">
                     <el-tag
                             :key="tag.id"
                             v-for="tag in selectedLabelTags"
@@ -261,7 +275,7 @@
             <el-divider></el-divider>
 
             <div style="text-align: left">
-                <el-alert  type="info" :closable="false">
+                <el-alert type="info" :closable="false">
 
                     <el-tag
                             :key="tag.id"
@@ -287,8 +301,8 @@
 
     import CustomPage from 'components/listCustomPage/Index';
     import {addEntity, getEntity, queryEntityPageSimple, uploadImage} from 'apis/content/information';
-    import {queryEntityList as queryAssociationList} from 'apis/content/association';
-    import {queryLabelPage,  queryLabelGroupList} from 'apis/label';
+    import {queryInformationList, queryLabelsList} from 'apis/content/association';
+    import {queryLabelPage, queryLabelGroupList} from 'apis/label';
 
     import CKEditor from '@/components/ckeditor/CKEditor';
     import Sortable from 'sortablejs';
@@ -440,7 +454,8 @@
                 // id 存在则说明是编辑页面
                 if (this.form.id) {
                     this.getEntity();
-                    this.queryAssociationList();
+                    this.queryInformationList();
+                    this.queryLabelsList();
                 }
             });
 
@@ -522,7 +537,7 @@
                 const tbody = document.querySelector('.el-table__body-wrapper tbody');
                 const _this = this;
                 Sortable.create(tbody, {
-                    onEnd({ newIndex, oldIndex }) {
+                    onEnd({newIndex, oldIndex}) {
                         const currRow = _this.selectedInformation.splice(oldIndex, 1)[0];
                         _this.selectedInformation.splice(newIndex, 0, currRow);
                     }
@@ -537,13 +552,17 @@
                 //放回索引值
                 return this.param.page.pageSize * (this.param.page.pageNum - 1) + 1 + row.rowIndex;
             },
-            queryAssociationList() {
+
+            /**
+             *  查询所有关联的资讯
+             */
+            queryInformationList() {
                 let param = {
                     content: {
                         sourceId: this.form.id
                     }
                 };
-                queryAssociationList(param).then(data => {
+                queryInformationList(param).then(data => {
                     if (200 === data.code) {
                         this.selectedInformation = data.content;
                     } else {
@@ -551,6 +570,26 @@
                     }
                 });
             },
+
+            /**
+             *  查询所有关联的标签
+             */
+            queryLabelsList() {
+                let param = {
+                    content: {
+                        sourceId: this.form.id
+                    }
+                };
+                queryLabelsList(param).then(data => {
+                    if (200 === data.code) {
+                        this.selectedLabels = data.content;
+                    } else {
+                        this.$message.error(data.message);
+                    }
+                });
+            },
+
+
             deleteItem(row) {
                 // 1. 清除已选 tag，指向的相同的地址，可以直接清除
                 this.selectedInformation.splice(this.selectedInformation.indexOf(row), 1);
@@ -831,9 +870,25 @@
 
 <style lang="scss" scoped>
 
-    .association-labels {
-        height: 100px; overflow: hidden; text-align: left
+    .show-alert {
+        font-size: 13px;
+        line-height: 18px;
+        margin-top: 10px;
+        margin-bottom: 10px
     }
+
+    .show-area {
+        border: 1px dashed;
+        height: auto;
+        border-radius: 5px
+    }
+
+    .association-labels {
+        height: 100px;
+        overflow: hidden;
+        text-align: left
+    }
+
     .el-tag {
         margin-right: 10px;
         margin-bottom: 10px;

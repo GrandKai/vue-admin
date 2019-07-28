@@ -61,7 +61,8 @@ export const user = {
 };
 // 关联内容
 export const association = {
-  QUERY_LIST: '/association/list/information',
+  QUERY_INFORMATION_LIST: '/association/list/information',
+  QUERY_LABEL_LIST: '/association/list/label',
   // ADD: '/association/add',
   // UPDATE: '/association/update',
   // DELETE: '/association/delete',
