@@ -4,7 +4,7 @@
                        separator-class="el-icon-arrow-right">
             <el-breadcrumb-item :to="{ path : '' }">内容管理</el-breadcrumb-item>
             <el-breadcrumb-item :to="{ path : '/information' }">资讯管理</el-breadcrumb-item>
-            <el-breadcrumb-item :to="{ path : '/information/add' }">添加资讯</el-breadcrumb-item>
+            <el-breadcrumb-item :to="{ path : '/information/add' }">{{ !this.$route.query.id ? '添加资讯' : '修改资讯'}}</el-breadcrumb-item>
         </el-breadcrumb>
         <el-row>
             <el-col :span="14">
@@ -124,11 +124,7 @@
                         <div style="text-align: left">
                             <el-button type="primary" @click="setRelationEntities" icon="el-icon-edit">编辑关联资讯</el-button>
 
-                            <br/>
-                            <br/>
-                            已关联资讯
-                            <br/>
-                            <br/>
+                            <p style="font-size: 13px; line-height: 18px; margin-top: 10px;margin-bottom: 10px">已关联资讯，使用鼠标拖拽调整顺序</p>
 
                             <div class="table">
                                 <el-table :data="selectedTableData"
@@ -162,11 +158,21 @@
         <el-dialog title="编辑关联资讯" :visible.sync="dialogTableVisible" :close-on-click-modal="false" :close-on-press-escape="false" v-dialogDrag>
             <custom-page>
                 <template slot="queryArea">
-
+                    <li>
+                        <el-input clearable
+                                  v-model="param.content.name"
+                                  placeholder="标题内容"
+                                  style="width: 220px"
+                                  @input="clearInput"
+                                  @keyup.native.enter="queryPage"></el-input>
+                    </li>
                 </template>
 
                 <template slot="buttonArea">
-
+                    <li>
+                        <el-button icon="el-icon-search" type="primary" @click="queryPage()">查 询</el-button>
+                        <el-button icon="el-icon-delete" @click="clearQueryParam">清 空</el-button>
+                    </li>
                 </template>
 
                 <template slot="tableArea">
@@ -272,8 +278,6 @@
                     content: {
                         category: '',
                         name: '',
-                        type: 1,
-                        status: 1
                     },
                     page: {
                         pageNum: 1,
@@ -441,6 +445,19 @@
                 this.queryPage();
             },
 
+            // 清空查询条件
+            clearQueryParam() {
+                this.param.content.name = '';
+                this.param.content.category = '';
+                this.param.page.pageNum = 1;
+                this.param.page.pageSize = pageSizes[0];
+
+                this.queryPage();
+            },
+
+            clearInput() {
+                this.queryPage();
+            },
             queryPage() {
 
                 this.loading = true;
