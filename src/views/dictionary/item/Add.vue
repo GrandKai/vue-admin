@@ -55,42 +55,6 @@
         data() {
             return {
                 options: [],
-                form: {
-                    name: '',
-                    typeId: '',
-                    code: '',
-                    sortNumber: 10,
-                    isShow: '1'
-                },
-                // 校验规则
-                rules: {
-                    name: [
-                        {
-                            required: true,
-                            max: 50,
-                            message: "请输入数据项目名称，长度在50个字符内",
-                            trigger: "blur"
-                        }
-                    ],
-                    typeId: [
-                        {required: true, message: "请选择数据类型", trigger: "change"}
-                    ],
-                    code: [
-                        {validator: this.checkExist, trigger: "blur"},
-                        {
-                            required: true,
-                            max: 200,
-                            message: "请输入数据项目编码，长度在200个字符内",
-                            trigger: "blur"
-                        }
-                    ],
-                    sortNumber: [
-                        {required: true, validator: common.checkNumber, trigger: "blur"}
-                    ],
-                    isShow: [
-                        {required: true, message: "请选择数据项目显示状态", trigger: "blur"}
-                    ],
-                }
             }
         },
         created() {

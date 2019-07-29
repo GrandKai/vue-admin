@@ -13,15 +13,15 @@
             <template slot="queryArea">
 
                 <li>
-                    <el-input v-model="param.content.name" placeholder="数据项目名称/编码" @keyup.native.enter="queryPage"
-                              style="width: 220px"
-                              clearable @input="queryPage"></el-input>
+                    <el-select v-model="param.content.typeId" placeholder="全部数据类型" clearable @change="queryPage">
+                        <el-option v-for="item in options" :key="item.id" :label="item.name" :value="item.id"></el-option>
+                    </el-select>
                 </li>
 
                 <li>
-                    <el-select v-model="param.content.typeId" placeholder="请选择数据类型" clearable @change="queryPage">
-                        <el-option v-for="item in options" :key="item.id" :label="item.name" :value="item.id"></el-option>
-                    </el-select>
+                    <el-input v-model="param.content.name" placeholder="数据项目名称/编码" @keyup.native.enter="queryPage"
+                              style="width: 220px"
+                              clearable @input="queryPage"></el-input>
                 </li>
 
                 <li>
@@ -118,6 +118,50 @@
                 :fieldValue="formDialog.fieldValue"
                 :type="formDialog.type" @closeDialog="closeDialog" @submitForm="onSubmit">
         </form-dialog>
+
+        <el-dialog v-dialogDrag
+                   width="400px"
+                   :before-close="closeDialogAdd"
+                   :close-on-click-modal="false"
+                   :close-on-press-escape="false"
+                   title="新建数据项目"
+                   :visible.sync="dialogVisibleAdd">
+            <el-form ref="form" :model="form" :rules="rules" label-width="120px">
+
+                <el-form-item label="数据项目类型" prop="typeId" align="left">
+                    <el-select v-model="form.typeId" placeholder="请选择数据项目类型" clearable style="width: 100%">
+                        <el-option v-for="item in options" :key="item.id" :label="item.name" :value="item.id"></el-option>
+                    </el-select>
+                </el-form-item>
+
+                <el-form-item label="数据项目名称" prop="name">
+                    <el-input v-model.trim="form.name" @keydown.native.enter="onSubmit"></el-input>
+                </el-form-item>
+
+                <el-form-item label="数据项目编码" prop="code">
+                    <el-input v-model.trim="form.code" @keydown.native.enter="onSubmit"></el-input>
+                </el-form-item>
+
+                <el-form-item label="显示顺序" prop="sortNumber">
+                    <el-input v-model.trim="form.sortNumber" @keydown.native.enter="onSubmit"></el-input>
+                </el-form-item>
+
+                <el-form-item label="显示状态" prop="isShow" align="left">
+                    <el-switch v-model="form.isShow"
+                               active-value="1"
+                               inactive-value="0"
+                               active-text="显示"
+                               inactive-text="隐藏"
+                               active-color="#13ce66"
+                    ></el-switch>
+                </el-form-item>
+            </el-form>
+
+            <span class="dialog-footer" slot="footer">
+                <el-button type="primary" @click="onSubmitAdd" :loading="isLoading">保 存</el-button>
+                <el-button @click="closeDialogAdd">取 消</el-button>
+            </span>
+        </el-dialog>
     </div>
 
 </template>
@@ -127,7 +171,7 @@
     import FormDialog from 'components/business/dialog/FormCustomDialog';
     import {queryDictionaryTypeList} from "apis/dictionary/type";
 
-    import {queryDictionaryItemPage, updateDictionaryItem, deleteDictionaryItem, setDictionaryItem} from "apis/dictionary/item";
+    import {queryDictionaryItemPage, addDictionaryItem, updateDictionaryItem, deleteDictionaryItem, checkExist, setDictionaryItem} from "apis/dictionary/item";
 
     export default {
         components: {
@@ -174,6 +218,44 @@
                 },
 
                 tableData: [],
+
+                dialogVisibleAdd: false,
+                form: {
+                    name: '',
+                    typeId: '',
+                    code: '',
+                    sortNumber: 10,
+                    isShow: '1'
+                },
+                // 校验规则
+                rules: {
+                    name: [
+                        {
+                            required: true,
+                            max: 50,
+                            message: "请输入数据项目名称，长度在50个字符内",
+                            trigger: "blur"
+                        }
+                    ],
+                    typeId: [
+                        {required: true, message: "请选择数据类型", trigger: "change"}
+                    ],
+                    code: [
+                        {validator: this.checkExist, trigger: "blur"},
+                        {
+                            required: true,
+                            max: 200,
+                            message: "请输入数据项目编码，长度在200个字符内",
+                            trigger: "blur"
+                        }
+                    ],
+                    sortNumber: [
+                        {required: true, validator: common.checkNumber, trigger: "blur"}
+                    ],
+                    isShow: [
+                        {required: true, message: "请选择数据项目显示状态", trigger: "blur"}
+                    ],
+                }
             }
         },
 
@@ -219,6 +301,46 @@
                         this.queryPage();
                     } else {
                         this.$message.error(data.message);
+                    }
+                });
+            },
+
+            closeDialogAdd() {
+                this.dialogVisibleAdd = false;
+            },
+
+            onSubmitAdd() {
+                this.$refs["form"].validate(valid => {
+                    if (valid) {
+                        let param = {
+                            content: this.form
+                        };
+                        addDictionaryItem(param).then(data => {
+                            this.dialogVisibleAdd = false;
+                            if (200 === data.code) {
+                                this.$message.success(data.message);
+                                this.$refs.form.resetFields();
+                                this.queryPage();
+                            } else {
+                                this.$message.error(data.message);
+                            }
+                        });
+                    }
+                });
+            },
+
+            /**
+             * 校验数据项目是否存在
+             * @param rule
+             * @param value 数据项目名
+             * @param callback
+             */
+            checkExist(rule, value, callback) {
+                checkExist({content: value}).then(data => {
+                    if (200 !== data.code) {
+                        callback(new Error(data.message));
+                    } else {
+                        callback();
                     }
                 });
             },
@@ -288,7 +410,8 @@
             /********************************* 业务逻辑处理 ************************************/
 
             addEntity() {
-                this.$router.push('/dictionary/item/add');
+                // this.$router.push('/dictionary/item/add');
+                this.dialogVisibleAdd = true;
             },
 
             /**
@@ -354,7 +477,7 @@
                         this.$message.error(data.message);
                     }
                 });
-            }
+            },
         },
     }
 </script>
