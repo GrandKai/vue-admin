@@ -3,10 +3,11 @@
         <el-dialog v-dialogDrag width="500px"
                    :before-close="closeDialog"
                    :close-on-click-modal="false"
+                   :close-on-press-escape="false"
                    :title="title"
                    :visible.sync="dialogVisible">
             <div class="clearfix">
-                <el-form label-width="100px" ref="form" :model="form" :rules="rules">
+                <el-form label-width="100px" ref="form" :model="form" :rules="rules" @submit.native.prevent>
                     <el-form-item prop="content" :label="label">
                         <el-input clearable v-model="form.content" :type="type" :rows="rows"></el-input>
                     </el-form-item>

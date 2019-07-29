@@ -58,7 +58,7 @@
 
                     <el-table-column label="数据项目名称" header-align="left" align="left">
                         <template slot-scope="scope">
-                            <div class="click-text" @click='updateEntity(scope.row , "name" , "数据项目名称")'>
+                            <div class="click-text" @click='openDialog(scope.row, "name", "数据项目名称", "text", formRules.name)'>
                                 {{ scope.row.name }}
                             </div>
                         </template>
@@ -69,7 +69,7 @@
 
                     <el-table-column label="显示顺序" header-align="left" align="left" fixed="right">
                         <template slot-scope="scope">
-                            <div class="click-text" @click='updateEntity(scope.row , "sortNumber" , "显示顺序")'>
+                            <div class="click-text" @click='openDialog(scope.row, "sortNumber", "显示顺序", "text", formRules.sortNumber)'>
                                 {{ scope.row.sortNumber}}
                             </div>
                         </template>
@@ -110,41 +110,53 @@
             </template>
         </custom-page>
 
-
-        <!-- 编辑【角色】信息对话框 -->
-        <el-dialog :title="dlgSettings.title + '设置'"
-                   :visible.sync="dlgSettings.visible"
-                   width="30%"
-                   :close-on-click-modal="false">
-            <el-form :model="editForm" :rules="rules" ref="editForm" onsubmit="return false;">
-                <div class="clearfix">
-                    <el-form-item prop="content">
-                        <el-input v-model.trim="editForm.content" placeholder="请输入内容" class="left role-input"
-                                  :type="dlgSettings.inputType" :rows="dlgSettings.rowNum"
-                                  @keyup.native.enter="onSubmit"></el-input>
-                        <el-button @click="dlgSettings.visible = false" class="left">取 消</el-button>
-                        <el-button type="primary" @click="onSubmit" class="left">保 存</el-button>
-                    </el-form-item>
-                </div>
-            </el-form>
-
-        </el-dialog>
+        <form-dialog
+                :title="formDialog.title"
+                :dialogVisible="formDialog.dialogVisible"
+                :rules="formDialog.rules"
+                :label="formDialog.label"
+                :fieldValue="formDialog.fieldValue"
+                :type="formDialog.type" @closeDialog="closeDialog" @submitForm="onSubmit">
+        </form-dialog>
     </div>
 
 </template>
 
 <script>
     import CustomPage from 'components/listCustomPage/Index';
+    import FormDialog from 'components/business/dialog/FormCustomDialog';
     import {queryDictionaryTypeList} from "apis/dictionary/type";
 
     import {queryDictionaryItemPage, updateDictionaryItem, deleteDictionaryItem, setDictionaryItem} from "apis/dictionary/item";
 
     export default {
         components: {
-            'custom-page': CustomPage
+            'custom-page': CustomPage,
+            'form-dialog': FormDialog,
         },
         data() {
             return {
+                formRules: {
+                    sortNumber: [
+                        {validator: common.checkNumber, trigger: "blur"}
+                    ],
+                    name: [
+                        {required: true, message: "请输入数据项目名称，长度在50个字符内", trigger: "blur", max: 50},
+                    ]
+                },
+                // 校验规则
+                formDialog: {
+                    id: '',
+                    rules: {},
+                    dialogVisible: false,//默认弹出框为隐藏
+                    title: '',//
+                    label: '',
+                    fieldValue: '',
+                    fieldName: '',
+                    type: '',
+                    rows: 1
+                },
+
                 options: [],
                 loading: true,
                 paginationShow: false,
@@ -162,24 +174,6 @@
                 },
 
                 tableData: [],
-
-                // 修改的内容
-                editForm: {
-                    id: "",
-                    property: "",
-                    content: ""
-                },
-
-                // 弹出框属性设置
-                dlgSettings: {
-                    title: "", // 弹窗标题
-                    visible: false, // 弹窗可见
-                    inputType: "text", // 弹窗内文本框类型
-                    rowNum: 1 // 文本框行数
-                },
-                // 校验规则
-
-                rules: {}
             }
         },
 
@@ -188,6 +182,46 @@
             this.queryDictionaryTypeList();
         },
         methods: {
+            closeDialog() {
+                this.formDialog.dialogVisible = false;
+            },
+            // 打开弹出框
+            openDialog(row, fieldName, title, type, contentRules) {
+                console.log("打开对话框，设置属性：", row);
+                if (!contentRules) contentRules = [];
+                this.formDialog.id = row.id;
+                this.formDialog.title = `修改${title}`;
+                this.formDialog.label = title;
+                this.formDialog.dialogVisible = true;
+                this.formDialog.fieldName = fieldName;
+                this.formDialog.fieldValue = row[fieldName];
+                this.formDialog.type = type;
+
+                this.formDialog.rules = {
+                    content: contentRules
+                };
+            },
+            /***************　提交修改信息　*********************/
+            onSubmit(value) {
+                // 传入参数
+                let param = {
+                    content: {
+                        id: this.formDialog.id, // 修改记录的ID
+                    }
+                };
+                // 修改记录的属性和属性值
+                param.content[this.formDialog.fieldName] = value;
+
+                updateDictionaryItem(param).then(data => {
+                    this.formDialog.dialogVisible = false;
+                    if (200 === data.code) {
+                        this.$message.success(data.message);
+                        this.queryPage();
+                    } else {
+                        this.$message.error(data.message);
+                    }
+                });
+            },
 
             tableRowClassName({row, rowIndex}) {
                 // 把每一行的索引放进row
@@ -257,44 +291,6 @@
                 this.$router.push('/dictionary/item/add');
             },
 
-
-            /***************　打开修改系统对话框　*********************/
-            updateEntity(row, rowName, dlgTitle) {
-
-                // 判断弹出框展示样式
-                switch (rowName) {
-                    case 'description': {
-                        this.dlgSettings = {title: dlgTitle, visible: true, inputType: "textarea", rowNum: 4};
-                        break;
-                    }
-                    default: {
-                        this.dlgSettings = {title: dlgTitle, visible: true, inputType: "text", rowNum: 1};
-                        break;
-                    }
-                }
-                // 根据列名添加校验规则
-                switch (rowName) {
-                    case 'sortNumber': {
-                        // 手动添加的数字校验
-                        this.rules.content = [{validator: common.checkNumber, trigger: "blur"}];
-                        break;
-                    }
-                    case 'name': {
-                        this.rules.content = [
-                            {required: true, message: "请输入" + dlgTitle + "，长度在50个字符内", trigger: "blur", max: 50},
-                        ];
-                        break;
-                    }
-                }
-                // 清空表单
-                common.clearForm(this, "editForm");
-                this.editForm = {
-                    id: row.id,
-                    property: rowName,
-                    content: row[rowName]
-                };
-            },
-
             /**
              * 删除实体
              * @param id
@@ -345,31 +341,6 @@
                 });
             },
 
-            /***************　提交修改信息　*********************/
-            onSubmit() {
-                this.$refs.editForm.validate(valid => {
-                    if (valid) {
-                        // 传入参数
-                        let param = {
-                            content: {
-                                id: this.editForm.id, // 修改记录的ID
-                            }
-                        };
-                        // 修改记录的属性和属性值
-                        param.content[this.editForm.property] = this.editForm.content;
-
-                        updateDictionaryItem(param).then(data => {
-                            this.dlgSettings.visible = false; // 对话框关闭
-                            if (200 === data.code) {
-                                this.$message.success(data.message);
-                                this.queryPage();
-                            } else {
-                                this.$message.error(data.message);
-                            }
-                        });
-                    }
-                });
-            },
             queryDictionaryTypeList() {
                 let param = {
                     content: {
