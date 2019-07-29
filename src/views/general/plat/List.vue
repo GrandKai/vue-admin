@@ -28,7 +28,7 @@
 
                     <el-table-column label="系统名称" header-align="left" align="left" fixed="right">
                         <template slot-scope="scope">
-                            <div class="click-text" @click='updateEntity(scope.row , "name" , "系统名称")'>
+                            <div class="click-text" @click='openDialog(scope.row, "name", "系统名称", "text", formRules.name)'>
                                 {{ scope.row.name }}
                             </div>
                         </template>
@@ -36,7 +36,7 @@
 
                     <el-table-column label="显示顺序" header-align="left" align="left" fixed="right">
                         <template slot-scope="scope">
-                            <div class="click-text" @click='updateEntity(scope.row , "sortNumber" , "显示顺序")'>
+                            <div class="click-text" @click='openDialog(scope.row, "sortNumber", "显示顺序", "text", formRules.sortNumber)'>
                                 {{ scope.row.sortNumber}}
                             </div>
                         </template>
@@ -44,7 +44,7 @@
 
                     <el-table-column label="版本号" header-align="left" align="left" fixed="right">
                         <template slot-scope="scope">
-                            <div class="click-text" @click='updateEntity(scope.row , "version" , "版本号")'>
+                            <div class="click-text" @click='openDialog(scope.row, "version", "版本号", "text", formRules.version)'>
                                 {{ scope.row.version }}
                             </div>
                         </template>
@@ -52,7 +52,7 @@
 
                     <el-table-column label="访问URL" header-align="left" align="left" fixed="right">
                         <template slot-scope="scope">
-                            <div class="click-text" @click='updateEntity(scope.row , "url" , "访问URL")'>
+                            <div class="click-text" @click='openDialog(scope.row, "url", "访问URL", "text", formRules.url)'>
                                 {{ scope.row.url }}
                             </div>
                         </template>
@@ -60,7 +60,7 @@
 
                     <el-table-column label="系统描述" header-align="left" align="left" fixed="right">
                         <template slot-scope="scope">
-                            <div class="click-text" @click='updateEntity(scope.row , "description" , "系统描述")'>
+                            <div class="click-text" @click='openDialog(scope.row, "description", "系统描述", "textarea", formRules.description)'>
                                 {{ scope.row.description }}
                             </div>
                         </template>
@@ -69,7 +69,7 @@
                     <el-table-column label="系统状态" header-align="center" align="center" fixed="right" width="80px">
                         <template slot-scope="scope">
                             <el-tag :type="scope.row.isEnabled === '1' ? 'success' : 'danger'" disable-transitions>
-                                {{ scope.row.isEnabled == '1' ? '运行中' : '停用'}}
+                                {{ scope.row.isEnabled === '1' ? '运行中' : '停用'}}
                             </el-tag>
                         </template>
                     </el-table-column>
@@ -100,277 +100,244 @@
                                :current-page.sync="param.page.pageNum" :page-size="param.page.pageSize"
                                layout="total, sizes,prev, pager, next, jumper" :total="total">
                 </el-pagination>
-
             </template>
         </custom-page>
 
-
-        <!-- 编辑权限系统信息对话框 -->
-        <el-dialog :title="dlgSettings.title + '设置'" :visible.sync="dlgSettings.visible" width="30%"
-                   :close-on-click-modal="false">
-            <el-form :model="editForm" :rules="rules" ref="editForm" onsubmit="return false;">
-                <div class="clearfix">
-                    <el-form-item prop="content">
-                        <el-input v-model.trim="editForm.content" placeholder="请输入内容" class="left role-input"
-                                  :type="dlgSettings.inputType" :rows="dlgSettings.rowNum"
-                                  @keyup.native.enter="onSubmit"></el-input>
-                        <el-button @click="dlgSettings.visible = false" class="left">取 消</el-button>
-                        <el-button type="primary" @click="onSubmit" class="left">保 存</el-button>
-                    </el-form-item>
-                </div>
-            </el-form>
-        </el-dialog>
-        <!--<plat-update-dialog :dlgSettings1="dlgSettings" :dialogVisible="false"></plat-update-dialog>-->
+        <form-dialog
+                :title="formDialog.title"
+                :dialogVisible="formDialog.dialogVisible"
+                :rules="formDialog.rules"
+                :label="formDialog.label"
+                :fieldValue="formDialog.fieldValue"
+                :type="formDialog.type" @closeDialog="closeDialog" @submitForm="onSubmit">
+        </form-dialog>
 
     </div>
 </template>
 
 <script>
-  // 导入校验规则
-  import CustomPage from 'components/listCustomPage/Index'
-  // import PlatUpdate from 'components/business/dialog/PlatUpdate'
-  import {queryPlatPage, stopPlat, deletePlat, checkUpdateExistPlat, updatePlat} from 'apis/general/plat'
+    // 导入校验规则
+    import CustomPage from 'components/listCustomPage/Index'
+    import FormDialog from 'components/business/dialog/FormCustomDialog';
+    // import PlatUpdate from 'components/business/dialog/PlatUpdate'
+    import {queryPlatPage, stopPlat, deletePlat, checkUpdateExistPlat, updatePlat} from 'apis/general/plat'
 
-  export default {
-    components: {
-      'custom-page': CustomPage,
-      // 'plat-update-dialog': PlatUpdate
-    },
-    data() {
-      return {
-        // 修改的内容
-        editForm: {
-          id: "",
-          property: "",
-          content: ""
+    export default {
+        components: {
+            'custom-page': CustomPage,
+            'form-dialog': FormDialog,
+            // 'plat-update-dialog': PlatUpdate
         },
-        loading: false,
-        paginationShow: false,
-        pageSizes: pageSizes,
-        total: 0,
-        param: {
-          content: {},
-          page: {
-            pageNum: 1,
-            pageSize: pageSizes[0]
-          }
-        },
+        data() {
+            return {
+                formRules: {
+                    name: [
+                        {required: true, message: `请输入系统名称，长度在50个字符内"`, trigger: "blur", max: 50},
+                        {validator: this.checkExist, trigger: "blur"}
+                    ],
+                    sortNumber: [
+                        {validator: common.checkNumber, trigger: "blur"}
+                    ],
+                    version: [
+                        {required: true, message: "请输入版本号，长度在50个字符内", trigger: "blur", max: 50},
+                    ],
+                    url: [
+                        {required: true, message: "请输入访问URL，长度在500个字符内", trigger: "blur", max: 500},
+                    ],
+                    description: [
+                        {required: true, message: "请输入系统描述，长度在500个字符内", trigger: "blur", max: 500},
+                    ],
+                },
+                // 校验规则
+                formDialog: {
+                    id: '',
+                    rules: {},
+                    dialogVisible: false,//默认弹出框为隐藏
+                    title: '',//
+                    label: '',
+                    fieldValue: '',
+                    fieldName: '',
+                    type: '',
+                    rows: 1
+                },
 
-        tableData: [],
+                loading: false,
+                paginationShow: false,
+                pageSizes: pageSizes,
+                total: 0,
+                param: {
+                    content: {},
+                    page: {
+                        pageNum: 1,
+                        pageSize: pageSizes[0]
+                    }
+                },
 
-        // 弹出框属性设置
-        dlgSettings: {
-          title: "", // 弹窗标题
-          visible: false, // 弹窗可见
-          inputType: "text", // 弹窗内文本框类型
-          rowNum: 1 // 文本框行数
-        },
+                tableData: [],
 
-        // 校验规则
-        rules: {}
-      };
-    },
-    created () {
-      this.queryPage();
-    },
-    methods: {
-
-      tableRowClassName({row, rowIndex}) {
-        // 把每一行的索引放进row
-        row.rowIndex = rowIndex
-      },
-
-      formatter(row, column, cellValue, index) {
-        //放回索引值
-        return this.param.page.pageSize * (this.param.page.pageNum - 1) + 1 + row.rowIndex;
-      },
-
-      /**
-       * 分页查询
-       * @param param
-       */
-      queryPage() {
-        this.loading = true;
-        queryPlatPage(this.param).then((data) => {
-          this.loading = false;
-          this.paginationShow = true;
-
-          if (data.content && data.content.list) {
-            this.tableData = data.content.list;
-            this.total = data.content.total;
-          }
-        }).catch(error => {
-          this.loading = false;
-        });
-      },
-
-      // 改变页码
-      handleCurrentChange(val) {
-        this.param.page.pageNum = val;
-        this.queryPage();
-      },
-      // 改变每页显示多少条
-      handleSizeChange(value) {
-        this.param.page.pageSize = value;
-        this.queryPage();
-      },
-
-      addEntity: function () {
-        this.$router.push("/plat/add");
-      },
-
-      /***************　打开修改系统对话框　*********************/
-      updateEntity(row, rowName, dlgTitle) {
-
-        // 判断弹出框展示样式
-        switch (rowName) {
-          case 'description': {
-            this.dlgSettings = {title: dlgTitle, visible: true, inputType: "textarea", rowNum: 4};
-            break;
-          }
-          default: {
-            this.dlgSettings = {title: dlgTitle, visible: true, inputType: "text", rowNum: 1};
-            break;
-          }
-        }
-        // 根据列名添加校验规则
-        switch (rowName) {
-          case 'sortNumber': {
-            // 手动添加的数字校验
-            this.rules.content = [{validator: common.checkNumber, trigger: "blur"}];
-            break;
-          }
-          case 'name': {
-            this.rules.content = [
-              {required: true, message: "请输入" + dlgTitle + "，长度在50个字符内", trigger: "blur", max: 50},
-              {validator: this.checkExist, trigger: "blur"}
-            ];
-            break;
-          }
-          case 'description': {
-            this.rules.content = [
-              {required: true, message: "请输入" + dlgTitle + "，长度在500个字符内", trigger: "blur", max: 500},
-            ];
-            break;
-          }
-          case 'url': {
-            this.rules.content = [
-              {required: true, message: "请输入" + dlgTitle + "，长度在500个字符内", trigger: "blur", max: 500},
-            ];
-            break;
-          }
-          default: {
-            this.rules.content = [
-              {required: true, message: "请输入" + dlgTitle + "，长度在50个字符内", trigger: "blur", max: 50},
-            ];
-            break;
-          }
-        }
-        // 清空表单
-        common.clearForm(this, "editForm");
-        this.editForm = {
-          id: row.id,
-          property: rowName,
-          content: row[rowName]
-        };
-      },
-      /*********************** 根据系统名 校验是否存在系统  ***************************/
-
-      /**
-       * 校验系统是否存在
-       * @param rule
-       * @param value 系统名
-       * @param callback
-       */
-      checkExist(rule, value, callback) {
-        let param = {
-          content: {
-            id: this.editForm.id,
-            name: value
-          }
-        };
-        checkUpdateExistPlat(param).then(data => {
-          if (200 === data.code) {
-            callback();
-          } else {
-              callback(new Error(data.message));
-          }
-        });
-      },
-
-      /***************　提交修改信息　*********************/
-      onSubmit() {
-        this.$refs.editForm.validate(valid => {
-          if (valid) {
-            // 传入参数
-            let param = {
-              content: {
-                id: this.editForm.id, // 修改记录的ID
-              }
             };
-            // 修改记录的属性和属性值
-            param.content[this.editForm.property] = this.editForm.content;
+        },
+        created() {
+            this.queryPage();
+        },
+        methods: {
+            closeDialog() {
+                this.formDialog.dialogVisible = false;
+            },
+            // 打开弹出框
+            openDialog(row, fieldName, title, type, contentRules) {
+                console.log("打开对话框，设置属性：", row);
+                if (!contentRules) contentRules = [];
+                this.formDialog.id = row.id;
+                this.formDialog.title = `修改${title}`;
+                this.formDialog.label = title;
+                this.formDialog.dialogVisible = true;
+                this.formDialog.fieldName = fieldName;
+                this.formDialog.fieldValue = row[fieldName];
+                this.formDialog.type = type;
 
-            updatePlat(param).then(data => {
-              this.dlgSettings.visible = false; // 对话框关闭
-              if (200 === data.code) {
-                this.$message.success(data.message);
+                this.formDialog.rules = {
+                    content: contentRules
+                };
+            },
+
+            /***************　提交修改信息　*********************/
+            onSubmit(value) {
+                // 传入参数
+                let param = {
+                    content: {
+                        id: this.formDialog.id, // 修改记录的ID
+                    }
+                };
+                // 修改记录的属性和属性值
+                param.content[this.formDialog.fieldName] = value;
+
+                updatePlat(param).then(data => {
+                    this.formDialog.dialogVisible = false;
+                    if (200 === data.code) {
+                        this.$message.success(data.message);
+                        this.queryPage();
+                    } else {
+                        this.$message.error(data.message);
+                    }
+                });
+            },
+
+            tableRowClassName({row, rowIndex}) {
+                // 把每一行的索引放进row
+                row.rowIndex = rowIndex
+            },
+
+            formatter(row, column, cellValue, index) {
+                //放回索引值
+                return this.param.page.pageSize * (this.param.page.pageNum - 1) + 1 + row.rowIndex;
+            },
+
+            /**
+             * 分页查询
+             * @param param
+             */
+            queryPage() {
+                this.loading = true;
+                queryPlatPage(this.param).then((data) => {
+                    this.loading = false;
+                    this.paginationShow = true;
+
+                    if (data.content && data.content.list) {
+                        this.tableData = data.content.list;
+                        this.total = data.content.total;
+                    }
+                }).catch(error => {
+                    this.loading = false;
+                });
+            },
+
+            // 改变页码
+            handleCurrentChange(val) {
+                this.param.page.pageNum = val;
                 this.queryPage();
-              } else {
-                this.$message.error(data.message);
-              }
-            });
-          }
-        });
-      },
+            },
+            // 改变每页显示多少条
+            handleSizeChange(value) {
+                this.param.page.pageSize = value;
+                this.queryPage();
+            },
 
-      /**
-       * 删除实体
-       * @param id
-       */
-      deleteEntity(row) {
-        common.confirm({
-          message: `此操作将永久删除, 是否继续？`,
-        }).then(() => {
-          deletePlat({content: row.id}).then(data => {
-            if (200 === data.code) {
-              this.$message.success(`【${row.name}】删除成功`);
-              this.queryPage();
-            } else {
-              this.$message.error(data.message);
-            }
-          });
-        }).catch(() => {
-        });
-      },
+            addEntity: function () {
+                this.$router.push("/plat/add");
+            },
 
-      updateEntityEnabledStatus(row) {
+            /*********************** 根据系统名 校验是否存在系统  ***************************/
 
-        let text = row.isEnabled === '1' ? '停用' : '启用';
-        let isEnabled = row.isEnabled === '1' ? '0' : '1';
+            /**
+             * 校验系统是否存在
+             * @param rule
+             * @param value 系统名
+             * @param callback
+             */
+            checkExist(rule, value, callback) {
+                let param = {
+                    content: {
+                        id: this.formDialog.id,
+                        name: value
+                    }
+                };
+                checkUpdateExistPlat(param).then(data => {
+                    if (200 === data.code) {
+                        callback();
+                    } else {
+                        callback(new Error(data.message));
+                    }
+                });
+            },
 
-        common.confirm({
-          message: `此操作将【${text}】该系统, 是否继续？`,
-        }).then(() => {
-          let param = {
-            content: {
-              id: row.id,
-              isEnabled: isEnabled
-            }
-          };
-          stopPlat(param).then(data => {
-            if (200 === data.code) {
-              this.$message.success(data.message);
-              this.queryPage();
-            } else {
-              this.$message.error(data.message);
-            }
-          });
-        }).catch(_ => {
-        });
-      },
-    }
-  };
+            /**
+             * 删除实体
+             * @param id
+             */
+            deleteEntity(row) {
+                common.confirm({
+                    message: `此操作将永久删除, 是否继续？`,
+                }).then(() => {
+                    deletePlat({content: row.id}).then(data => {
+                        if (200 === data.code) {
+                            this.$message.success(`【${row.name}】删除成功`);
+                            this.queryPage();
+                        } else {
+                            this.$message.error(data.message);
+                        }
+                    });
+                }).catch(() => {
+                });
+            },
+
+            updateEntityEnabledStatus(row) {
+
+                let text = row.isEnabled === '1' ? '停用' : '启用';
+                let isEnabled = row.isEnabled === '1' ? '0' : '1';
+
+                common.confirm({
+                    message: `此操作将【${text}】该系统, 是否继续？`,
+                }).then(() => {
+                    let param = {
+                        content: {
+                            id: row.id,
+                            isEnabled: isEnabled
+                        }
+                    };
+                    stopPlat(param).then(data => {
+                        if (200 === data.code) {
+                            this.$message.success(data.message);
+                            this.queryPage();
+                        } else {
+                            this.$message.error(data.message);
+                        }
+                    });
+                }).catch(_ => {
+                });
+            },
+        }
+    };
 </script>
 
 <style lang="scss" scoped>
