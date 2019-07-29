@@ -220,6 +220,7 @@
                 tableData: [],
 
                 dialogVisibleAdd: false,
+                isLoading: false,
                 form: {
                     name: '',
                     typeId: '',
@@ -310,6 +311,7 @@
             },
 
             onSubmitAdd() {
+                this.isLoading = true;
                 this.$refs["form"].validate(valid => {
                     if (valid) {
                         let param = {
@@ -324,7 +326,10 @@
                             } else {
                                 this.$message.error(data.message);
                             }
+                            this.isLoading = false;
                         });
+                    } else  {
+                        this.isLoading = false;
                     }
                 });
             },

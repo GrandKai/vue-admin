@@ -107,6 +107,43 @@
                 :type="formDialog.type" @closeDialog="closeDialog" @submitForm="onSubmit">
         </form-dialog>
 
+        <el-dialog v-dialogDrag
+                   width="400px"
+                   :before-close="closeDialogAdd"
+                   :close-on-click-modal="false"
+                   :close-on-press-escape="false"
+                   title="新建数据类型"
+                   :visible.sync="dialogVisibleAdd">
+
+            <el-form ref="form" :model="form" :rules="rules" label-width="120px">
+
+                <el-form-item label="数据类型名称" prop="name">
+                    <el-input v-model.trim="form.name"></el-input>
+                </el-form-item>
+
+                <el-form-item label="数据类型编码" prop="code">
+                    <el-input v-model.trim="form.code"></el-input>
+                </el-form-item>
+
+                <el-form-item label="显示顺序" prop="sortNumber">
+                    <el-input v-model.trim="form.sortNumber"></el-input>
+                </el-form-item>
+
+                <el-form-item label="显示状态" prop="isShow" align="left">
+                    <el-switch v-model="form.isShow"
+                               active-value="1"
+                               inactive-value="0"
+                               active-text="显示"
+                               inactive-text="隐藏"
+                               active-color="#13ce66"
+                    ></el-switch>
+                </el-form-item>
+            </el-form>
+            <span class="dialog-footer" slot="footer">
+                <el-button type="primary" @click="onSubmitAdd" :loading="isLoading">保 存</el-button>
+                <el-button @click="closeDialogAdd">取 消</el-button>
+            </span>
+        </el-dialog>
     </div>
 </template>
 
@@ -115,9 +152,11 @@
     import FormDialog from 'components/business/dialog/FormCustomDialog';
     import {
         queryDictionaryTypePage,
+        addDictionaryType,
         updateDictionaryType,
-        setDictionaryType,
         deleteDictionaryType,
+        checkExist,
+        setDictionaryType,
         checkStatus
     } from 'apis/dictionary/type';
 
@@ -162,6 +201,41 @@
                 },
                 tableData: [],
 
+                dialogVisibleAdd: false,
+                isLoading: false,
+
+                form: {
+                    name: "",
+                    code: "",
+                    sortNumber: 10,
+                    isShow: '1'
+                },
+                // 校验规则
+                rules: {
+                    name: [
+                        {
+                            required: true,
+                            max: 50,
+                            message: "请输入数据类型名称，长度在50个字符内",
+                            trigger: "blur"
+                        }
+                    ],
+                    code: [
+                        {validator: this.checkExist, trigger: "blur"},
+                        {
+                            required: true,
+                            max: 200,
+                            message: "请输入数据类型编码，长度在200个字符内",
+                            trigger: "blur"
+                        }
+                    ],
+                    sortNumber: [
+                        {required: true, validator: common.checkNumber, trigger: "blur"}
+                    ],
+                    isShow: [
+                        {required: true, message: "请选择数据类型显示状态", trigger: "blur"}
+                    ],
+                }
             }
         },
 
@@ -207,6 +281,50 @@
                         this.queryPage();
                     } else {
                         this.$message.error(data.message);
+                    }
+                });
+            },
+
+            closeDialogAdd() {
+                this.dialogVisibleAdd = false;
+            },
+            /***************** 提交操作 *********************/
+            onSubmitAdd() {
+                this.isLoading = true;
+                this.$refs["form"].validate(valid => {
+                    if (valid) {
+                        let param = {
+                            content: this.form
+                        };
+                        addDictionaryType(param).then(data => {
+                            this.dialogVisibleAdd = false;
+                            if (200 === data.code) {
+                                this.$refs.form.resetFields();
+                                this.$message.success(data.message);
+                                this.queryPage();
+                            } else {
+                                this.$message.error(data.message);
+                            }
+                            this.isLoading = false;
+                        });
+                    } else {
+                        this.isLoading = false;
+                    }
+                });
+            },
+
+            /**
+             * 校验数据类型是否存在
+             * @param rule
+             * @param value 数据类型名
+             * @param callback
+             */
+            checkExist(rule, value, callback) {
+                checkExist({content: value}).then(data => {
+                    if (200 !== data.code) {
+                        callback(new Error(data.message));
+                    } else {
+                        callback();
                     }
                 });
             },
@@ -276,7 +394,8 @@
             /********************************* 业务逻辑处理 ************************************/
 
             addEntity() {
-                this.$router.push('/dictionary/type/add');
+                // this.$router.push('/dictionary/type/add');
+                this.dialogVisibleAdd = true;
             },
 
             /**
@@ -341,26 +460,6 @@
                 });
             },
 
-            // closeDialog: function () {
-            //     let vm = this;
-            //     vm.dialogVisible = false;
-            // },
-            // openDialog(data, name, title) {//打开弹出框
-            //     let vm = this;
-            //     vm.title = "修改" + title
-            //     vm.label = title
-            //     vm.dialogVisible = true
-            //     vm.content = data[name];
-            //     vm.type = "textarea"
-            //     if ('sortNumber' == name) {
-            //         vm.rules = {
-            //             content: [
-            //                 {validator: common.checkNumber, trigger: "blur"},
-            //             ]
-            //         }
-            //     }
-            //
-            // }
         },
     }
 </script>

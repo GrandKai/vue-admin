@@ -15,7 +15,7 @@
             </div>
             <span class="dialog-footer" slot="footer">
                 <el-button type="primary" @click="submitForm('form')" :loading="isLoading">保 存</el-button>
-                <el-button @click="closeDialog">取 消</el-button>
+                <el-button @click="closeDialog('form')">取 消</el-button>
             </span>
         </el-dialog>
     </div>
@@ -100,8 +100,8 @@
                 });
             },
 
-            closeDialog: function () {//关闭弹出框
-                // this.form.content = '';
+            closeDialog (formName) {//关闭弹出框
+                this.$refs[formName].resetFields();
                 this.$nextTick(function () {
                     this.$emit('closeDialog'); // 回调参数
                 });

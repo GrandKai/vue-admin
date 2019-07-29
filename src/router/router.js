@@ -26,10 +26,7 @@ const RoleAdd = () => import('views/privilege/role/Add.vue');
 const TestTree = () => import('components/business/tree/Test.vue');
 
 const DictionaryTypeList = () => import('views/dictionary/type/List.vue');
-const DictionaryTypeAdd = () => import('views/dictionary/type/Add.vue');
-
 const DictionaryItemList = () => import('views/dictionary/item/List.vue');
-const DictionaryItemAdd = () => import('views/dictionary/item/Add.vue');
 
 const DemoEcharts = () => import('views/demo/DemoEcharts.vue');
 const DemoCKEditor = () => import('views/demo/DemoCKEditor.vue');
@@ -122,18 +119,10 @@ let router = [
     },
 
     {
-        path: 'dictionary/type/add',
-        component: DictionaryTypeAdd
-    },
-    {
         path: 'dictionary/item',
         component: DictionaryItemList
     },
 
-    {
-        path: 'dictionary/item/add',
-        component: DictionaryItemAdd
-    },
     {
         path: 'authority',
         component: AuthorityList
