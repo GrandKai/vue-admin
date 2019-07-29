@@ -91,11 +91,13 @@
 
 
                     <el-table-column label="账号" header-align="left" align="left">
+
                         <template slot-scope="scope">
-                            <div class="click-text" @click='updateEntity(scope.row , "userName" , "账号")'>
-                                {{ scope.row.userName }}
+                            <div class="click-text" @click='openDialog(scope.row, "userName", "账号", "text", formRules.userName)'>
+                                {{ scope.row.userName}}
                             </div>
                         </template>
+
                     </el-table-column>
 
 
@@ -107,7 +109,7 @@
                         </template>
                     </el-table-column>
 
-                    <el-table-column label="创建日期" prop="createTime" width="180" header-align="left"  align="left" :formatter="common.emptyFormat" ></el-table-column>
+                    <el-table-column label="创建日期" prop="createTime" width="180" header-align="left" align="left" :formatter="common.emptyFormat"></el-table-column>
 
                     <!--<el-table-column label="删除状态" header-align="center" align="center" fixed="right" width="80px">
                         <template slot-scope="scope">
@@ -128,7 +130,7 @@
 
                     <el-table-column align="center" fixed="right" header-align="center" label="操作" min-width="120">
                         <template slot-scope="scope">
-                            <el-button type="button" @click="openDialog(scope.row.userId)">设置角色</el-button>
+                            <el-button type="button" @click="openRoleDialog(scope.row.userId)">设置角色</el-button>
 
                             <el-popover trigger="hover" placement="bottom">
                                 <el-button type="text" @click="resetUser(scope.row)">恢复默认密码</el-button>
@@ -161,21 +163,14 @@
             </template>
         </custom-page>
 
-        <!-- 编辑权限系统信息对话框 -->
-        <el-dialog :title="dlgSettings.title + '设置'" :visible.sync="dlgSettings.visible" width="30%"
-                   :close-on-click-modal="false">
-            <el-form :model="editForm" :rules="rules" ref="editForm" onsubmit="return false;">
-                <div class="clearfix">
-                    <el-form-item prop="content">
-                        <el-input v-model.trim="editForm.content" placeholder="请输入内容" class="left role-input"
-                                  :type="dlgSettings.inputType" :rows="dlgSettings.rowNum"
-                                  @keyup.native.enter="onSubmit"></el-input>
-                        <el-button @click="dlgSettings.visible = false" class="left">取 消</el-button>
-                        <el-button type="primary" @click="onSubmit" class="left">保 存</el-button>
-                    </el-form-item>
-                </div>
-            </el-form>
-        </el-dialog>
+        <form-dialog
+                :title="formDialog.title"
+                :dialogVisible="formDialog.dialogVisible"
+                :rules="formDialog.rules"
+                :label="formDialog.label"
+                :fieldValue="formDialog.fieldValue"
+                :type="formDialog.type" @closeDialog="closeDialog" @submitForm="onSubmit">
+        </form-dialog>
 
         <treeDialog
                 :dialogVisible="dialogVisible"
@@ -184,7 +179,7 @@
                 :treeData="treeData"
                 :userId="userId"
                 :checkData="checkData"
-                @closeDialog="closeDialog"
+                @closeDialog="closeTreeDialog"
                 @addUserRoles="addUserRoles"
         ></treeDialog>
     </div>
@@ -192,6 +187,7 @@
 
 <script>
     import CustomPage from 'components/treeCustomPage/Index';
+    import FormDialog from 'components/business/dialog/FormCustomDialog';
     import treeDialog from 'components/dialogCustomPage/Index';
     import {queryUserPage, updateUserStopStatus, queryUserRoleList, addUserRoles, updateUser, deleteUser, resetUser, checkUpdateExist} from 'apis/user';
     import {queryAllPlatsAndRoles} from 'apis/general/plat';
@@ -199,10 +195,29 @@
     export default {
         components: {
             'custom-page': CustomPage,
-            'treeDialog': treeDialog
+            'treeDialog': treeDialog,
+            'form-dialog': FormDialog,
         },
         data() {
             return {
+                formRules: {
+                    userName: [
+                        {required: true, message: "请输入账号，长度在50个字符内", trigger: "blur", max: 50},
+                        {validator: this.checkUpdateExist, trigger: "blur"}
+                    ]
+                },
+                // 校验规则
+                formDialog: {
+                    id: '',
+                    rules: {},
+                    dialogVisible: false,//默认弹出框为隐藏
+                    title: '',//
+                    label: '',
+                    fieldValue: '',
+                    fieldName: '',
+                    type: '',
+                    rows: 1
+                },
 
                 minHeight: "",
                 treeDataOrg: [],
@@ -213,13 +228,6 @@
                 // 树的选中节点
                 currentTreeKey: "",
                 defaultExpandKeys: [],
-
-                // 修改的内容
-                editForm: {
-                    id: "",
-                    property: "",
-                    content: ""
-                },
 
                 loading: true,
                 paginationShow: false,
@@ -243,14 +251,6 @@
                 tableData: [],
                 defaultPassword: 123456,
 
-                // 弹出框属性设置
-                dlgSettings: {
-                    title: "", //  弹窗标题
-                    visible: false, //  弹窗可见
-                    inputType: "text", //  弹窗内文本框类型
-                    rowNum: 1 //  文本框行数
-                },
-
                 dialogVisible: false,// 弹框是否显示
                 title: '用户角色设置',
                 userId: '',// 用户编号
@@ -271,6 +271,47 @@
         },
 
         methods: {
+            closeDialog() {
+                this.formDialog.dialogVisible = false;
+            },
+            // 打开弹出框
+            openDialog(row, fieldName, title, type, contentRules) {
+                console.log("打开对话框，设置属性：", row);
+                if (!contentRules) contentRules = [];
+                this.formDialog.id = row.userId;
+                this.formDialog.title = `修改${title}`;
+                this.formDialog.label = title;
+                this.formDialog.dialogVisible = true;
+                this.formDialog.fieldName = fieldName;
+                this.formDialog.fieldValue = row[fieldName];
+                this.formDialog.type = type;
+
+                this.formDialog.rules = {
+                    content: contentRules
+                };
+            },
+
+            /***************　提交修改信息　*********************/
+            onSubmit(value) {
+                // 传入参数
+                let param = {
+                    content: {
+                        userId: this.formDialog.id, // 修改记录的ID
+                    }
+                };
+                // 修改记录的属性和属性值
+                param.content[this.formDialog.fieldName] = value;
+
+                updateUser(param).then(data => {
+                    this.formDialog.dialogVisible = false;
+                    if (200 === data.code) {
+                        this.$message.success(data.message);
+                        this.queryPage();
+                    } else {
+                        this.$message.error(data.message);
+                    }
+                });
+            },
 
             queryOrganizationList() {
                 common.queryOrganizationList(this, 'tree', 'treeDataOrg');
@@ -451,47 +492,6 @@
                 this.$router.push('/user/add');
             },
 
-            /***************　打开修改系统对话框　*********************/
-            updateEntity(row, rowName, dlgTitle) {
-                console.log('修改的记录信息：', row);
-                // 判断弹出框展示样式
-                switch (rowName) {
-                    default: {
-                        this.dlgSettings = {title: dlgTitle, visible: true, inputType: "text", rowNum: 1};
-                        break;
-                    }
-                }
-                // 根据列名添加校验规则
-                switch (rowName) {
-                    case 'userName': {
-                        this.rules.content = [
-                            {required: true, message: "请输入" + dlgTitle + "，长度在50个字符内", trigger: "blur", max: 50},
-                            {validator: this.checkUpdateExist, trigger: "blur"}
-                        ];
-                        break;
-                    }
-                    case 'url': {
-                        this.rules.content = [
-                            {required: true, message: "请输入" + dlgTitle + "，长度在500个字符内", trigger: "blur", max: 500},
-                        ];
-                        break;
-                    }
-                    default: {
-                        this.rules.content = [
-                            {required: true, message: "请输入" + dlgTitle + "，长度在50个字符内", trigger: "blur", max: 50},
-                        ];
-                        break;
-                    }
-                }
-                // 清空表单
-                common.clearForm(this, "editForm");
-                this.editForm = {
-                    id: row.userId,
-                    property: rowName,
-                    content: row[rowName]
-                };
-            },
-
             /**
              * 校验用户名是否存在
              * @param rule
@@ -501,7 +501,7 @@
             checkUpdateExist(rule, value, callback) {
                 let param = {
                     content: {
-                        userId: this.editForm.id,
+                        userId: this.formDialog.id,
                         userName: value
                     }
                 };
@@ -514,34 +514,8 @@
                 });
             },
 
-            /***************　提交修改信息　*********************/
-            onSubmit() {
-                this.$refs.editForm.validate(valid => {
-                    if (valid) {
-                        // 传入参数
-                        let param = {
-                            content: {
-                                userId: this.editForm.id, // 修改记录的ID
-                            }
-                        };
-                        // 修改记录的属性和属性值
-                        param.content[this.editForm.property] = this.editForm.content;
-
-                        updateUser(param).then(data => {
-                            this.dlgSettings.visible = false; // 对话框关闭
-                            if (200 === data.code) {
-                                this.$message.success(data.message);
-                                this.queryPage();
-                            } else {
-                                this.$message.error(data.message);
-                            }
-                        });
-                    }
-                });
-            },
-
             // 打开创建角色的弹框
-            openDialog(userId) {
+            openRoleDialog(userId) {
                 let vm = this;
 
                 vm.userId = userId;
@@ -560,7 +534,7 @@
             },
 
             // 关闭设置添加日志的dialog页面
-            closeDialog: function () {
+            closeTreeDialog: function () {
                 let vm = this;
                 vm.dialogVisible = false;
                 vm.checkData = []
@@ -615,6 +589,7 @@
         color: #409eff;
         cursor: pointer;
     }
+
     .line {
         float: right;
     }

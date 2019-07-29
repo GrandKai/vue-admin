@@ -511,8 +511,8 @@
 
                 // 修改记录的属性和属性值
                 updateLabel(param).then(data => {
+                    this.formDialog.dialogVisible = false;
                     if (200 === data.code) {
-                        this.formDialog.dialogVisible = false;
                         this.$message.success(data.message);
                         this.queryPage();
                     } else {
