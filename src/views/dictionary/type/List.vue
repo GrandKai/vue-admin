@@ -124,7 +124,6 @@
     export default {
         components: {
             'custom-page': CustomPage,
-            // 'update-item': UpdateItem,
             'form-dialog': FormDialog,
         },
         data() {

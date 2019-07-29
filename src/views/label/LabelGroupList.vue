@@ -134,7 +134,6 @@
 <script>
     import CustomPage from 'components/listCustomPage/Index';
     import FormDialog from 'components/business/dialog/FormCustomDialog';
-    import UpdateItem from 'components/business/dialog/UpdateItem';
     import {
         queryLabelGroupPage,
         addLabelGroup,
@@ -148,7 +147,6 @@
     export default {
         components: {
             'custom-page': CustomPage,
-            'update-item': UpdateItem,
             'form-dialog': FormDialog,
         },
         data() {
