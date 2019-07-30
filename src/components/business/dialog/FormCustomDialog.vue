@@ -1,7 +1,6 @@
 <template>
     <div>
         <el-dialog v-dialogDrag width="500px"
-                   :before-close="closeDialog"
                    :close-on-click-modal="false"
                    :close-on-press-escape="false"
                    :title="title"
@@ -101,6 +100,7 @@
             },
 
             closeDialog (formName) {//关闭弹出框
+                console.error(formName);
                 this.$refs[formName].resetFields();
                 this.$nextTick(function () {
                     this.$emit('closeDialog'); // 回调参数
