@@ -108,7 +108,10 @@
                 :type="formDialog.type" @closeDialog="closeDialog" @submitForm="onSubmit">
         </form-dialog>
 
-        <el-dialog title="新建标签组" :visible.sync="dialogFormVisible" width="30%">
+        <el-dialog title="新建标签组" :visible.sync="dialogFormVisible" width="30%"
+                   v-dialogDrag
+                   :close-on-click-modal="false"
+                   :close-on-press-escape="false">
             <el-form :model="form" ref="form" :rules="formRules">
                 <el-form-item label="标签组名称" :label-width="formLabelWidth" prop="name">
                     <el-input v-model="form.name"></el-input>

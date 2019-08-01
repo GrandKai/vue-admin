@@ -109,6 +109,7 @@
 
         <el-dialog title="新建标签" :visible.sync="dialogFormVisible" width="30%"
                    v-dialogDrag
+                   :close-on-press-escape="false"
                    :close-on-click-modal="false">
 
             <el-form :model="form" ref="form">
