@@ -26,11 +26,13 @@
                 <el-button @click="treeOpen" icon="el-icon-arrow-down"> 展 开</el-button>
                 <el-button @click="treeClose" icon="el-icon-arrow-up"> 收 起</el-button>
                 <el-button type="danger" @click="deleteEntity" :disabled="deleteDisabled" icon="el-icon-delete"> 删 除 </el-button>
+                <el-input placeholder="输入关键字进行过滤" v-model="filterText" style="margin-top: 20px;margin-bottom: -20px;width: 90%"></el-input>
             </template>
 
             <!-- 树区域 -->
             <template slot="treeArea">
                 <el-tree :data="treeData"
+                         :filter-node-method="filterNode"
                          :props="defaultProps"
                          @node-click="handleNodeClick"
                          highlight-current
@@ -95,6 +97,9 @@
             'tree-from': TreeForm
         },
         watch: {
+            filterText(val) {
+                this.$refs.tree.filter(val);
+            },
             'form.platId': {
                 handler(val, oldVal) {
                     console.log('form.platId', val);
@@ -107,8 +112,8 @@
         },
 
         data() {
-
             return {
+                filterText: '',
                 // 所有系统信息
                 options: [],
                 defaultProps: {
@@ -165,7 +170,10 @@
             common.queryPlatList(data => this.options = data);
         },
         methods: {
-
+            filterNode(value, data) {
+                if (!value) return true;
+                return data.label.indexOf(value) !== -1;
+            },
             /**
              * 根据所选系统查询树形数据
              */

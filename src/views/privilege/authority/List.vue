@@ -253,7 +253,6 @@
         },
         methods: {
             filterNode(value, data) {
-                debugger
                 if (!value) return true;
                 return data.label.indexOf(value) !== -1;
             },

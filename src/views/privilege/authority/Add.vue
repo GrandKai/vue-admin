@@ -24,18 +24,15 @@
 
                         <el-col :span="12">
                             <el-form-item label="所属系统" prop="platId">
-                                <el-select v-model="form.platId" placeholder="请选择所属系统" clearable @change="selectChange"
-                                           ref="select">
-                                    <el-option v-for="item in options" :key="item.id" :label="item.name"
-                                               :value="item.id"></el-option>
+                                <el-select v-model="form.platId" placeholder="请选择所属系统" clearable @change="selectChange" ref="select" style="width: 100%">
+                                    <el-option v-for="item in options" :key="item.id" :label="item.name" :value="item.id"></el-option>
                                 </el-select>
                             </el-form-item>
                         </el-col>
                     </el-row>
 
                     <el-form-item label="权限描述" prop="description">
-                        <el-input v-model.trim="form.description" type="textarea" :rows="4"
-                                  @keydown.native.enter="onSubmit"></el-input>
+                        <el-input v-model.trim="form.description" type="textarea" :rows="4" @keydown.native.enter="onSubmit"></el-input>
                     </el-form-item>
 
                     <el-form-item label="显示顺序" prop="sortNumber">
@@ -43,9 +40,11 @@
                     </el-form-item>
 
                     <el-form-item label="操作设置" align="left">
+                        <el-input placeholder="输入关键字进行过滤" v-if="treeIsShow" v-model="filterText" style="margin-bottom: 10px"></el-input>
 
                         <!-- 树区域 -->
                         <el-tree :data="treeData"
+                                 :filter-node-method="filterNode"
                                  :props="defaultProps"
                                  @node-click="handleNodeClick"
                                  @check-change="handleCheckChange"
@@ -76,6 +75,7 @@
     export default {
         data() {
             return {
+                filterText: '',
                 treeData: [],
                 treeIsShow: false,
 
@@ -124,9 +124,17 @@
         created() {
             common.queryPlatList(data => this.options = data);
         },
+        watch: {
+            filterText(val) {
+                this.$refs.tree.filter(val);
+            }
+        },
 
         methods: {
-
+            filterNode(value, data) {
+                if (!value) return true;
+                return data.label.indexOf(value) !== -1;
+            },
             handleNodeClick(nodeData) {
                 // console.log('当前选中node节点:', nodeData);
                 let checkedNodes = this.$refs.tree.getCheckedNodes();
