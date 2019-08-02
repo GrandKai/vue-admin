@@ -1,5 +1,5 @@
 import {$vm} from '@/main';
-import { queryOrganizationList } from 'apis/system/organization';
+import {queryOrganizationList} from 'apis/system/organization';
 import {queryPlatList} from 'apis/general/plat';
 import {queryDictionaryItemList} from 'apis/dictionary/item';
 import {queryCatalogList} from 'apis/catalog';
@@ -307,7 +307,7 @@ export default {
         digit = digit ? digit : 2;
 
         var num = num.toString(),
-        minus = num.substring(0, 1) == '-' ? '-' : '';
+            minus = num.substring(0, 1) == '-' ? '-' : '';
         num = minus == '-' ? num.substring(1) : num;
         num = num.replace(/\.$/, '');
 
@@ -466,19 +466,27 @@ export default {
      * 建议增加参数：引用树的ref
      */
     treeOpen(vm, ref) {
-        console.log('树打开：', vm);
-        vm.currentTreeKey = vm.$refs[ref].getCurrentKey();
-        vm.isExpand = true;
-        vm.treeIsShow = false;
+        // 只有菜单是关闭时才能执行展开
+        if (vm.isExpand === false) {
+            console.log('树打开：', vm);
+            vm.currentTreeKey = vm.$refs[ref].getCurrentKey();
+            vm.isExpand = true;
+            vm.treeIsShow = false;
 
-        setTimeout(() => {
-            vm.treeIsShow = true;
-            if (vm.currentTreeKey != null) {
-                vm.$nextTick(() => {
-                    vm.$refs[ref].setCurrentKey(vm.currentTreeKey);
-                });
-            }
-        }, 10)
+            setTimeout(() => {
+                vm.treeIsShow = true;
+                if (vm.currentTreeKey != null) {
+                    vm.$nextTick(() => {
+                        vm.$refs[ref].setCurrentKey(vm.currentTreeKey);
+                    });
+                }
+                if (vm.filterText) {
+                    vm.$nextTick(() => {
+                        vm.$refs[ref].filter(vm.filterText);
+                    });
+                }
+            }, 10)
+        }
     },
 
     /****************** 合并树 **********************/
@@ -490,19 +498,22 @@ export default {
      * 建议增加参数：引用树的ref
      */
     treeClose(vm, ref) {
-        console.log('树关闭：', vm);
-        vm.currentTreeKey = vm.$refs[ref].getCurrentKey();
-        vm.isExpand = false;
-        vm.treeIsShow = false;
+        // 只有菜单是展开时才能执行关闭
+        if (vm.isExpand === true) {
+            console.log('树关闭：', vm);
+            vm.currentTreeKey = vm.$refs[ref].getCurrentKey();
+            vm.isExpand = false;
+            vm.treeIsShow = false;
 
-        setTimeout(() => {
-            vm.treeIsShow = true;
-            if (vm.currentTreeKey != null) {
-                vm.$nextTick(() => {
-                    vm.$refs[ref].setCurrentKey(vm.currentTreeKey);
-                });
-            }
-        }, 10)
+            setTimeout(() => {
+                vm.treeIsShow = true;
+                if (vm.currentTreeKey != null) {
+                    vm.$nextTick(() => {
+                        vm.$refs[ref].setCurrentKey(vm.currentTreeKey);
+                    });
+                }
+            }, 10)
+        }
     },
 
     // 列表中空数据的显示形式

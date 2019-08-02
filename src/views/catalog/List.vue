@@ -15,9 +15,7 @@
                 <el-button type="primary" @click="addEntity" :disabled="addDisabled" icon="el-icon-plus"> 新 建 </el-button>
                 <el-button @click="treeOpen" icon="el-icon-arrow-down"> 展 开</el-button>
                 <el-button @click="treeClose" icon="el-icon-arrow-up"> 收 起</el-button>
-                <el-button type="danger" @click="deleteEntity" :disabled="deleteDisabled" icon="el-icon-delete">
-                    删 除
-                </el-button>
+                <el-button type="danger" @click="deleteEntity" :disabled="deleteDisabled" icon="el-icon-delete"> 删 除 </el-button>
             </template>
 
             <!-- 树区域 -->
