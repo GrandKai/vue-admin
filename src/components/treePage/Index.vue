@@ -38,34 +38,43 @@
 </template>
 
 <script>
-  export default {
-    data() {
-      return {}
-    },
+    import CustomPage from 'components/listPage/Index'
 
-    methods: {},
-    mounted() {
+    export default {
+        comments: {
+            'custom-page': CustomPage,
+        },
+        data() {
+            return {}
+        },
 
+        methods: {},
+        mounted() {
+
+        }
     }
-  }
 </script>
 <style lang="scss" scoped>
     .search {
         margin-bottom: 30px;
+
         ul {
             li {
                 float: left;
                 margin-right: 10px;
+
                 &.block {
                     max-width: 200px;
                 }
+
                 .block {
                     max-width: 200px;
                 }
-                >.el-button,
+
+                > .el-button,
                 .el-select,
                 .el-input {
-                    margin-left:10px;
+                    margin-left: 10px;
                 }
             }
         }

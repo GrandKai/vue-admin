@@ -12,11 +12,10 @@
             </template>
             <!-- 按钮区域 -->
             <template slot="buttonArea">
-                <el-button type="primary" @click="addEntity" :disabled="addDisabled"><i class="el-icon-plus"></i> 新 建
-                </el-button>
-                <el-button @click="treeOpen"><i class="el-icon-arrow-down"></i> 展 开</el-button>
-                <el-button @click="treeClose"><i class="el-icon-arrow-up"></i> 收 起</el-button>
-                <el-button type="danger" @click="deleteEntity" :disabled="deleteDisabled"><i class="el-icon-delete"></i>
+                <el-button type="primary" @click="addEntity" :disabled="addDisabled" icon="el-icon-plus"> 新 建 </el-button>
+                <el-button @click="treeOpen" icon="el-icon-arrow-down"> 展 开</el-button>
+                <el-button @click="treeClose" icon="el-icon-arrow-up"> 收 起</el-button>
+                <el-button type="danger" @click="deleteEntity" :disabled="deleteDisabled" icon="el-icon-delete">
                     删 除
                 </el-button>
             </template>
@@ -32,7 +31,7 @@
                          node-key="id"
                          :default-expand-all="isExpand"
                          :default-checked-keys="defaultChecked"
-                         ref="tree" v-if="treeIsShow" style="overflow-y: auto;max-height: 500px">
+                         ref="tree" v-if="treeIsShow">
                 </el-tree>
             </template>
 

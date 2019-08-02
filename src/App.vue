@@ -25,9 +25,10 @@
         margin-right: 5px;
     }
 
-    /*.btn-groups {*/
-    /*    text-align: left;*/
-    /*    padding-bottom: 1em;*/
-    /*}*/
+    .btn-groups {
+        text-align: left;
+        padding-bottom: 1em;
+        padding-top: 1em;
+    }
 
 </style>

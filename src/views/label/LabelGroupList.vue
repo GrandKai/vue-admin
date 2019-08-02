@@ -25,7 +25,7 @@
 
             <template slot="buttonArea">
                 <li>
-                    <el-button type="primary" @click="openAddEntityDialog"><i class="el-icon-plus"></i> 新建标签组</el-button>
+                    <el-button type="primary" @click="openAddEntityDialog" icon="el-icon-plus"> 新建标签组</el-button>
                 </li>
             </template>
 
@@ -135,8 +135,8 @@
 </template>
 
 <script>
-    import CustomPage from 'components/listCustomPage/Index';
-    import FormDialog from 'components/business/dialog/FormCustomDialog';
+    import CustomPage from 'components/listPage/Index';
+    import FormDialog from 'components/formDialog/Index';
     import {
         queryLabelGroupPage,
         addLabelGroup,

@@ -25,25 +25,21 @@
                             </li>
                             <li>
                                 <el-input v-model="param.content.name" placeholder="权限名称/权限描述"
-                                          @keyup.native.enter="queryPage"
-                                          style="width: 220px"
+                                          @keyup.native.enter="queryPage" style="width: 220px"
                                           clearable @input="queryPage"></el-input>
                             </li>
 
                             <li>
-                                <el-button type="primary" @click="queryPage()" icon="el-icon-search">查 询
-                                </el-button>
+                                <el-button type="primary" @click="queryPage()" icon="el-icon-search"> 查 询 </el-button>
                             </li>
                             <li>
-                                <el-button @click="clearQueryParam" icon="el-icon-delete">清 空
-                                </el-button>
+                                <el-button @click="clearQueryParam" icon="el-icon-delete"> 清 空 </el-button>
                             </li>
                         </template>
 
                         <template slot="buttonArea">
                             <li>
-                                <el-button type="primary" @click="addEntity"><i class="el-icon-plus"></i> 新建权限
-                                </el-button>
+                                <el-button type="primary" @click="addEntity" icon="el-icon-plus"> 新建权限 </el-button>
                             </li>
                         </template>
 
@@ -55,12 +51,7 @@
                                       @cell-click="handleCellClick" v-loading="loading">
 
                                 <!-- 显示索引 -->
-                                <el-table-column
-                                        prop="module"
-                                        :formatter="formatter"
-                                        label="序号"
-                                        width="60" header-align="center" align="center">
-                                </el-table-column>
+                                <el-table-column :formatter="formatter" label="序号" width="60" header-align="center" align="center"></el-table-column>
 
                                 <el-table-column label="权限名称" header-align="left" align="left" fixed="right">
                                     <template slot-scope="scope">
@@ -70,8 +61,7 @@
                                     </template>
                                 </el-table-column>
 
-                                <el-table-column label="权限描述" header-align="left" align="left" fixed="right"
-                                                 width="150%">
+                                <el-table-column label="权限描述" header-align="left" align="left" fixed="right" width="150%">
                                     <template slot-scope="scope">
                                         <div class="click-text" @click='openDialog(scope.row, "description", "系统描述", "textarea", formRules.userName)'>
                                             {{ scope.row.description }}
@@ -79,13 +69,9 @@
                                     </template>
                                 </el-table-column>
 
-                                <el-table-column label="所属系统" header-align="left" align="left" fixed="right"
-                                                 width="100%"
-                                                 prop="platName">
-                                </el-table-column>
+                                <el-table-column label="所属系统" header-align="left" align="left" fixed="right" width="100%" prop="platName"></el-table-column>
 
-                                <el-table-column label="显示顺序" header-align="left" align="left" fixed="right"
-                                                 width="80%">
+                                <el-table-column label="显示顺序" header-align="left" align="left" fixed="right" width="80%">
                                     <template slot-scope="scope">
                                         <div class="click-text" @click='openDialog(scope.row, "sortNumber", "显示顺序", "text", formRules.sortNumber)'>
                                             {{ scope.row.sortNumber}}
@@ -93,10 +79,8 @@
                                     </template>
                                 </el-table-column>
 
-                                <el-table-column label="操作" header-align="center" align="center" fixed="right"
-                                                 width="80%">
+                                <el-table-column label="操作" header-align="center" align="center" fixed="right" width="80%">
                                     <template slot-scope="scope">
-
                                         <el-button type="danger" @click="deleteEntity(scope.row)">
                                             删除
                                         </el-button>
@@ -108,10 +92,9 @@
 
                         <template slot="paginationArea">
 
-                            <el-pagination v-show="paginationShow"
+                            <el-pagination v-show="paginationShow" background
                                            @current-change="handleCurrentChange"
                                            @size-change="handleSizeChange"
-                                           background
                                            :page-sizes="pageSizes"
                                            :current-page.sync="param.page.pageNum" :page-size="param.page.pageSize"
                                            layout="total, sizes,prev, pager, next, jumper" :total="total">
@@ -135,10 +118,9 @@
 
                             <!-- 按钮区域 -->
                             <template slot="buttonArea">
-                                <el-button type="primary" @click="editAuthority"><i class="el-icon-edit"></i> 保 存
-                                </el-button>
-                                <el-button @click="treeOpen"><i class="el-icon-arrow-down"></i> 展 开</el-button>
-                                <el-button @click="treeClose"><i class="el-icon-arrow-up"></i> 收 起</el-button>
+                                <el-button type="primary" @click="editAuthority" icon="el-icon-edit"> 保 存 </el-button>
+                                <el-button @click="treeOpen" icon="el-icon-arrow-down"> 展 开</el-button>
+                                <el-button @click="treeClose" icon="el-icon-arrow-up"> 收 起</el-button>
                             </template>
 
                             <!-- 树区域 -->
@@ -153,7 +135,7 @@
                                          node-key="id"
                                          :default-expand-all="isExpand"
                                          :default-checked-keys="defaultChecked"
-                                         ref="tree" v-if="treeIsShow" style="overflow-y: auto;max-height: 500px">
+                                         ref="tree" v-if="treeIsShow" >
                                 </el-tree>
 
                             </template>
@@ -178,8 +160,8 @@
 
 <script>
     import Tree from 'components/business/tree/Index';
-    import CustomPage from 'components/listCustomPage/Index'
-    import FormDialog from 'components/business/dialog/FormCustomDialog';
+    import CustomPage from 'components/listPage/Index'
+    import FormDialog from 'components/formDialog/Index';
     import {
         queryAuthorityPage,
         queryAuthorityGrantedIds,

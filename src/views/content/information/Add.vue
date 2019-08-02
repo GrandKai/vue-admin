@@ -299,7 +299,7 @@
 
 <script>
 
-    import CustomPage from 'components/listCustomPage/Index';
+    import CustomPage from 'components/listPage/Index';
     import {addEntity, getEntity, queryEntityPageSimple, uploadImage} from 'apis/content/information';
     import {queryInformationList, queryLabelsList} from 'apis/content/association';
     import {queryLabelPage, queryLabelGroupList} from 'apis/label';

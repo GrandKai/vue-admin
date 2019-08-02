@@ -100,8 +100,8 @@
             },
 
             closeDialog (formName) {//关闭弹出框
-                console.error(formName);
-                this.$refs[formName].resetFields();
+                // console.error(formName);
+                // this.$refs[formName].resetFields();
                 this.$nextTick(function () {
                     this.$emit('closeDialog'); // 回调参数
                 });

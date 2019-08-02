@@ -5,14 +5,14 @@
             <el-breadcrumb-item :to="{ path : '/' }">用户管理</el-breadcrumb-item>
             <el-breadcrumb-item :to="{ path : '/user' }">用户管理</el-breadcrumb-item>
         </el-breadcrumb>
-        <custom-page>
+        <tree-page>
 
             <template slot="treeArea">
                 <div class="line" :style="{minHeight}"></div>
                 <div>
                     <div class="btn-groups">
-                        <el-button @click="treeOpen"><i class="el-icon-arrow-down"></i> 展 开</el-button>
-                        <el-button @click="treeClose"><i class="el-icon-arrow-up"></i> 收 起</el-button>
+                        <el-button @click="treeOpen" icon="el-icon-arrow-down"> 展 开</el-button>
+                        <el-button @click="treeClose" icon="el-icon-arrow-up"> 收 起</el-button>
                     </div>
 
                     <div class="tree">
@@ -161,7 +161,7 @@
                                @size-change="handleSizeChange">
                 </el-pagination>
             </template>
-        </custom-page>
+        </tree-page>
 
         <form-dialog
                 :title="formDialog.title"
@@ -172,7 +172,7 @@
                 :type="formDialog.type" @closeDialog="closeDialog" @submitForm="onSubmit">
         </form-dialog>
 
-        <treeDialog
+        <tree-dialog
                 :dialogVisible="dialogVisible"
                 :rules="rules"
                 :title="title"
@@ -181,21 +181,21 @@
                 :checkData="checkData"
                 @closeDialog="closeTreeDialog"
                 @addUserRoles="addUserRoles"
-        ></treeDialog>
+        ></tree-dialog>
     </div>
 </template>
 
 <script>
-    import CustomPage from 'components/treeCustomPage/Index';
-    import FormDialog from 'components/business/dialog/FormCustomDialog';
-    import treeDialog from 'components/dialogCustomPage/Index';
+    import TreePage from 'components/treePage/Index';
+    import FormDialog from 'components/formDialog/Index';
+    import TreeDialog from 'components/treeDialog/Index';
     import {queryUserPage, updateUserStopStatus, queryUserRoleList, addUserRoles, updateUser, deleteUser, resetUser, checkUpdateExist} from 'apis/user';
     import {queryAllPlatsAndRoles} from 'apis/general/plat';
 
     export default {
         components: {
-            'custom-page': CustomPage,
-            'treeDialog': treeDialog,
+            'tree-page': TreePage,
+            'tree-dialog': TreeDialog,
             'form-dialog': FormDialog,
         },
         data() {

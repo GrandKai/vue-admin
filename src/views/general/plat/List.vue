@@ -9,7 +9,7 @@
 
             <template slot="buttonArea">
                 <li>
-                    <el-button type="primary" @click="addEntity"><i class="el-icon-plus"></i> 新建系统</el-button>
+                    <el-button type="primary" @click="addEntity" icon="el-icon-plus"> 新建系统</el-button>
                 </li>
             </template>
             <template slot="tableArea">
@@ -117,8 +117,8 @@
 
 <script>
     // 导入校验规则
-    import CustomPage from 'components/listCustomPage/Index'
-    import FormDialog from 'components/business/dialog/FormCustomDialog';
+    import CustomPage from 'components/listPage/Index'
+    import FormDialog from 'components/formDialog/Index';
     // import PlatUpdate from 'components/business/dialog/PlatUpdate'
     import {queryPlatPage, stopPlat, deletePlat, checkUpdateExistPlat, updatePlat} from 'apis/general/plat'
 

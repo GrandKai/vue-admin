@@ -1,11 +1,11 @@
 <template>
     <div class="tree">
         <!-- 按钮区域 -->
-        <div class="tree-button-area clearfix">
+        <div class="tree-button-area clearfix" style="text-align: left">
             <slot name="buttonArea"></slot>
         </div>
         <!-- 树区域 -->
-        <div class="tree-area" style="padding-top:10px;height:650px;overflow-y:auto">
+        <div class="tree-area" style="padding-top:10px;height:500px;overflow-y:auto;">
             <slot name="treeArea"></slot>
         </div>
     </div>

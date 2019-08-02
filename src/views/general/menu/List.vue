@@ -10,26 +10,22 @@
         <tree-from>
             <template slot="queryArea">
                 <li>
-                    <span class="sysSpan">所属系统 </span>
-                    <el-select v-model="form.platId" placeholder="请选择操作系统" clearable @change="selectChange"
-                               ref="select">
-                        <el-option v-for="item in options" :key="item.id" :label="item.name"
-                                   :value="item.id"></el-option>
-                    </el-select>
-                    <br/>
-                    <!--platId: <input v-model="form.platId" width="500"/>-->
-                    <!--parentId: <input v-model="form.parentId" width="500"/>-->
+                    <div style="margin-bottom: 10px; text-align: left">
+                        <span class="sysSpan">所属系统 </span>
+                        <el-select v-model="form.platId" placeholder="请选择操作系统" clearable @change="selectChange"
+                                   ref="select">
+                            <el-option v-for="item in options" :key="item.id" :label="item.name"
+                                       :value="item.id"></el-option>
+                        </el-select>
+                    </div>
                 </li>
             </template>
             <!-- 按钮区域 -->
             <template slot="buttonArea">
-                <el-button type="primary" @click="addEntity" :disabled="addDisabled"><i class="el-icon-plus"></i> 新 建
-                </el-button>
-                <el-button @click="treeOpen"><i class="el-icon-arrow-down"></i> 展 开</el-button>
-                <el-button @click="treeClose"><i class="el-icon-arrow-up"></i> 收 起</el-button>
-                <el-button type="danger" @click="deleteEntity" :disabled="deleteDisabled"><i class="el-icon-delete"></i>
-                    删 除
-                </el-button>
+                <el-button type="primary" @click="addEntity" :disabled="addDisabled" icon="el-icon-plus"> 新 建 </el-button>
+                <el-button @click="treeOpen" icon="el-icon-arrow-down"> 展 开</el-button>
+                <el-button @click="treeClose" icon="el-icon-arrow-up"> 收 起</el-button>
+                <el-button type="danger" @click="deleteEntity" :disabled="deleteDisabled" icon="el-icon-delete"> 删 除 </el-button>
             </template>
 
             <!-- 树区域 -->
@@ -43,7 +39,7 @@
                          node-key="id"
                          :default-expand-all="isExpand"
                          :default-checked-keys="defaultChecked"
-                         ref="tree" v-if="treeIsShow" style="overflow-y: auto;max-height: 500px">
+                         ref="tree" v-if="treeIsShow">
                 </el-tree>
             </template>
 
@@ -457,7 +453,7 @@
 
     .sysSpan {
         font-size: 14px;
-        font-weight: bold;
+        /*font-weight: bold;*/
         margin-right: 10px;
     }
 

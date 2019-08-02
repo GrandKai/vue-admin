@@ -23,8 +23,6 @@ const AuthorityAdd = () => import('views/privilege/authority/Add.vue');
 const RoleList = () => import('views/privilege/role/List.vue');
 const RoleAdd = () => import('views/privilege/role/Add.vue');
 
-const TestTree = () => import('components/business/tree/Test.vue');
-
 const DictionaryTypeList = () => import('views/dictionary/type/List.vue');
 const DictionaryItemList = () => import('views/dictionary/item/List.vue');
 
@@ -64,10 +62,6 @@ let router = [
 
     },
 
-    {
-        path: 'test/menu',
-        component: TestTree
-    },
     {
         path: 'about',
         name: 'about',

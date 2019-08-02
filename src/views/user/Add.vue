@@ -35,13 +35,10 @@
 
 <script>
 
-  import CustomPage from 'components/formCustomPage/Index';
   import {checkExist, addUser} from 'apis/user';
 
   export default {
     components: {
-      'custom-page': CustomPage
-      // 'plat-update-dialog': PlatUpdate
     },
     data() {
       return {

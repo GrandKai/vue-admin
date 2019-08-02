@@ -135,7 +135,7 @@ body .el-table th.gutter{
 .tree-area {
     border-right: 1px solid rgb(240, 240, 240);
     margin-right:20px;
-    margin-top:20px;
+    //margin-top:20px;
 }
 
 // 展开收起的按钮样式
@@ -309,7 +309,7 @@ body .el-table th.gutter{
 }
 
 .table-corner {
-    float:right; 
+    float:right;
     margin:25px 10px 0 0;
     font-size: $font-size-s;
 }
@@ -414,7 +414,7 @@ body .el-table th.gutter{
     .unit {
         margin-left: 10px;
     }
-    
+
     .el-dialog__body {
         .el-form {
             margin-right:65px;
@@ -617,7 +617,7 @@ body .el-table th.gutter{
         border-right: 1px solid #ebecee;
         border-bottom: none;
         .item {
-            width:100%; 
+            width:100%;
             height: 40px;
             line-height: 40px;
             padding: 0 15px;
@@ -664,10 +664,10 @@ body .el-table th.gutter{
 
 
 .el-button + .el-button {
-    margin-left:0px;
+    margin-left:10px;
 }
 .el-pagination span:not([class*=suffix]), .el-pagination button {
-    vertical-align: middle; 
+    vertical-align: middle;
 }
 .el-tabs__header {
     margin-bottom: 30px;

@@ -13,13 +13,10 @@
             </template>
             <!-- 按钮区域 -->
             <template slot="buttonArea">
-                <el-button type="primary" @click="addEntity" :disabled="addDisabled"><i class="el-icon-plus"></i> 新 建
-                </el-button>
-                <el-button @click="treeOpen"><i class="el-icon-arrow-down"></i> 展 开</el-button>
-                <el-button @click="treeClose"><i class="el-icon-arrow-up"></i> 收 起</el-button>
-                <el-button type="danger" @click="deleteEntity" :disabled="deleteDisabled"><i class="el-icon-delete"></i>
-                    删 除
-                </el-button>
+                <el-button type="primary" @click="addEntity" :disabled="addDisabled" icon="el-icon-plus"> 新 建 </el-button>
+                <el-button @click="treeOpen" icon="el-icon-arrow-down"> 展 开</el-button>
+                <el-button @click="treeClose" icon="el-icon-arrow-up"> 收 起</el-button>
+                <el-button type="danger" @click="deleteEntity" :disabled="deleteDisabled" icon="el-icon-delete"> 删 除 </el-button>
             </template>
             <!-- 树区域 -->
             <template slot="treeArea">
@@ -38,8 +35,7 @@
 
             <!-- 表单区域 -->
             <template slot="formArea">
-                <el-form :model="form" :rules="rules" ref="form" label-width="120px" :disabled="formDisabled"
-                         status-icon>
+                <el-form :model="form" :rules="rules" ref="form" label-width="120px" :disabled="formDisabled" status-icon>
 
                     <el-form-item label="机构名称" prop="name">
                         <el-input v-model="form.name"></el-input>

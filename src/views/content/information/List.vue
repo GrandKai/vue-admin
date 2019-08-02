@@ -10,8 +10,8 @@
             <template slot="treeArea">
                 <div>
                     <div class="btn-groups">
-                        <el-button @click="treeOpen"><i class="el-icon-arrow-down"></i> 展 开</el-button>
-                        <el-button @click="treeClose"><i class="el-icon-arrow-up"></i> 收 起</el-button>
+                        <el-button @click="treeOpen" icon="el-icon-arrow-down"> 展 开</el-button>
+                        <el-button @click="treeClose" icon="el-icon-arrow-up"> 收 起</el-button>
                     </div>
 
                     <div class="tree">
@@ -120,8 +120,7 @@
 </template>
 
 <script>
-    import CustomPage from 'components/treeCustomPage/Index';
-    import treeDialog from 'components/dialogCustomPage/Index';
+    import CustomPage from 'components/treePage/Index';
     import {mapState, mapActions, mapGetters} from 'vuex';
     import {
         queryEntityPage,
@@ -132,7 +131,6 @@
     export default {
         components: {
             'custom-page': CustomPage,
-            'treeDialog': treeDialog
         },
         computed: {
             ...mapGetters(['contCatalogId'])

@@ -36,7 +36,7 @@
 
             <template slot="buttonArea">
                 <li>
-                    <el-button type="primary" @click="addEntity"><i class="el-icon-plus"></i> 新建数据项目</el-button>
+                    <el-button type="primary" @click="addEntity" icon="el-icon-plus"> 新建数据项目</el-button>
                 </li>
             </template>
 
@@ -167,8 +167,8 @@
 </template>
 
 <script>
-    import CustomPage from 'components/listCustomPage/Index';
-    import FormDialog from 'components/business/dialog/FormCustomDialog';
+    import CustomPage from 'components/listPage/Index';
+    import FormDialog from 'components/formDialog/Index';
     import {queryDictionaryTypeList} from "apis/dictionary/type";
 
     import {queryDictionaryItemPage, addDictionaryItem, updateDictionaryItem, deleteDictionaryItem, checkExist, setDictionaryItem} from "apis/dictionary/item";
