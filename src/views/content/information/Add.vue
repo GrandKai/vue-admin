@@ -164,7 +164,7 @@
                     </el-form-item>
 
                     <el-form-item>
-                        <el-button class="submit" type="success" @click="onSubmit">提交</el-button>
+                        <el-button type="primary" class="submit" @click="onSubmit">提 交</el-button>
                     </el-form-item>
                 </el-form>
             </el-col>
@@ -945,11 +945,6 @@
         width: 220px;
         height: 220px;
         display: block;
-    }
-
-    .submit {
-        display: block;
-        width: 60%;
     }
 </style>
 

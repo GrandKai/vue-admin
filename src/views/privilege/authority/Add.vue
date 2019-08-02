@@ -60,7 +60,7 @@
                     </el-form-item>
 
                     <el-form-item>
-                        <el-button type="success" class="submit" @click="onSubmit">提交</el-button>
+                        <el-button type="primary" class="submit" @click="onSubmit">提 交</el-button>
                     </el-form-item>
                 </el-form>
             </el-col>
@@ -247,10 +247,5 @@
     .el-checkbox {
         display: block;
         margin-left: 5px;
-    }
-
-    .submit {
-        display: block;
-        width: 60%;
     }
 </style>

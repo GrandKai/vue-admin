@@ -47,8 +47,7 @@
 
             <!-- 表单区域 -->
             <template slot="formArea">
-                <el-form :model="form" :rules="rules" ref="form" label-width="100px" :disabled="formDisabled"
-                         status-icon>
+                <el-form :model="form" :rules="rules" ref="form" label-width="100px" :disabled="formDisabled" status-icon>
 
                     <el-form-item label="菜单名称" prop="name">
                         <el-input v-model="form.name"></el-input>
@@ -77,7 +76,7 @@
                     </el-form-item>
 
                     <el-form-item>
-                        <el-button type="primary" @click="onSubmit('form')">提交</el-button>
+                        <el-button type="primary" class="submit" @click="onSubmit('form')">提 交</el-button>
                     </el-form-item>
                 </el-form>
             </template>

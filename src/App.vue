@@ -30,5 +30,13 @@
         padding-bottom: 1em;
         padding-top: 1em;
     }
+    .submit {
+        color: #333 !important;
+        border-color: #ccc !important;
+        background-color: #fff !important;
+        display: block !important;
+        width: 50% !important;
+    }
+
 
 </style>

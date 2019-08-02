@@ -77,7 +77,7 @@
                     </el-form-item>
 
                     <el-form-item>
-                        <el-button type="primary" @click="onSubmit('form')">提交</el-button>
+                        <el-button type="primary" class="submit" @click="onSubmit('form')">提 交</el-button>
                     </el-form-item>
                 </el-form>
             </template>
@@ -494,12 +494,6 @@
     .menu-left {
         margin-right: 150px;
         margin-left: 20px;
-    }
-
-    .submit {
-        display: block;
-        width: 60%;
-        margin: 0 auto;
     }
 
     .menu-select {

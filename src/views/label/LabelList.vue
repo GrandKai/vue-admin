@@ -153,8 +153,8 @@
             </el-form>
 
             <div slot="footer" class="dialog-footer">
+                <el-button type="primary" @click="addEntity">保 存</el-button>
                 <el-button @click="closeDialogForm">取 消</el-button>
-                <el-button type="primary" @click="addEntity">确 定</el-button>
             </div>
         </el-dialog>
     </div>
