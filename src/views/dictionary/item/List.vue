@@ -147,13 +147,10 @@
                 </el-form-item>
 
                 <el-form-item label="显示状态" prop="isShow" align="left">
-                    <el-switch v-model="form.isShow"
-                               active-value="1"
-                               inactive-value="0"
-                               active-text="显示"
-                               inactive-text="隐藏"
-                               active-color="#13ce66"
-                    ></el-switch>
+                    <i-switch v-model="form.isShow" true-value="1" false-value="0">
+                        <span slot="open">开</span>
+                        <span slot="close">关</span>
+                    </i-switch>
                 </el-form-item>
             </el-form>
 

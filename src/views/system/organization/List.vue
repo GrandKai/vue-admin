@@ -53,16 +53,6 @@
                         <el-input v-model="form.sortNumber"></el-input>
                     </el-form-item>
 
-                    <!--<el-form-item label="显示状态" prop="isShow" align="left">-->
-                    <!--<el-switch v-model="form.isShow"-->
-                    <!--active-value="1"-->
-                    <!--inactive-value="0"-->
-                    <!--active-text="显示"-->
-                    <!--inactive-text="隐藏"-->
-                    <!--active-color="#13ce66"-->
-                    <!--&gt;</el-switch>-->
-                    <!--</el-form-item>-->
-
                     <el-form-item>
                         <el-button type="primary" class="submit" @click="onSubmit('form')">提 交</el-button>
                     </el-form-item>

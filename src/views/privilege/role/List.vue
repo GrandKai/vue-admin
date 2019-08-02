@@ -269,6 +269,7 @@
                 :visible.sync="authorityVisible"
                 width="30%"
                 :close-on-click-modal="false"
+                :close-on-press-escape="false"
                 center>
 
             <div class="content-padding">
@@ -276,20 +277,18 @@
                     所属系统：<span class="system-font">{{authorityPlatName}}</span>
                 </el-header>
                 <el-checkbox-group v-model="checkedAuthorities" @change="handleCheckedAuthoritiesChange">
-                    <el-row v-for="item in authorities">
+                    <el-row v-for="item in authorities" :key="item.id">
                         <el-col :span="24">
-                            <el-checkbox :label="item.id" :key="item.id">{{item.name}}
-                            </el-checkbox>
+                            <el-checkbox :label="item.id" :key="item.id">{{item.name}}</el-checkbox>
                         </el-col>
                     </el-row>
 
                 </el-checkbox-group>
             </div>
 
-
             <span slot="footer" class="dialog-footer">
-                <el-button @click="authorityVisible = false">取 消</el-button>
                 <el-button type="primary" @click="submitRoleAuthority">保 存</el-button>
+                <el-button @click="authorityVisible = false">取 消</el-button>
             </span>
         </el-dialog>
 
@@ -436,7 +435,7 @@
             },
             // 打开弹出框
             openDialog(row, fieldName, title, type, contentRules) {
-                console.log("打开对话框，设置属性：", row);
+                // console.log("打开对话框，设置属性：", row);
                 if (!contentRules) contentRules = [];
                 this.formDialog.id = row.id;
                 this.formDialog.title = `修改${title}`;
@@ -489,7 +488,7 @@
                 this.staffVisible = false;
             },
             configUser(roleId) {
-                console.log('为角色配置用户', roleId);
+                // console.log('为角色配置用户', roleId);
 
                 this.leftTable.tableData = [];
                 this.rightTable.tableData = [];
@@ -523,7 +522,7 @@
             moveToLeft() {
 
                 let userIds = this.rightTable.multipleSelection;
-                console.log(userIds);
+                // console.log(userIds);
 
                 if (!(userIds && userIds.length > 0)) {
                     this.$message.warning("请选择你要移除的员工！");
@@ -556,7 +555,7 @@
             moveToRight() {
 
                 let userIds = this.leftTable.multipleSelection;
-                console.log(userIds);
+                // console.log(userIds);
 
                 if (!(userIds && userIds.length > 0)) {
                     this.$message.warning("请选择你要添加的员工！");
@@ -590,7 +589,7 @@
             // 展示员工列表
             getUserLeftRightList(currentData) {
 
-                console.log(`当前选中部门：${currentData.id}`);
+                // console.log(`当前选中部门：${currentData.id}`);
 
                 this.leftTable.param.page.pageNum = 1;
                 this.leftTable.param.content.isLeaf = currentData.isLeaf;
@@ -659,7 +658,7 @@
             },
 
             queryLeftPage() {
-                console.log(`查询左侧table`, this.rightTable.param);
+                // console.log(`查询左侧table`, this.rightTable.param);
 
                 this.$http.post(`/user/page/left/unset`, this.leftTable.param).then(data => {
                     this.leftTable.tableData = data.content.list;
@@ -674,7 +673,7 @@
 
             queryRightPage() {
 
-                console.log(`查询右侧table`, this.rightTable.param);
+                // console.log(`查询右侧table`, this.rightTable.param);
                 this.$http.post(`/user/page/right/set`, this.rightTable.param).then(data => {
                     this.rightTable.tableData = data.content.list;
                     this.rightTable.total = data.content.total;
@@ -802,7 +801,7 @@
                 this.authorityPlatName = platName;
 
                 queryAuthorityList(param).then(data => {
-                    console.log(data.message, data.content);
+                    // console.log('根据平台id获取权限列表: ', data.content);
 
                     if (200 === data.code) {
                         this.authorityVisible = true;
@@ -822,7 +821,7 @@
             queryRoleAuthorityList(roleId) {
                 this.checkedAuthorities = [];
                 queryRoleAuthorityList({content: roleId}).then(data => {
-                    console.log(data.message, data.content);
+                    // console.log(data.message, data.content);
 
                     if (200 === data.code) {
                         this.checkedAuthorities = data.content.map(item => item.authorityId);
@@ -832,7 +831,7 @@
                 });
             },
             handleCheckedAuthoritiesChange(value) {
-                console.log('处理选中的权限集合', value);
+                // console.log('处理选中的权限集合', value);
             },
 
             /**
@@ -851,7 +850,7 @@
                     };
 
                     addRoleAuthority(param).then(data => {
-                        console.log(data.message, data.content);
+                        // console.log(data.message, data.content);
 
                         if (200 === data.code) {
                             this.authorityVisible = false;

@@ -50,8 +50,7 @@
             <!-- 表单区域 -->
             <template slot="formArea">
 
-                <el-form :model="operationForm" :rules="operationRules" ref="operationForm" v-show="operationFormIsShow"
-                         label-width="100px" status-icon>
+                <el-form :model="operationForm" :rules="operationRules" ref="operationForm" v-show="operationFormIsShow" label-width="100px" status-icon>
                     <el-form-item label="操作名称" prop="name">
                         <el-input v-model="operationForm.name"></el-input>
                     </el-form-item>

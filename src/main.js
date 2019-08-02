@@ -14,13 +14,17 @@ import axios from '@/utils/axios'
 import common from '@/utils/common'
 import '@/utils/dialogDrag';
 
-import iView from 'iview';
+// import iView from 'iview';
+import { Modal, Switch, Button } from 'iview';
 import 'iview/dist/styles/iview.css';
+
+Vue.component('Modal', Modal);
+Vue.component('i-switch', Switch);
+Vue.component('Button', Button);
 
 Vue.config.productionTip = false;
 
 Vue.use(ElementUI, { size: 'small', zIndex: 3000 });
-Vue.use(iView);
 
 // 将 echarts 注册成Vue的全局属性
 Vue.prototype.$echarts = echarts;
