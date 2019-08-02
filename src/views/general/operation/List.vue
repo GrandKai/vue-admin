@@ -28,7 +28,7 @@
                 <el-button @click="treeOpen" icon="el-icon-arrow-down"> 展 开</el-button>
                 <el-button @click="treeClose" icon="el-icon-arrow-up"> 收 起</el-button>
                 <el-button type="danger" @click="deleteEntity" :disabled="deleteDisabled" icon="el-icon-delete"> 删 除 </el-button>
-                <el-input placeholder="输入关键字进行过滤" v-model="filterText" style="margin-top: 20px;width: 60%"></el-input>
+                <el-input placeholder="输入关键字进行过滤" v-model="filterText" style="margin-top: 20px;width: 90%"></el-input>
             </template>
 
             <!-- 树区域 -->
