@@ -4,15 +4,11 @@ import Welcome from '@/layout/Welcome.vue'
 import Index from '@/layout/Index.vue'
 import Login from '@/views/Login.vue';
 
-import router from './router';
+import routes from './routes';
 
 Vue.use(Router);
-
-console.log('process.env.BASE_URL:', process.env.BASE_URL);
-
-export default new Router({
+const router = new Router({
   mode: 'history',
-  base: process.env.BASE_URL,
   routes: [
     {
       path: '/login',
@@ -26,8 +22,23 @@ export default new Router({
       children: [
         {path: '', component: Welcome},
 
-        ...router
+        ...routes
       ]
     },
   ]
-})
+});
+
+router.beforeEach((to, from, next) => {
+  let accessToken = sessionStorage.getItem('accessToken');
+  let refreshToken = sessionStorage.getItem('accessToken');
+
+  // 如果 token 不存在并且不在登录页面则跳转至登录页面
+  if (!accessToken && !refreshToken && to.fullPath !== '/login') {
+    next('/login');
+    // window.location.href = "https:///www.baidu.com"
+  } else {
+    next();
+  }
+});
+
+export default router;

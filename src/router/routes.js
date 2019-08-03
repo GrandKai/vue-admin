@@ -33,7 +33,7 @@ const DemoAvater = () => import('views/demo/DemoAvater.vue');
 const CatalogList = () => import('views/catalog/List.vue');
 const LabelList = () => import('views/label/LabelList.vue');
 const LabelGroupList = () => import('views/label/LabelGroupList.vue');
-let router = [
+let routes = [
     {
         path: 'label',
         component: LabelList
@@ -138,4 +138,4 @@ let router = [
     },
 ];
 
-export default router;
+export default routes;

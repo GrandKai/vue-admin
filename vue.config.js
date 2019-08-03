@@ -4,6 +4,7 @@ const webpack = require('webpack');
 const resolve = dir => {
   return path.join(__dirname, dir);
 };
+// console.log("系统环境变量：", process)
 
 // 加载自定义环境配置信息
 let customEnv = require('./config/' + process.env.env_config + '.env');
@@ -12,7 +13,7 @@ let proxyObj = {};
 
 let hostUrl = customEnv.hostUrl.replace(/"/g, "");
 let urlPrefix = customEnv.urlPrefix.replace(/"/g, "");
-console.debug('自定义环境变量信息', hostUrl, urlPrefix);
+// console.debug('自定义环境变量信息', hostUrl, urlPrefix);
 // 代理
 const devProxy = [urlPrefix];
 
@@ -26,7 +27,7 @@ devProxy.forEach((value, index) => {
   };
 });
 
-console.debug('代理对象信息', proxyObj);
+// console.debug('代理对象信息', proxyObj);
 let vueConfig = {
   // 基本路径
   baseUrl: '/',
@@ -47,7 +48,7 @@ let vueConfig = {
   // tweak internal webpack configuration.
   // see https://github.com/vuejs/vue-cli/blob/dev/docs/webpack.md
   chainWebpack: (config) => {
-    console.log("webpack配置信息：", config.externals);
+    // console.log("webpack配置信息：", config.externals);
     config.externals({
       CKEDITOR: 'window.CKEDITOR'
     });
