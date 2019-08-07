@@ -734,11 +734,7 @@
 
                 // 通过append向form对象添加数据
                 formData.append('file', file);
-                // 通过append向form对象添加数据
                 formData.append('fileType', fileType);
-                // 通过append向form对象添加数据
-                // formData.append('fileId', fileId);
-                // 添加form表单中其他数据
                 formData.append('fileName', fileName);
 
                 uploadImage(formData).then(data => {

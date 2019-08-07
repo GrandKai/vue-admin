@@ -15,12 +15,13 @@ import common from '@/utils/common'
 import '@/utils/dialogDrag';
 
 // import iView from 'iview';
-import { Modal, Switch, Button } from 'iview';
+import { Modal, Switch, Button, Icon } from 'iview';
 import 'iview/dist/styles/iview.css';
 
 Vue.component('Modal', Modal);
 Vue.component('i-switch', Switch);
 Vue.component('Button', Button);
+Vue.component('i-icon', Icon);
 
 Vue.config.productionTip = false;
 

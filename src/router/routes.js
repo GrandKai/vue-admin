@@ -28,7 +28,7 @@ const DictionaryItemList = () => import('views/dictionary/item/List.vue');
 
 const DemoEcharts = () => import('views/demo/DemoEcharts.vue');
 const DemoCKEditor = () => import('views/demo/DemoCKEditor.vue');
-const DemoAvater = () => import('views/demo/DemoAvater.vue');
+const DemoAvatar = () => import('views/demo/DemoAvatar.vue');
 
 const CatalogList = () => import('views/catalog/List.vue');
 const LabelList = () => import('views/label/LabelList.vue');
@@ -47,8 +47,8 @@ let routes = [
         component: CatalogList
     },
     {
-        path: 'avater',
-        component: DemoAvater
+        path: 'avatar',
+        component: DemoAvatar
 
     },
     {
