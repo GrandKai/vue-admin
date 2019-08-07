@@ -24,9 +24,7 @@
                                 <!--parentId: <input v-model="form.parentId" width="500"/>-->
                             </li>
                             <li>
-                                <el-input v-model="param.content.name" placeholder="权限名称/权限描述"
-                                          @keyup.native.enter="queryPage" style="width: 220px"
-                                          clearable @input="queryPage"></el-input>
+                                <el-input v-model="param.content.name" placeholder="权限名称/权限描述" @keyup.native.enter="queryPage" style="width: 220px" clearable @input="queryPage"></el-input>
                             </li>
 
                             <li>
@@ -81,9 +79,7 @@
 
                                 <el-table-column label="操作" header-align="center" align="center" fixed="right" width="80%">
                                     <template slot-scope="scope">
-                                        <el-button type="danger" @click="deleteEntity(scope.row)">
-                                            删除
-                                        </el-button>
+                                        <el-button type="danger" @click="deleteEntity(scope.row)">删除</el-button>
                                     </template>
                                 </el-table-column>
                             </el-table>

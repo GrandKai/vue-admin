@@ -10,18 +10,14 @@
             <template slot="queryArea">
 
                 <li>
-                    <el-input v-model="param.content.name" placeholder="数据类型名称/编码" @keyup.native.enter="queryPage"
-                              style="width: 220px"
-                              clearable @input="queryPage"></el-input>
+                    <el-input v-model="param.content.name" placeholder="数据类型名称/编码" @keyup.native.enter="queryPage" style="width: 220px" clearable @input="queryPage"></el-input>
                 </li>
 
                 <li>
-                    <el-button type="primary" @click="queryPage()" icon="el-icon-search">查 询
-                    </el-button>
+                    <el-button type="primary" @click="queryPage()" icon="el-icon-search">查 询</el-button>
                 </li>
                 <li>
-                    <el-button @click="clearQueryParam" icon="el-icon-delete">清 空
-                    </el-button>
+                    <el-button @click="clearQueryParam" icon="el-icon-delete">清 空</el-button>
                 </li>
             </template>
 
@@ -52,8 +48,7 @@
                         </template>
                     </el-table-column>
 
-                    <el-table-column prop="code" label="数据类型编码" align="left">
-                    </el-table-column>
+                    <el-table-column prop="code" label="数据类型编码" align="left"></el-table-column>
 
                     <el-table-column label="显示顺序" header-align="left" align="left" fixed="right">
                         <template slot-scope="scope">
@@ -78,9 +73,7 @@
                                 {{scope.row.isShow === '0' ? '显示' : '隐藏'}}
                             </el-button>
 
-                            <el-button type="danger" @click="deleteEntity(scope.row)">
-                                删除
-                            </el-button>
+                            <el-button type="danger" @click="deleteEntity(scope.row)">删除</el-button>
                         </template>
                     </el-table-column>
                 </el-table>

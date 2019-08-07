@@ -12,28 +12,22 @@
 
                 <li>
                     <span class="sysSpan">所属系统 </span>
-                    <el-select v-model="param.content.platId" placeholder="请选择操作系统" clearable @change="queryPage"
-                               ref="select">
-                        <el-option v-for="item in options" :key="item.id" :label="item.name"
-                                   :value="item.id"></el-option>
+                    <el-select v-model="param.content.platId" placeholder="请选择操作系统" clearable @change="queryPage" ref="select">
+                        <el-option v-for="item in options" :key="item.id" :label="item.name" :value="item.id"></el-option>
                     </el-select>
                     <br/>
                     <!--platId: <input v-model="form.platId" width="500"/>-->
                     <!--parentId: <input v-model="form.parentId" width="500"/>-->
                 </li>
                 <li>
-                    <el-input v-model="param.content.name" placeholder="角色名称/角色描述" @keyup.native.enter="queryPage"
-                              style="width: 220px"
-                              clearable @input="queryPage"></el-input>
+                    <el-input v-model="param.content.name" placeholder="角色名称/角色描述" @keyup.native.enter="queryPage" style="width: 220px" clearable @input="queryPage"></el-input>
                 </li>
 
                 <li>
-                    <el-button type="primary" @click="queryPage()" icon="el-icon-search">查 询
-                    </el-button>
+                    <el-button type="primary" @click="queryPage()" icon="el-icon-search">查 询</el-button>
                 </li>
                 <li>
-                    <el-button @click="clearQueryParam" icon="el-icon-delete">清 空
-                    </el-button>
+                    <el-button @click="clearQueryParam" icon="el-icon-delete">清 空</el-button>
                 </li>
             </template>
 
@@ -74,8 +68,7 @@
                         </template>
                     </el-table-column>
 
-                    <el-table-column label="所属系统" header-align="left" align="left" fixed="right" prop="platName">
-                    </el-table-column>
+                    <el-table-column label="所属系统" header-align="left" align="left" fixed="right" prop="platName"></el-table-column>
 
                     <el-table-column label="显示顺序" header-align="left" align="left" fixed="right">
                         <template slot-scope="scope">
@@ -87,33 +80,20 @@
 
                     <el-table-column label="功能权限" header-align="center" align="center" fixed="right">
                         <template slot-scope="scope">
-
-                            <el-button type="text" @click="queryAuthorityList(scope.row)">
-                                设置功能权限
-                            </el-button>
+                            <el-button type="text" @click="queryAuthorityList(scope.row)">设置功能权限</el-button>
                         </template>
                     </el-table-column>
 
                     <el-table-column label="数据权限" header-align="center" align="center" fixed="right">
                         <template slot-scope="scope">
-
-                            <el-button type="text">
-                                设置数据权限
-                            </el-button>
-
+                            <el-button type="text">设置数据权限</el-button>
                         </template>
                     </el-table-column>
 
                     <el-table-column label="操作" header-align="center" align="center" fixed="right" min-width="210px">
                         <template slot-scope="scope">
-
-                            <el-button @click="configUser(scope.row.id)">
-                                成员管理
-                            </el-button>
-
-                            <el-button type="danger" @click="deleteEntity(scope.row)">
-                                删除
-                            </el-button>
+                            <el-button @click="configUser(scope.row.id)">成员管理</el-button>
+                            <el-button type="danger" @click="deleteEntity(scope.row)">删除</el-button>
                         </template>
                     </el-table-column>
                 </el-table>
@@ -156,8 +136,7 @@
 
                 <el-col :span="7" class="config_user">
 
-                    <el-input placeholder="输入你要添加的员工姓名" v-model="leftTable.param.content.userName" style="" size="mini"
-                              @keyup.native="searchLeftByCondition">
+                    <el-input placeholder="输入你要添加的员工姓名" v-model="leftTable.param.content.userName" style="" size="mini" @keyup.native="searchLeftByCondition">
                         <el-button slot="append" icon="el-icon-search" @click="searchLeftByCondition"></el-button>
                     </el-input>
 
@@ -208,8 +187,7 @@
                 <el-col :span="7" class="config_user">
 
 
-                    <el-input placeholder="输入你要移除的员工姓名" v-model="rightTable.param.content.userName" style="" size="mini"
-                              @keyup.native="searchRightByCondition">
+                    <el-input placeholder="输入你要移除的员工姓名" v-model="rightTable.param.content.userName" style="" size="mini" @keyup.native="searchRightByCondition">
                         <el-button slot="append" icon="el-icon-search" @click="searchRightByCondition"></el-button>
                     </el-input>
 

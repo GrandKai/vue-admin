@@ -9,17 +9,13 @@
         <custom-page>
             <template slot="queryArea">
                 <li>
-                    <el-input v-model="param.content.name" placeholder="标签组名称" @keyup.native.enter="queryPage"
-                              style="width: 220px"
-                              clearable @input="queryPage"></el-input>
+                    <el-input v-model="param.content.name" placeholder="标签组名称" @keyup.native.enter="queryPage" style="width: 220px" clearable @input="queryPage"></el-input>
                 </li>
                 <li>
-                    <el-button type="primary" @click="queryPage()" icon="el-icon-search">查 询
-                    </el-button>
+                    <el-button type="primary" @click="queryPage()" icon="el-icon-search">查 询</el-button>
                 </li>
                 <li>
-                    <el-button @click="clearQueryParam" icon="el-icon-delete">清 空
-                    </el-button>
+                    <el-button @click="clearQueryParam" icon="el-icon-delete">清 空</el-button>
                 </li>
             </template>
 
@@ -37,8 +33,7 @@
                     <el-table-column header-align="center" align="center" type="selection" width="50" :reserve-selection="true"></el-table-column>
 
                     <!-- 显示索引 -->
-                    <el-table-column :formatter="formatter" label="序号" width="60" header-align="center" align="center">
-                    </el-table-column>
+                    <el-table-column :formatter="formatter" label="序号" width="60" header-align="center" align="center"></el-table-column>
 
                     <el-table-column label="标签组名称" prop="name" header-align="left" align="left">
                         <template slot-scope="scope">

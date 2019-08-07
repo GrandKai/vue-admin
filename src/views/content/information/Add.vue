@@ -221,12 +221,7 @@
             <custom-page>
                 <template slot="queryArea">
                     <li>
-                        <el-input clearable
-                                  v-model="param.content.name"
-                                  placeholder="标题内容"
-                                  style="width: 220px"
-                                  @input="clearInput"
-                                  @keyup.native.enter="queryPage"></el-input>
+                        <el-input clearable v-model="param.content.name" placeholder="标题内容" style="width: 220px" @input="clearInput" @keyup.native.enter="queryPage"></el-input>
                     </li>
                 </template>
 

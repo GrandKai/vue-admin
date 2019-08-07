@@ -10,22 +10,17 @@
             <template slot="queryArea">
                 <li>
                     <el-select v-model="param.content.groupId" placeholder="全部标签组" clearable @change="queryPage" ref="select">
-                        <el-option v-for="item in options" :key="item.id" :label="item.name"
-                                   :value="item.id"></el-option>
+                        <el-option v-for="item in options" :key="item.id" :label="item.name" :value="item.id"></el-option>
                     </el-select>
                 </li>
                 <li>
-                    <el-input v-model="param.content.name" placeholder="标签名称" @keyup.native.enter="queryPage"
-                              style="width: 220px"
-                              clearable @input="queryPage"></el-input>
+                    <el-input v-model="param.content.name" placeholder="标签名称" @keyup.native.enter="queryPage" style="width: 220px" clearable @input="queryPage"></el-input>
                 </li>
                 <li>
-                    <el-button type="primary" @click="queryPage()" icon="el-icon-search">查 询
-                    </el-button>
+                    <el-button type="primary" @click="queryPage()" icon="el-icon-search">查 询</el-button>
                 </li>
                 <li>
-                    <el-button @click="clearQueryParam" icon="el-icon-delete">清 空
-                    </el-button>
+                    <el-button @click="clearQueryParam" icon="el-icon-delete">清 空</el-button>
                 </li>
             </template>
 

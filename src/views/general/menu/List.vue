@@ -12,10 +12,8 @@
                 <li>
                     <div style="margin-bottom: 10px; text-align: left">
                         <span class="sysSpan">所属系统 </span>
-                        <el-select v-model="form.platId" placeholder="请选择操作系统" clearable @change="selectChange"
-                                   ref="select">
-                            <el-option v-for="item in options" :key="item.id" :label="item.name"
-                                       :value="item.id"></el-option>
+                        <el-select v-model="form.platId" placeholder="请选择操作系统" clearable @change="selectChange" ref="select">
+                            <el-option v-for="item in options" :key="item.id" :label="item.name" :value="item.id"></el-option>
                         </el-select>
                     </div>
                 </li>
