@@ -88,7 +88,7 @@
             Cropper
         },
         computed: {
-          ...mapGetters(['platId'])
+          ...mapGetters(['platId', 'accessToken'])
         },
         data() {
             return {
@@ -151,7 +151,7 @@
 
             queryGrantedPlats() {
                 let param = {
-                    accessToken: sessionStorage.getItem('accessToken')
+                    accessToken: this.accessToken
                 };
                 queryGrantedPlats(param).then(data => {
                     if (200 === data.code) {
@@ -194,7 +194,7 @@
                     console.log('修改密码验证结果', valid);
                     if (valid) {
                         let param = {
-                            accessToken: sessionStorage.getItem('accessToken'),
+                            accessToken: this.accessToken,
                             content: this.form,
                         };
                         modifyPassword(param).then(data => {

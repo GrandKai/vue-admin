@@ -4,7 +4,8 @@ import Welcome from '@/layout/Welcome.vue'
 import Index from '@/layout/Index.vue'
 import Login from '@/views/Login.vue';
 
-import routes from './routes';
+import routes from '@/router/routes';
+import store from '@/store'
 
 Vue.use(Router);
 const router = new Router({
@@ -29,8 +30,8 @@ const router = new Router({
 });
 
 router.beforeEach((to, from, next) => {
-  let accessToken = sessionStorage.getItem('accessToken');
-  let refreshToken = sessionStorage.getItem('accessToken');
+  let accessToken = store.getters.accessToken;
+  let refreshToken = store.getters.refreshToken;
 
   // 如果 token 不存在并且不在登录页面则跳转至登录页面
   if (!accessToken && !refreshToken && to.fullPath !== '/login') {

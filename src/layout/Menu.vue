@@ -57,7 +57,7 @@
           }
         },
         computed: {
-            ...mapGetters(["expand", 'menus', 'platId'])
+            ...mapGetters(["expand", 'menus', 'platId', 'accessToken'])
         },
         created() {
             // this.queryGrantedMenus()
@@ -74,7 +74,7 @@
             // 根据系统 id 获取菜单列表
             queryGrantedMenus() {
                 let param = {
-                    accessToken: sessionStorage.getItem('accessToken'),
+                    accessToken: this.accessToken,
                     content: this.platId
                 };
                 queryGrantedMenus(param).then(data => {

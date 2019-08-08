@@ -13,6 +13,7 @@
 
 <script>
     let inc = new Date().getTime();
+    import {mapGetters} from 'vuex'
 
     export default {
         name: 'VueCkeditor',
@@ -54,7 +55,8 @@
         computed: {
             instance() {
                 return CKEDITOR.instances[this.id];
-            }
+            },
+            ...mapGetters(['accessToken'])
         },
         watch: {
             value(val) {
@@ -130,9 +132,9 @@
                         let xhr = evt.data.fileLoader.xhr;
                         console.log('文件上传请求：', evt);
                         xhr.setRequestHeader('Cache-Control', 'no-cache');
-                        let accessToken = sessionStorage.getItem('accessToken');
+                        let accessToken = this.accessToken;
                         if (accessToken) {
-                            xhr.setRequestHeader('Authorization', `Bearer ${sessionStorage.getItem('accessToken')}`);
+                            xhr.setRequestHeader('Authorization', `Bearer ${accessToken}`);
                         }
                         xhr.withCredentials = true;
                         // this.$emit('fileUploadRequest', evt);
