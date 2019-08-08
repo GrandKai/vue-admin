@@ -56,7 +56,9 @@ let $http = {
                             return refreshToken(refreshUrl, refreshParam).then(data => {
                                 console.warn('refreshToken刷新结果', data);
                                 if (200 === data.code) {
-                                    requestParam.accessToken = store.getters.accessToken;
+                                    // TODO: 注意从 store 中获取的 token 只能获取一次，刷新 token 后再放入 session 中，如果再从 store 获取的是之前的token
+                                    // TODO: 这里要直接从 session 中获取 token
+                                    requestParam.accessToken = sessionStorage.getItem("accessToken");
                                     return sendSecondRequest(requestUrl, requestParam, config);
                                 }
                                 // refresh 过期处理

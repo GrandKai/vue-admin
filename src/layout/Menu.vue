@@ -36,6 +36,7 @@
 
 <script>
     import {mapGetters, mapActions} from "vuex";
+    import store from '@/store'
     import logo from 'images/system/logo.jpg'
     import {queryGrantedMenus} from 'apis/auth'
 
@@ -74,9 +75,11 @@
             // 根据系统 id 获取菜单列表
             queryGrantedMenus() {
                 let param = {
+                    // accessToken: store.getters.accessToken,
                     accessToken: this.accessToken,
                     content: this.platId
                 };
+                console.log('查询授权菜单：')
                 queryGrantedMenus(param).then(data => {
                     // console.log('查询所有授权菜单：');
                     if (200 === data.code) {
