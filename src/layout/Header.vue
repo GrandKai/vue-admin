@@ -170,7 +170,6 @@
             },
 
             expandSideMenu() {
-                console.log('展开/关闭菜单')
                 this.expandMenu();
             },
 

@@ -468,7 +468,6 @@ export default {
     treeOpen(vm, ref) {
         // 只有菜单是关闭时才能执行展开
         if (vm.isExpand === false) {
-            console.log('树打开：', vm);
             vm.currentTreeKey = vm.$refs[ref].getCurrentKey();
             vm.isExpand = true;
             vm.treeIsShow = false;
@@ -500,7 +499,6 @@ export default {
     treeClose(vm, ref) {
         // 只有菜单是展开时才能执行关闭
         if (vm.isExpand === true) {
-            console.log('树关闭：', vm);
             vm.currentTreeKey = vm.$refs[ref].getCurrentKey();
             vm.isExpand = false;
             vm.treeIsShow = false;
@@ -627,7 +625,6 @@ export default {
             }
             if (!common.isArray(valA)) { //子级不是数组时,比较属性值
                 if (valB != valA) {
-                    console.log(key, '有变化');
                     flag = false;
                     break;
                 }
@@ -698,7 +695,7 @@ export default {
 
     getLineHeight: function () {
         let height = `${document.documentElement.clientHeight - 185}px`;
-        console.log("获取高度", height);
+        // console.log("获取高度", height);
         return height;
     },
 

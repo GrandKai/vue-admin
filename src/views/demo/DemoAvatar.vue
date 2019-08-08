@@ -187,7 +187,7 @@
                 }
             },
             imgLoad(message) {
-                console.log('加载成功回调', message)
+                // console.log('加载成功回调', message)
             }
         }
     }

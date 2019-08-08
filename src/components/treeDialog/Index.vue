@@ -55,8 +55,7 @@
                 let vm = this;
                 vm.checkDatas = newVal;
 
-                console.log('设置平台角色关系绑定', newVal, vm.$refs.tree);
-
+                // console.log('设置平台角色关系绑定', newVal, vm.$refs.tree);
                 /*vm.$nextTick(function() {
                   vm.$refs.tree.setCheckedNodes(vm.checkDatas);
                 });*/

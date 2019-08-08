@@ -52,7 +52,7 @@
 
         watch: {
           'platId': function (newVal, oldVal) {
-              console.log('menu watch switch plat:', newVal, oldVal)
+              // console.log('menu watch switch plat:', newVal, oldVal)
               this.queryGrantedMenus()
           }
         },
@@ -78,7 +78,7 @@
                     content: this.platId
                 };
                 queryGrantedMenus(param).then(data => {
-                    console.log('查询所有授权菜单：');
+                    // console.log('查询所有授权菜单：');
                     if (200 === data.code) {
                         let content = data.content;
                         // console.log(data.message, content);

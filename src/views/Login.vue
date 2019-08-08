@@ -61,7 +61,6 @@
       handleSubmit() {
         this.$refs.loginForm.validate((valid) => {
 
-          console.log('登录验证结果：', valid);
           if (valid) {
             let param = {
               content: this.form
