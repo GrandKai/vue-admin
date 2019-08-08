@@ -97,7 +97,6 @@
 
         data() {
             return {
-                accessToken: sessionStorage.getItem('accessToken'),
                 // 所有系统信息
                 options: [],
 
