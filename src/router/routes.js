@@ -1,5 +1,4 @@
 //页面配置文件
-const About = () => import('views/About.vue');
 
 const InformationList = () => import('views/content/information/List.vue');
 const InformationAdd = () => import('views/content/information/Add.vue');
@@ -29,11 +28,18 @@ const DictionaryItemList = () => import('views/dictionary/item/List.vue');
 const DemoEcharts = () => import('views/demo/DemoEcharts.vue');
 const DemoCKEditor = () => import('views/demo/DemoCKEditor.vue');
 const DemoAvatar = () => import('views/demo/DemoAvatar.vue');
+const DemoWebSocket = () => import('views/demo/DemoWebSocket.vue');
+
 
 const CatalogList = () => import('views/catalog/List.vue');
 const LabelList = () => import('views/label/LabelList.vue');
 const LabelGroupList = () => import('views/label/LabelGroupList.vue');
 let routes = [
+
+    {
+        path: 'websocket',
+        component: DemoWebSocket
+    },
     {
         path: 'label',
         component: LabelList
@@ -60,12 +66,6 @@ let routes = [
         path: 'ckeditor',
         component: DemoCKEditor
 
-    },
-
-    {
-        path: 'about',
-        name: 'about',
-        component: About
     },
     {
         path: 'user',

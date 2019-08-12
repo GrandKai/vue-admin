@@ -11,15 +11,15 @@ let customEnv = require('./config/' + process.env.env_config + '.env');
 // 生成代理配置对象
 let proxyObj = {};
 
-let hostUrl = customEnv.hostUrl.replace(/"/g, "");
+let apiUrl = customEnv.apiUrl.replace(/"/g, "");
 let urlPrefix = customEnv.urlPrefix.replace(/"/g, "");
-// console.debug('自定义环境变量信息', hostUrl, urlPrefix);
+// console.debug('自定义环境变量信息', apiUrl, urlPrefix);
 // 代理
 const devProxy = [urlPrefix];
 
 devProxy.forEach((value, index) => {
   proxyObj[value] = {
-    target: hostUrl,
+    target: apiUrl,
     changeOrigin: true,
     pathRewrite: {
       [`^${value}`]: ''

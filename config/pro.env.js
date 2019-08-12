@@ -1,7 +1,7 @@
-const hostUrl = '"http://172.27.4.71:8088"';
+const apiUrl = '"http://172.27.4.71:8088"';
 // 生产环境
 module.exports = {
   NODE_ENV: '"production"',
-  hostUrl: hostUrl,
+  apiUrl: apiUrl,
   urlPrefix: '"/api"'
 };

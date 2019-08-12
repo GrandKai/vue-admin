@@ -40,8 +40,8 @@ Vue.prototype.common = common;
 window.common = common;
 
 // api接口路径
-// Vue.prototype.apiUrl = process.env.hosturl;
-// window.apiUrl = process.env.hosturl;
+// Vue.prototype.apiUrl = process.env.apiUrl;
+// window.apiUrl = process.env.apiUrl;
 Vue.prototype.urlPrefix = process.env.urlPrefix;
 window.urlPrefix = process.env.urlPrefix;
 

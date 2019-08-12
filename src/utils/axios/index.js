@@ -1,13 +1,12 @@
 import axios from './axios'
 import router from '@/router';
-import store from '@/store'
 
 let $http = {
     post: function (url, param, config) {
 
         // console.log('....................................', process.env);
         let requestUrl = `${url}`;
-        let accessToken = store.getters.accessToken;
+        let accessToken = sessionStorage.getItem('accessToken');
         let requestParam = {};
 
         if (param instanceof FormData) {
@@ -49,7 +48,7 @@ let $http = {
                             sessionStorage.removeItem("accessToken");
 
                             let refreshParam = {
-                                refreshToken: store.getters.refreshToken
+                                refreshToken: sessionStorage.getItem('refreshToken')
                             };
                             let refreshUrl = `/auth/refresh/token`;
 
