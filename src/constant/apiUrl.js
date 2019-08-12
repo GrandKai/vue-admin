@@ -5,7 +5,11 @@ export const auth = {
   MODIFY_PASSWORD: '/auth/modify/password',
   MENUS: '/auth/menu/list',
   PLATS: '/auth/plat/list',
-};
+}
+
+export const websocket = {
+  SEND_MESSAGE: '/websocket/send'
+}
 
 // 组织机构
 export const organization = {

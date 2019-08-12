@@ -1,5 +1,5 @@
 const apiUrl = `"http://172.27.4.71:9088"`;
-const wsUrl = `"ws://172.27.4.71:9088/websocket/"`;
+const wsUrl = `"ws://172.27.4.71:9088/ws/"`;
 // 本地环境
 module.exports = {
   NODE_ENV: '"development"',

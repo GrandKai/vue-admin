@@ -70,22 +70,24 @@
             <span slot="footer" class="dialog-footer"></span>
         </el-dialog>
 
+        <web-socket></web-socket>
     </div>
 </template>
 
 <script>
-
-    import Menu from './Menu'
-    import {queryGrantedPlats, modifyPassword} from 'apis/auth'
+    import Menu from '@/layout/Menu'
+    import {queryGrantedPlats, modifyPassword} from '@/apis/auth'
     import expandSrc from 'images/expan.jpg'
 
     import {mapGetters, mapActions} from 'vuex'
     import Cropper from '@/components/cropper/Cropper'
+    import WebSocket from '@/components/socket/WebSocket'
 
     export default {
         components: {
             Menu,
-            Cropper
+            Cropper,
+            WebSocket
         },
         computed: {
           ...mapGetters(['platId', 'accessToken'])
