@@ -33,8 +33,10 @@ router.beforeEach((to, from, next) => {
   let accessToken = store.getters.accessToken;
   let refreshToken = store.getters.refreshToken;
 
+  let flag = !accessToken && !refreshToken && to.fullPath !== '/login';
+  // console.log('路由guard，是否跳转至登录页面：', flag);
   // 如果 token 不存在并且不在登录页面则跳转至登录页面
-  if (!accessToken && !refreshToken && to.fullPath !== '/login') {
+  if (flag) {
     next('/login');
     // window.location.href = "https:///www.baidu.com"
   } else {

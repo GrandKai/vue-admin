@@ -1,5 +1,4 @@
 import axios from 'axios'
-import store from '@/store'
 
 axios.defaults.timeout = 2 * 60 * 1000;
 axios.defaults.baseURL = process.env.urlPrefix;
@@ -8,7 +7,7 @@ axios.defaults.headers.post['Content-Type'] = 'application/json;charset=UTF-8';
 // Add a request interceptor
 axios.interceptors.request.use(config => {
     // Do something before request is sent
-    const token = store.getters.accessToken;
+    const token = sessionStorage.getItem('accessToken');
     if (token) config.headers.Authorization = `Bearer ${token}`;
 
     return config;
