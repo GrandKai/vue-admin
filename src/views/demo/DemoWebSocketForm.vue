@@ -2,7 +2,7 @@
     <div>
         <el-form ref="form" :model="form" label-width="180px">
             <el-form-item label="发送给">
-                <el-input v-model="form.toUser"></el-input>
+                <el-input v-model="form.toUserName"></el-input>
             </el-form-item>
 
             <el-form-item label="发送消息">
@@ -27,7 +27,7 @@
         data() {
             return {
                 form: {
-                    toUser: 'test',
+                    toUserName: 'test',
                     message: ''
                 },
                 server: {

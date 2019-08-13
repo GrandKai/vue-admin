@@ -1,36 +1,38 @@
 <template>
     <div>
-        <div class="header_class">
-            <img :src="expandSrc" alt="伸展" class="expand" @click="expandSideMenu">
-            <ul>
-                <li>
-                    <i class="ele-icon-third-gerenzhongxin"></i>
-                    <span>{{nickName}}</span>
+        <div class="header-class">
+            <div>
+                <img :src="expandSrc" alt="伸展" class="expand" @click="expandSideMenu">
+            </div>
+            <ul class="button-class">
+
+                <li class="icon-class">
+                    <el-button type="text" size="large"><i class="el-icon-user"></i> {{nickName}}</el-button>
                 </li>
 
-                <li @click="modifyAvatar">
-                    修改头像
+                <li class="icon-class" @click="modifyAvatar">
+                    <el-button type="text" size="large"><i class="el-icon-setting"></i> 修改头像</el-button>
                 </li>
 
-                <li @click="dialogFormVisible = true">
-                    <i class="ele-icon-third-password-modify"></i>
-                    <span>修改密码</span>
+                <li class="icon-class" @click="dialogFormVisible = true">
+                    <el-button type="text" size="large"><i class="el-icon-lock"></i> 修改密码</el-button>
                 </li>
-                <li @click="logout">
-                    <i class="ele-icon-third-logout"></i>
-                    <span>退出</span>
+
+                <li class="icon-class" @click="logout">
+                    <el-button type="text" size="large"><i class="el-icon-switch-button"></i> 退出</el-button>
                 </li>
-                <li>
-                    <span>
-                        <el-dropdown @command="changePlat">
-                            <span class="el-dropdown-link">{{platName}}<i class="el-icon-arrow-down el-icon--right"></i></span>
-                            <el-dropdown-menu slot="dropdown">
-                                <el-dropdown-item v-for="item in options" :key="item.id" :command="item">{{item.name}}</el-dropdown-item>
-                            </el-dropdown-menu>
-                        </el-dropdown>
-                    </span>
+
+                <li class="icon-class">
+                    <el-dropdown @command="changePlat">
+                        <span class="el-dropdown-link">{{platName}}<i class="el-icon-arrow-down el-icon--right"></i></span>
+                        <el-dropdown-menu slot="dropdown">
+                            <el-dropdown-item v-for="item in options" :key="item.id" :command="item">{{item.name}}</el-dropdown-item>
+                        </el-dropdown-menu>
+                    </el-dropdown>
                 </li>
+
             </ul>
+
         </div>
 
         <el-dialog v-dialogDrag title="修改密码" :visible.sync="dialogFormVisible" width="25%" :close-on-click-modal="false" :close-on-press-escape="false">
@@ -90,7 +92,7 @@
             WebSocket
         },
         computed: {
-          ...mapGetters(['platId', 'accessToken'])
+            ...mapGetters(['platId', 'accessToken'])
         },
         data() {
             return {
@@ -243,42 +245,32 @@
 </script>
 
 <style lang="scss" scoped>
+    .el-dropdown {
+        line-height: 60px !important;
+        margin: 0 10px
+    }
+    .el-button--text {
+        color: #606266;
+    }
 
-    .header_class {
+    .header-class {
         height: 60px;
-
-        > ul {
-            float: right;
-
-            > li {
-                font-size: 12px;
-                float: left;
-                margin-right: 20px;
-                line-height: 60px;
-                cursor: pointer;
-
-                i,
-                span {
-                    display: inline-block;
-                    vertical-align: middle;
-                }
-
-                i {
-                    margin-right: 6px;
-                }
-            }
-        }
+        display: flex;
+        /*border: solid 1px red;*/
+        justify-content: space-between;
+        align-items: center
     }
 
-
-    .el-header {
-        text-align: center;
-        background-color: #FFF;
+    .icon-class {
+        /*margin-right: 20px*/
         line-height: 60px;
+        margin-right: -5px !important;
     }
 
-    .main-content {
-        padding: 20px;
+    .button-class {
+        display: flex;
+        justify-content: center;
+        list-style-type: none;
     }
 
 
@@ -290,9 +282,9 @@
     }
 
     .expand {
-        float: left;
-        margin-top: 20px;
-        margin-left: 18px;
+        /*float: left;*/
+        /*margin-top: 20px;*/
+        margin-left: 20px;
         cursor: pointer;
     }
 
