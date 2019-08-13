@@ -247,7 +247,8 @@
 <style lang="scss" scoped>
     .el-dropdown {
         line-height: 60px !important;
-        margin: 0 10px
+        padding-right: 20px;
+        margin-left: 10px;
     }
     .el-button--text {
         color: #606266;
@@ -264,7 +265,7 @@
     .icon-class {
         /*margin-right: 20px*/
         line-height: 60px;
-        margin-right: -5px !important;
+        /*margin-right: -5px !important;*/
     }
 
     .button-class {
