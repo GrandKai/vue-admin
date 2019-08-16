@@ -248,7 +248,7 @@
     .el-dropdown {
         line-height: 60px !important;
         padding-right: 20px;
-        margin-left: 10px;
+        padding-left: 10px;
     }
     .el-button--text {
         color: #606266;
