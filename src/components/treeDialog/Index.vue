@@ -72,10 +72,9 @@
         methods: {
             // 关闭之前, 调用父组件的方法, 重置dialogVisibleLog
             closeDialog: function () {
-                let vm = this;
-                vm.filterText = '';
-                vm.$refs.form.resetFields();
-                vm.$emit('closeDialog');
+                this.filterText = '';
+                this.$refs.form.resetFields();
+                this.$emit('closeDialog');
             },
             filterNode(value, data) {//根据关键字查询
                 if (!value) return true;
