@@ -101,7 +101,7 @@
         },
         methods: {
             ...mapActions([
-                'expandMenu'
+                'expandMenu', 'logout'
             ]),
 
             closePasswordDialog() {
@@ -141,8 +141,9 @@
 
             logout() {
                 common.confirm({message: '此操作将退出系统，请确认操作！'}).then(() => {
-                    // this.$store.dispatch('changeMenusByPlatId', []);
-                    // this.$store.dispatch('changePlat', '');
+                    this.$store.dispatch('changeMenusByPlatId', []);
+                    this.$store.dispatch('changePlat', '');
+                    // this.logout();
                     sessionStorage.clear();
                     this.$router.push('/login');
                 }).catch(() => {
