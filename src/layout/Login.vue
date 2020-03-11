@@ -59,36 +59,39 @@
         },
         methods: {
             handleSubmit() {
-                this.$refs.loginForm.validate((valid) => {
 
-                    if (valid) {
-                        let param = {
-                            content: this.form
-                        };
+                this.$router.push("/");
 
-                        login(param).then(data => {
-
-                            if (200 === data.code) {
-
-                                this.$message.success(data.message);
-                                let content = data.content;
-                                let userDto = content.userDto;
-                                let accessToken = content.accessToken;
-                                let refreshToken = content.refreshToken;
-                                sessionStorage.setItem('accessToken', accessToken);
-                                sessionStorage.setItem('refreshToken', refreshToken);
-                                sessionStorage.setItem('userName', userDto.name);
-                                sessionStorage.setItem('nickName', userDto.nickName);
-
-                                // 登录成功后跳转到登录页面
-                                console.log("登录成功")
-                                this.$router.push("/");
-                            } else {
-                                this.errorMessage = data.message;
-                            }
-                        });
-                    }
-                })
+                // this.$refs.loginForm.validate((valid) => {
+                //
+                //     if (valid) {
+                //         let param = {
+                //             content: this.form
+                //         };
+                //
+                //         login(param).then(data => {
+                //
+                //             if (200 === data.code) {
+                //
+                //                 this.$message.success(data.message);
+                //                 let content = data.content;
+                //                 let userDto = content.userDto;
+                //                 let accessToken = content.accessToken;
+                //                 let refreshToken = content.refreshToken;
+                //                 sessionStorage.setItem('accessToken', accessToken);
+                //                 sessionStorage.setItem('refreshToken', refreshToken);
+                //                 sessionStorage.setItem('userName', userDto.name);
+                //                 sessionStorage.setItem('nickName', userDto.nickName);
+                //
+                //                 // 登录成功后跳转到登录页面
+                //                 console.log("登录成功")
+                //                 this.$router.push("/");
+                //             } else {
+                //                 this.errorMessage = data.message;
+                //             }
+                //         });
+                //     }
+                // })
             },
             queryGrantedOperationList() {
                 let param = {

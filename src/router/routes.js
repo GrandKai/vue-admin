@@ -29,12 +29,17 @@ const DemoEcharts = () => import('views/demo/DemoEcharts.vue');
 const DemoCKEditor = () => import('views/demo/DemoCKEditor.vue');
 const DemoAvatar = () => import('views/demo/DemoAvatar.vue');
 const DemoWebSocket = () => import('views/demo/DemoWebSocket.vue');
+const DemoBaoJia = () => import('views/demo/DemoBaoJia.vue');
 
 
 const CatalogList = () => import('views/catalog/List.vue');
 const LabelList = () => import('views/label/LabelList.vue');
 const LabelGroupList = () => import('views/label/LabelGroupList.vue');
 let routes = [
+    {
+        path: 'baojia',
+        component: DemoBaoJia
+    },
 
     {
         path: 'websocket',

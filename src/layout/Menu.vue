@@ -29,6 +29,12 @@
                         </el-menu-item>
                     </el-submenu>
                 </template>
+
+                <template>
+                    <el-menu-item index="baojia">
+                        <span slot="title">报价</span>
+                    </el-menu-item>
+                </template>
             </el-menu>
         </el-col>
     </el-row>

@@ -36,7 +36,9 @@ router.beforeEach((to, from, next) => {
   console.log('路由guard，是否跳转至登录页面：', flag);
   // 如果 token 不存在并且不在登录页面则跳转至登录页面
   if (flag) {
-    next('/login');
+
+    next();
+    // next('/login');
     // window.location.href = "https:///www.baidu.com"
   } else {
     next();
